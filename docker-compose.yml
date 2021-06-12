@@ -23,12 +23,12 @@ services:
 
   # Processes for serving content to the user
   # Exposing ports isn't necessary but could be useful for debugging from localhost
-  #server:
-    #build:
-      #context: ./nodes
-      #dockerfile: dockerfiles/Dockerfile-server
-    #ports:
-      #- 8081:8081
+  server:
+    build: ./server
+    environment:
+      - NODE_ENV=development
+    ports:
+      - 8081:8081
   web:
     build: ./web
     environment:
@@ -43,4 +43,5 @@ services:
     ports:
       - 80:80
     depends_on:
+      - server
       - web
