@@ -1,0 +1,36 @@
+version: "3"
+services:
+  # Core processes
+  # Ports not required for pd0/tikv/nats because they can be resolved via the dns proxy
+  dns:
+    image: defreitas/dns-proxy-server
+    hostname: dns.mageddo
+    ports:
+      - 5380:5380
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/resolv.conf:/etc/resolv.conf
+
+  # Processes for serving content to the user
+  # Exposing ports isn't necessary but could be useful for debugging from localhost
+  #server:
+    #build:
+      #context: ./nodes
+      #dockerfile: dockerfiles/Dockerfile-server
+    #ports:
+      #- 8081:8081
+  web:
+    build: ./web
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true 
+    ports:
+      - 8080:8080
+    volumes:
+      - ./web/src:/home/webtrace/web/src
+  proxy:
+    build: ./proxy
+    ports:
+      - 80:80
+    depends_on:
+      - web
