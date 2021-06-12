@@ -10,6 +10,16 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/resolv.conf:/etc/resolv.conf
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ./data/mongodb:/data/db
+    ports:
+      - 27017:27017
 
   # Processes for serving content to the user
   # Exposing ports isn't necessary but could be useful for debugging from localhost
@@ -27,7 +37,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ./web/src:/home/webtrace/web/src
+      - ./web/src:/home/pse/web/src
   proxy:
     build: ./proxy
     ports:
