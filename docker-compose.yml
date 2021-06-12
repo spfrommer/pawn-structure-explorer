@@ -27,6 +27,8 @@ services:
     build: ./server
     environment:
       - NODE_ENV=development
+    volumes:
+      - ./data/lichess-elite-database:/pgns
     ports:
       - 8081:8081
   web:

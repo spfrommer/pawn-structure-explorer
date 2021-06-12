@@ -1,39 +1,20 @@
 'use strict';
 
 const express = require('express');
-const { MongoClient } = require("mongodb");
+const Database = require('./database.js');
 
-// Connection URI
-const uri = "mongodb://mongodb:27017";
-// Create a new MongoClient
-const client = new MongoClient(uri);
-async function run() {
-  try {
-    // Connect the client to the server
-    await client.connect();
-    // Establish and verify connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Connected successfully to server");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-run().catch(console.dir);
-
-// Constants
-const PORT = 8081;
-const HOST = '0.0.0.0';
+const uri = "mongodb://mongodb:27017"; // Connects to ongodb container
+const pgnsDir = "/pgns"; // Mapped as volume in docker-compose
+const db = new Database(uri, pgnsDir);
 
 // App
 const app = express();
-app.get('/', (req, res) => {
-  res.send('Hello World');
-});
-app.get('/api', (req, res) => {
-  console.log('Got api request');
-  res.send('API test');
+app.get('/api/index', (req, res) => {
+    console.log('INDEXING');
+    res.send('INDEXING');
+
+    db.indexPgnFile(db.pgnFiles()[0]);
 });
 
-app.listen(PORT, HOST);
-console.log(`Running on http://${HOST}:${PORT}`);
+app.listen(8081, '0.0.0.0');
+console.log('Server running');
