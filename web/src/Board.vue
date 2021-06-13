@@ -23,28 +23,11 @@ export default {
                     $('#highlight-board').append(square); 
                 }
             }
-        },
-        userPlay() {
-            return (orig, dest) => {
-                if (this.isPromotion(orig, dest)) {
-                    this.promoteTo = this.onPromotion()
-                }
-                this.game.move({from: orig, to: dest, promotion: this.promoteTo}) // promote to queen for simplicity
-                this.board.set({
-                    fen: this.game.fen()
-                })
-                this.calculatePromotions()
-                this.aiNextMove()
-            };
         }
     },
     mounted() {
         let highlightBoard = $('<div></div>').addClass('cg-board').attr('id', 'highlight-board');
         $('.cg-board-wrap').append(highlightBoard);
-
-        this.board.set({
-            movable: { events: { after: this.userPlay()} },
-        })
     }
 }
 </script>
@@ -54,5 +37,8 @@ export default {
 .blue .cg-board-wrap {
     background-size: 320px 320px;
     background-image: url("../assets/metal.jpg");
+}
+.cg-board:not(#highlight-board) square {
+    opacity: 0.0;
 }
 </style>
