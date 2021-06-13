@@ -1,9 +1,10 @@
 <script>
+import { EventBus } from './event-bus';
 import { chessboard }  from 'vue-chessboard'
 import $ from 'jquery'
 
 export default {
-    name: 'board',
+    name: 'CustomBoard',
     extends: chessboard,
     props: ['highlights'],
     watch: {
@@ -28,6 +29,12 @@ export default {
             deep: true
         }
     },
+    methods: {
+        editorMouseDownHandler: function(mouseEvent, color) {
+            console.log(`The button has been clicked ${color} times!`);
+            this.board.dragNewPiece({role: 'pawn', color: 'white', promoted: false}, mouseEvent, true);
+        }
+    },
     mounted() {
         // Add overlay highlight squares
         let highlightBoard = $('<div></div>').addClass('cg-board').attr('id', 'highlight-board');
@@ -45,7 +52,9 @@ export default {
             draggable: {
                 deleteOnDropOff: true
             }
-        })
+        });
+
+        EventBus.$on('editorMouseDown', this.editorMouseDownHandler);
     }
 }
 </script>

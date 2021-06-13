@@ -1,7 +1,7 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import VueResource from 'vue-resource'
-import App from './App.vue'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import VueResource from 'vue-resource';
+import App from './App.vue';
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
@@ -9,8 +9,8 @@ Vue.use(VueResource);
 import utils from './utils'
 const utilsPlugin = {
   install () {
-    Vue.utils = utils
-    Vue.prototype.$utils = utils
+    Vue.utils = utils;
+    Vue.prototype.$utils = utils;
   }
 }
 Vue.use(utilsPlugin);

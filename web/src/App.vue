@@ -1,7 +1,7 @@
 <template>
     <div id="app">
-        <Board ref="board" :highlights="highlights" :free="true" @click.native="boardClick"/>
-        <button @click="onClick">Click Here</button>
+        <Board ref="board" :highlights="highlights" :free="true"/>
+        <Editor/>
     </div>
 </template>
 
@@ -10,11 +10,13 @@
 const interpolate = require('color-interpolate');
 
 import Board from './Board.vue';
+import Editor from './Editor.vue';
 
 export default {
     name: 'App',
     components: {
-        Board
+        Board,
+        Editor
     },
     data: function() {
         return {
@@ -27,18 +29,6 @@ export default {
                 intensities: this.$utils.random(8, 8)
             }
         }
-    },
-    methods: {
-        onClick: function() {
-            this.highlights.intensities = this.$utils.random(8, 8);
-        },
-        boardClick: function(event) {
-            console.log('Board clicked!');
-            console.log(event);
-        }
-    },
-    mounted: function() {
-        // this.$refs.board.board.dragNewPiece({role: 'king', color: 'white', promotoed: false});
     }
 }
 </script>
