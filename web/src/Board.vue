@@ -8,8 +8,6 @@ export default {
     props: ['highlights'],
     methods: {
         drawHighlights() {
-            console.log('Drawing highlights!');
-            console.log(this.highlights);
             let intensities = this.highlights.intensities;
 
             for (var i = 0; i < intensities.length; i++) {
@@ -26,14 +24,23 @@ export default {
         }
     },
     mounted() {
+        // Add overlay highlight squares
         let highlightBoard = $('<div></div>').addClass('cg-board').attr('id', 'highlight-board');
         $('.cg-board-wrap').append(highlightBoard);
+
+        // Free moves allowed
+        this.board.set({
+            movable: {
+                color: 'both',
+                free: true,
+                events: { after: undefined }
+            }
+        })
     }
 }
 </script>
 
 <style>
-/* See https://websemantics.uk/tools/image-to-data-uri-converter/ */
 .blue .cg-board-wrap {
     background-size: 320px 320px;
     background-image: url("../assets/metal.jpg");
