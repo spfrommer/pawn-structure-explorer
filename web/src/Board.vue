@@ -33,12 +33,17 @@ export default {
         let highlightBoard = $('<div></div>').addClass('cg-board').attr('id', 'highlight-board');
         $('.cg-board-wrap').append(highlightBoard);
 
-        // Free moves allowed
         this.board.set({
+            fen: '8/pppppppp/8/8/8/8/PPPPPPPP/8 w KQkq - 0 1',
+            // Free moves allowed
             movable: {
                 color: 'both',
                 free: true,
                 events: { after: undefined }
+            },
+            // Drag pieces off board to delete
+            draggable: {
+                deleteOnDropOff: true
             }
         })
     }
@@ -48,7 +53,7 @@ export default {
 <style lang="scss">
 .blue .cg-board-wrap {
     background-size: 320px 320px;
-    background-image: url($metal);
+    background-image: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url($metal);
 }
 .cg-board:not(#highlight-board) square {
     opacity: 0.0;
@@ -58,5 +63,9 @@ export default {
     left: 1%;
     width: 10.5%;
     height: 10.5%;
+}
+
+coord {
+    color: $secondary;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="app">
         <Board ref="board" :highlights="highlights" :free="true" @click.native="boardClick"/>
         <button @click="onClick">Click Here</button>
     </div>
@@ -44,46 +44,13 @@ export default {
 </script>
 
 
-<style>
-:root {
-    --main-color:#06c;
-    --text-main:#222;
-    --text-second:#444;
-    --text-third:#aaa;
-    --off-white:#efefef
-}
+<style lang="scss">
 #app {
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: 'Roboto', Sans-Serif;
+    font-weight: 600;
     text-align: left;
 }
-#spacer {
-    padding-top: 100px;
-}
-
-/* Pagination styling */
-.pagination-item {
-    list-style-type: none;
-    float: left;
-    margin: 0 5px;
-}
-.pagination-link {
-    background-color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 20px;
-    padding: 5px 15px 5px 15px;
-}
-.pagination-link--active {
-    background-color: #c4d9f5;
-}
-
-.pagination {
-    width: 60%;
-    margin: auto;
-    margin-top: 30px;
-}
-.info {
-    margin: 5px 0px 0px 120px;
-    color: var(--text-main);
+body {
+    background-color: $primary;
 }
 </style>
