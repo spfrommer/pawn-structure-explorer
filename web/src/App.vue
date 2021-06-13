@@ -1,5 +1,5 @@
 <template>
-    <Board ref="board"/>
+    <Board ref="board" :highlights="highlights"/>
 </template>
 
 
