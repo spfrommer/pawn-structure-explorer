@@ -19,7 +19,7 @@ export default {
 
                         let square = $('<square></square>').addClass('highlight');
                         square = square.css('transform', `translate(${i*40}px, ${j*40}px)`);
-                        // square = square.css('background-color', highlights.colormap(intensity));
+                        square = square.css('background-color', highlights.colormap(intensity));
 
                         $('#highlight-board').append(square); 
                     }
@@ -48,7 +48,7 @@ export default {
 <style lang="scss">
 .blue .cg-board-wrap {
     background-size: 320px 320px;
-    background-image: url("../assets/metal.jpg");
+    background-image: url($metal);
 }
 .cg-board:not(#highlight-board) square {
     opacity: 0.0;
@@ -58,6 +58,5 @@ export default {
     left: 1%;
     width: 10.5%;
     height: 10.5%;
-    background-color: $primary;
 }
 </style>
