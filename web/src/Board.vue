@@ -6,21 +6,27 @@ export default {
     name: 'board',
     extends: chessboard,
     props: ['highlights'],
-    methods: {
-        drawHighlights() {
-            let intensities = this.highlights.intensities;
+    watch: {
+        'highlights': {
+            handler: function(highlights) {
+                console.log('Highlights change...');
+                $('#highlight-board').empty();
 
-            for (var i = 0; i < intensities.length; i++) {
-                for (var j = 0; j < intensities[i].length; j++) {
-                    let intensity = intensities[i][j];
+                let intensities = highlights.intensities;
 
-                    let square = $('<square></square>').addClass('highlight');
-                    square = square.css('transform', `translate(${i*40}px, ${j*40}px)`);
-                    square = square.css('background-color', this.highlights.colormap(intensity));
+                for (var i = 0; i < intensities.length; i++) {
+                    for (var j = 0; j < intensities[i].length; j++) {
+                        let intensity = intensities[i][j];
 
-                    $('#highlight-board').append(square); 
+                        let square = $('<square></square>').addClass('highlight');
+                        square = square.css('transform', `translate(${i*40}px, ${j*40}px)`);
+                        square = square.css('background-color', highlights.colormap(intensity));
+
+                        $('#highlight-board').append(square); 
+                    }
                 }
-            }
+            },
+            deep: true
         }
     },
     mounted() {
@@ -47,5 +53,11 @@ export default {
 }
 .cg-board:not(#highlight-board) square {
     opacity: 0.0;
+}
+#highlight-board square {
+    top: 1%;
+    left: 1%;
+    width: 10.5%;
+    height: 10.5%;
 }
 </style>

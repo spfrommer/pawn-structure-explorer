@@ -1,5 +1,8 @@
 <template>
-    <Board ref="board" :highlights="highlights" :free="true"/>
+    <div>
+        <Board ref="board" :highlights="highlights" :free="true"/>
+        <button @click="onClick">Click Here</button>
+    </div>
 </template>
 
 
@@ -26,9 +29,14 @@ export default {
         }
     },
     methods: {
+        onClick: function() {
+            console.log('Clicked!');
+            this.highlights.intensities = this.$utils.random(8, 8);
+            console.log(this.highlights);
+        }
     },
     mounted: function() {
-        this.$refs.board.drawHighlights();
+        // this.$refs.board.drawHighlights();
     }
 }
 </script>
