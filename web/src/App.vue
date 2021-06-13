@@ -4,6 +4,8 @@
 
 
 <script>
+const interpolate = require('color-interpolate');
+
 import Board from './Board.vue';
 
 export default {
@@ -14,7 +16,7 @@ export default {
     data: function() {
         return {
             highlights: {
-                color: 0x555555,
+                colormap: interpolate(['rgba(2,0,36,0.5)', 'rgba(193,103,255,0.5)', 'rgba(0,212,255,0.5)']),
                 intensities: this.$utils.zeros(8, 8)
             }
         }
