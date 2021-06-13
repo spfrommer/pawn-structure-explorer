@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Board ref="board" :highlights="highlights" :free="true"/>
+        <Board ref="board" :highlights="highlights" :free="true" @click.native="boardClick"/>
         <button @click="onClick">Click Here</button>
     </div>
 </template>
@@ -22,21 +22,23 @@ export default {
                 // colormap: interpolate(['rgba(2,0,36,0.0)', 'rgba(193,103,255,0.0)', 'rgba(0,212,255,0.0)']),
                 // colormap: interpolate(['rgba(193,103,255,0.2)', 'rgba(0,212,255,0.2)']),
                 // colormap: interpolate(['rgba(0, 255, 254, 0.2)', 'rgba(222, 0, 255, 0.2)']),
-                colormap: interpolate(['rgba(0, 255, 254, 0.0)', 'rgba(0, 255, 254, 0.3)']),
-                // colormap: interpolate(['rgba(222, 0, 255, 0.0)', 'rgba(222, 0, 255, 0.3)']),
+                // colormap: interpolate(['rgba(0, 255, 254, 0.0)', 'rgba(0, 255, 254, 0.3)']),
+                colormap: interpolate(['rgba(222, 0, 255, 0.0)', 'rgba(222, 0, 255, 0.3)']),
                 intensities: this.$utils.random(8, 8)
             }
         }
     },
     methods: {
         onClick: function() {
-            console.log('Clicked!');
             this.highlights.intensities = this.$utils.random(8, 8);
-            console.log(this.highlights);
+        },
+        boardClick: function(event) {
+            console.log('Board clicked!');
+            console.log(event);
         }
     },
     mounted: function() {
-        // this.$refs.board.drawHighlights();
+        // this.$refs.board.board.dragNewPiece({role: 'king', color: 'white', promotoed: false});
     }
 }
 </script>

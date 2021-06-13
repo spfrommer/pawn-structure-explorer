@@ -4,7 +4,13 @@ WORKDIR /home/pse/web
 
 COPY ./package*.json ./
 
-RUN npm install
+# Install python & build tools for scss, run npm install
+RUN apk add --no-cache --virtual .gyp \
+        python \
+        make \
+        g++ \
+    && npm install \
+    && apk del .gyp
 
 COPY ./assets ./assets
 COPY ./public ./public
