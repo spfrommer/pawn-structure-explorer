@@ -13,7 +13,7 @@ const utilsPlugin = {
     Vue.prototype.$utils = utils
   }
 }
-Vue.use(utilsPlugin)
+Vue.use(utilsPlugin);
 
 const Test = { template: '<h1>test</h1>' }
 
@@ -26,4 +26,4 @@ const router = new VueRouter({
     ]
 });
 
-new Vue({router}).$mount('#app')
+new Vue({router}).$mount('#app');

@@ -7,7 +7,7 @@ module.exports = {
         for (const line of lines) {
             let segments = line.split(delim);
             for (const [i, seg] of segments.entries()) {
-                if (i == 0) {
+                if (i === 0) {
                     buffer += seg;
                 }
                 if (i > 0) {

@@ -4,6 +4,7 @@ const path = require('path');
 const { MongoClient } = require('mongodb');
 const { Chess } = require('chess.js');
 
+const GameIndexer = require('./indexer.js');
 const utils = require('./utils.js');
 
 class Database {
@@ -36,18 +37,8 @@ class Database {
         console.log('Indexing: ' + pgnFile);
         const pgnGenerator = utils.readSplit(path.join(this.pgnsDir, pgnFile), '[Event');
         for (const pgn of pgnGenerator) {
-            let pgnMoves = pgn.split('\n').filter(l => l[0] !== '[').join(' ').replace('\n', '');
-
-            let pgnChess = new Chess();
-            pgnChess.load_pgn(pgnMoves);
-            // console.log(pgnChess.fen());
-
-            let chess = new Chess();
-            for (const move of pgnChess.history()) {
-                chess.move(move);
-                let fen = chess.fen();
-                console.log(fen);
-            }
+            const indexer = new GameIndexer(pgn);
+            indexer.index();
         }
     }
 }

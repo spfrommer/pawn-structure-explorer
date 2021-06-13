@@ -1,8 +1,5 @@
 export default {
-    truncate: function(string, maxLength) {
-        if (string.length > maxLength) {
-            return string.substring(0, maxLength) + '...';
-        }
-        return string;
+    zeros: function(rows, columns) {
+        return Array(rows).fill().map(() => Array(columns).fill(0));
     },
 };
