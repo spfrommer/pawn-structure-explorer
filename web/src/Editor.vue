@@ -1,6 +1,9 @@
 <template>
-<div>
-    <button @mousedown="onMouseDown">Editor click</button>
+<div id="editor">
+    <div id="spares">
+        <div><button @mousedown="onMouseDownBlack" class="spare" id="spare-black"></button></div> 
+        <div><button @mousedown="onMouseDownWhite" class="spare" id="spare-white"></button></div> 
+    </div>
 </div>
 </template>
 
@@ -10,12 +13,34 @@ import { EventBus } from '@/event-bus';
 export default {
     props: [],
     methods: {
-        onMouseDown(mouseEvent) {
+        onMouseDownWhite(mouseEvent) {
             EventBus.$emit('editorMouseDown', mouseEvent, 'white');
+        },
+        onMouseDownBlack(mouseEvent) {
+            EventBus.$emit('editorMouseDown', mouseEvent, 'black');
         }
     }
 }
 </script>
 
-<style>
+<style scoped lang="scss">
+#spares {
+    background-color: #727272;
+    display: inline-block;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px #555 inset;
+}
+.spare {
+    border: 0px;
+    margin: 0px;
+    width: 40px;
+    height: 40px;
+    background-size: 40px 40px;
+}
+#spare-white {
+    background: url($pawn-white) 0px 0px/40px 40px no-repeat;
+}
+#spare-black {
+    background: url($pawn-black) 0px 0px/40px 40px no-repeat;
+}
 </style>

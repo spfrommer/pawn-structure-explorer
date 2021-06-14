@@ -39,8 +39,12 @@ export default {
     font-family: 'Roboto', Sans-Serif;
     font-weight: 600;
     text-align: left;
+    display: inline;
 }
 body {
     background-color: $primary;
+}
+#editor {
+    transform: translate(20px, 117px);
 }
 </style>

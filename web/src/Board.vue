@@ -32,7 +32,7 @@ export default {
     methods: {
         editorMouseDownHandler: function(mouseEvent, color) {
             console.log(`The button has been clicked ${color} times!`);
-            this.board.dragNewPiece({role: 'pawn', color: 'white', promoted: false}, mouseEvent, true);
+            this.board.dragNewPiece({role: 'pawn', color: color, promoted: false}, mouseEvent, true);
         }
     },
     mounted() {
@@ -60,6 +60,9 @@ export default {
 </script>
 
 <style lang="scss">
+.blue {
+    float: left;
+}
 .blue .cg-board-wrap {
     background-size: 320px 320px;
     background-image: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url($metal);
