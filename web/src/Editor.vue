@@ -28,8 +28,22 @@ export default {
     background-color: $secondary;
     display: inline-block;
     border-radius: $border-radii;
-    box-shadow: 0px 0px 3px $secondary-shadow inset;
+    box-shadow: 0px 0px 2px $secondary-shadow inset;
 }
+
+.spare-back {
+    transition: background 0.7s ease;
+}
+.spare-back:hover {
+    background: scale-color($secondary-highlight, $alpha: -30%);
+}
+.spare-back-top {
+    border-radius: $border-radii $border-radii 0px 0px
+}
+.spare-back-bottom {
+    border-radius: 0px 0px $border-radii $border-radii
+}
+
 .spare {
     border: 0px;
     margin: 0px;
@@ -43,19 +57,4 @@ export default {
 #spare-pawn-black {
     background: url($pawn-black) 0px 0px/40px 40px no-repeat;
 }
-
-.spare-back {
-    transition: background 0.7s ease;
-}
-.spare-back:hover {
-    background: $secondary-highlight;
-    box-shadow: 0px 0px 3px $secondary-highlight-shadow inset;
-}
-.spare-back-top {
-    border-radius: $border-radii $border-radii 0px 0px
-}
-.spare-back-bottom {
-    border-radius: 0px 0px $border-radii $border-radii
-}
-
 </style>
