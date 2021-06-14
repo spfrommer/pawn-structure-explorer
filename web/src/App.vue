@@ -1,11 +1,11 @@
 <template>
     <div id="app">
-        <SpareBank :id="'upperBank'" :vertical="false" :selectable="true" :pieces="piecesUpper"/>
+        <SpareBank ref="upperBank" :id="'upperBank'" :vertical="false" :selectable="true" :pieces="piecesUpper" @spareClick="upperBankClick"/>
         <div id="boardEditor">
             <Board ref="board" :highlights="highlights" :free="true"/>
             <Editor :id="'editor'"/>
         </div>
-        <SpareBank :id="'lowerBank'" :vertical="false" :selectable="true" :pieces="piecesLower"/>
+        <SpareBank ref="lowerBank" :id="'lowerBank'" :vertical="false" :selectable="true" :pieces="piecesLower" @spareClick="lowerBankClick"/>
     </div>
 </template>
 
@@ -24,6 +24,16 @@ export default {
         SpareBank,
         Editor
     },
+    methods: {
+        upperBankClick(i) {
+            this.highlights.intensities = this.$utils.random(8, 8);
+            this.$refs.lowerBank.clearSelection();
+        },
+        lowerBankClick(i) {
+            this.highlights.intensities = this.$utils.random(8, 8);
+            this.$refs.upperBank.clearSelection();
+        }
+    },
     data: function() {
         return {
             piecesUpper: ['rook-black', 'knight-black', 'bishop-black', 'queen-black', 'king-black', 'bishop-black', 'knight-black', 'rook-black'],
@@ -32,8 +42,8 @@ export default {
                 // colormap: interpolate(['rgba(2,0,36,0.0)', 'rgba(193,103,255,0.0)', 'rgba(0,212,255,0.0)']),
                 // colormap: interpolate(['rgba(193,103,255,0.2)', 'rgba(0,212,255,0.2)']),
                 // colormap: interpolate(['rgba(0, 255, 254, 0.2)', 'rgba(222, 0, 255, 0.2)']),
-                // colormap: interpolate(['rgba(0, 255, 254, 0.0)', 'rgba(0, 255, 254, 0.3)']),
-                colormap: interpolate(['rgba(222, 0, 255, 0.0)', 'rgba(222, 0, 255, 0.3)']),
+                colormap: interpolate(['rgba(0, 255, 254, 0.0)', 'rgba(0, 255, 254, 0.3)']),
+                // colormap: interpolate(['rgba(222, 0, 255, 0.0)', 'rgba(222, 0, 255, 0.3)']),
                 intensities: this.$utils.random(8, 8)
             }
         }

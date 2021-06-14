@@ -1,9 +1,10 @@
 $primary: #161512;
-$secondary: #727272;
-$tertiary: #3692e7;
+$secondary: #666666;
+
+$accent1: #3692e7;
 
 $secondary-shadow: scale-color($secondary, $lightness: -60%);
-$secondary-highlight: mix($secondary, $tertiary, 50%);
+$secondary-accent1: mix($secondary, $accent1, 50%);
 
 $border-radii: 5px;
 

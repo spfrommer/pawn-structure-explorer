@@ -72,10 +72,10 @@ export default {
     transition: background 0.4s ease;
 }
 .spare-back.selected {
-    background: $secondary-highlight
+    background: $secondary-accent1
 }
 .spare-back.not-selected:hover {
-    background: scale-color($secondary-highlight, $alpha: -30%);
+    background: scale-color($secondary-accent1, $alpha: -30%);
 }
 .spare-back-top {
     border-radius: $border-radii $border-radii 0px 0px
