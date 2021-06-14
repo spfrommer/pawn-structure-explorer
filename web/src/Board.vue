@@ -1,7 +1,7 @@
 <script>
 import { EventBus } from './event-bus';
-import { chessboard }  from 'vue-chessboard'
-import $ from 'jquery'
+import { chessboard }  from 'vue-chessboard';
+import $ from 'jquery';
 
 export default {
     name: 'CustomBoard',

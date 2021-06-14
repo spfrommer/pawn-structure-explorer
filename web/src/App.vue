@@ -1,7 +1,8 @@
 <template>
     <div id="app">
         <Board ref="board" :highlights="highlights" :free="true"/>
-        <Editor/>
+        <!-- <Editor/> -->
+        <Editor :keyPrefix="'topBank'" :vertical="true" :pieces="pieces"/>
     </div>
 </template>
 
@@ -11,15 +12,18 @@ const interpolate = require('color-interpolate');
 
 import Board from './Board.vue';
 import Editor from './Editor.vue';
+import SpareBank from './SpareBank.vue';
 
 export default {
     name: 'App',
     components: {
         Board,
+        SpareBank,
         Editor
     },
     data: function() {
         return {
+            pieces: ['pawn-black', 'pawn-white'],
             highlights: {
                 // colormap: interpolate(['rgba(2,0,36,0.0)', 'rgba(193,103,255,0.0)', 'rgba(0,212,255,0.0)']),
                 // colormap: interpolate(['rgba(193,103,255,0.2)', 'rgba(0,212,255,0.2)']),
