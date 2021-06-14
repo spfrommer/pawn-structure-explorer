@@ -1,8 +1,7 @@
 <template>
     <div id="app">
         <Board ref="board" :highlights="highlights" :free="true"/>
-        <!-- <Editor/> -->
-        <Editor :keyPrefix="'topBank'" :vertical="true" :pieces="pieces"/>
+        <Editor :keyPrefix="'editor'" id="editor"/>
     </div>
 </template>
 

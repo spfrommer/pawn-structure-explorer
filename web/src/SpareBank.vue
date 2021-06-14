@@ -3,7 +3,7 @@
     <div class="spares">
         <div v-for="(piece, i) in pieces" :key="keyPrefix + i">
             <div :class="'spare-back ' + spareBackClass(i)">
-                <button @mousedown="onMouseDown(i)" @click="onClick(i)" :class="'spare spare-' + piece"></button>
+                <button @mousedown="onMouseDown($event, i)" @click="onClick($event, i)" :class="'spare spare-' + piece"></button>
             </div> 
         </div>
     </div>
@@ -17,7 +17,10 @@ export default {
         vertical: boolean whether bank is vertical or horizontal
         pieces: list of piece strings like 'pawn-black'
     */
-    props: ['keyPrefix', 'vertical', 'pieces'],
+    props: ['keyPrefix', 'vertical', 'selectable', 'pieces'],
+    data: {
+        selected: -1
+    },
     methods: {
         spareBackClass(i) {
             if (i == 0) {
@@ -28,17 +31,24 @@ export default {
             }
             return "spare-back-middle";
         },
-        onClick(i) {
-            this.$emit('spareClick', i);
+        // Default methods for calling superclass method with extends
+        onClick(event, i) {
+            this.onClickDefault(event, i);
         },
-        onMouseDown(i) {
-            this.$emit('spareMouseDown', i);
-        }
+        onClickDefault(event, i) {
+            this.$emit('spareClick', event, i);
+        },
+        onMouseDown(event, i) {
+            this.onMouseDownDefault(event, i);
+        },
+        onMouseDownDefault(event, i) {
+            this.$emit('spareMouseDown', event, i);
+        },
     }
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .spares {
     background-color: $secondary;
     display: inline-block;
