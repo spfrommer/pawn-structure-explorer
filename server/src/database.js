@@ -38,8 +38,14 @@ class Database {
         const pgnGenerator = utils.readSplit(path.join(this.pgnsDir, pgnFile), '[Event');
         for (const pgn of pgnGenerator) {
             const indexer = new GameIndexer(pgn);
-            indexer.index();
+            indexer.index(this.indexOnPosition);
         }
+    }
+
+    indexOnPosition(pawnFen, pieceLocs) {
+        // console.log('----------------------------');
+        // console.log(pawnFen);
+        // console.log(pieceLocs);
     }
 }
 
