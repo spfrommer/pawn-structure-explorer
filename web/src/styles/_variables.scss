@@ -1,3 +1,9 @@
 $primary: #161512;
-$secondary: #999;
+$secondary: #727272;
 $tertiary: #3692e7;
+
+$secondary-shadow: scale-color($secondary, $lightness: -30%);
+$secondary-highlight: mix($secondary, $tertiary, 70);
+$secondary-highlight-shadow: scale-color($secondary-highlight, $lightness: -30%);
+
+$border-radii: 5px;
