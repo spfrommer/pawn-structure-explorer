@@ -2,7 +2,7 @@
 <div>
     <div class="spares">
         <div v-for="(piece, i) in pieces" :key="keyPrefix + i">
-            <div :class="'spare-back ' + spareBackClass(i)">
+            <div :class="'spare-back ' + spareBackClass(i) + ' ' + selectedClass(i)">
                 <button @mousedown="onMouseDown($event, i)" @click="onClick($event, i)" :class="'spare spare-' + piece"></button>
             </div> 
         </div>
@@ -18,18 +18,26 @@ export default {
         pieces: list of piece strings like 'pawn-black'
     */
     props: ['keyPrefix', 'vertical', 'selectable', 'pieces'],
-    data: {
-        selected: -1
+    data: function() {
+        return {
+            selected: -1
+        }
     },
     methods: {
         spareBackClass(i) {
-            if (i == 0) {
+            if (i === 0) {
                 return this.vertical ? "spare-back-top" : "spare-back-left";
             }
-            if (i == this.pieces.length - 1) {
+            if (i === this.pieces.length - 1) {
                 return this.vertical ? "spare-back-bottom" : "spare-back-right";
             }
             return "spare-back-middle";
+        },
+        selectedClass(i) {
+            return i === this.selected ? 'selected' : 'not-selected';
+        },
+        clearSelection() {
+            this.selected = -1;
         },
         // Default methods for calling superclass method with extends
         onClick(event, i) {
@@ -37,6 +45,9 @@ export default {
         },
         onClickDefault(event, i) {
             this.$emit('spareClick', event, i);
+            if (this.selectable) {
+                this.selected = i;
+            }
         },
         onMouseDown(event, i) {
             this.onMouseDownDefault(event, i);
@@ -56,10 +67,15 @@ export default {
     box-shadow: 0px 0px 2px $secondary-shadow inset;
 }
 
+
 .spare-back {
     transition: background 0.7s ease;
 }
-.spare-back:hover {
+.spare-back.selected {
+    background: $secondary-highlight
+    // background: scale-color($secondary-highlight, $alpha: +0%);
+}
+.spare-back.not-selected:hover {
     background: scale-color($secondary-highlight, $alpha: -30%);
 }
 .spare-back-top {
