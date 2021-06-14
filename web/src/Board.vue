@@ -1,6 +1,7 @@
 <script>
 import { EventBus } from './event-bus';
 import { chessboard }  from 'vue-chessboard';
+import variables from './styles/_variables.scss';
 import $ from 'jquery';
 
 export default {
@@ -34,7 +35,7 @@ export default {
         for (var i = 0; i < 8; i++) {
             for (var j = 0; j < 8; j++) {
                 let square = $('<square></square>').addClass('highlight');
-                square = square.css('transform', `translate(${i*40}px, ${j*40}px)`);
+                square = square.css('transform', `translate(${i * variables.squareSizeInt}px, ${j * variables.squareSizeInt}px)`);
                 square = square.css('background-color', 'rgba(0, 0, 0, 0.0)');
                 $('#highlight-board').append(square); 
             }

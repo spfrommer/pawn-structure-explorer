@@ -2,10 +2,16 @@ $primary: #161512;
 $secondary: #666666;
 
 $accent1: #3692e7;
+$accent2: #4da761;
 
 $secondary-shadow: scale-color($secondary, $lightness: -60%);
 $secondary-accent1: mix($secondary, $accent1, 50%);
+$secondary-accent2: mix($secondary, $accent2, 50%);
 
 $border-radii: 5px;
-
 $square-size: 40px;
+
+:export {
+    accent1: $accent1;
+    squareSizeInt: $square-size / ($square-size * 0 + 1);
+}
