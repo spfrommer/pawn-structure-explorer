@@ -45,6 +45,6 @@ body {
     background-color: $primary;
 }
 #editor {
-    transform: translate(20px, 117px);
+    transform: translate(20px, 116px);
 }
 </style>

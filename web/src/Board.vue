@@ -31,7 +31,6 @@ export default {
     },
     methods: {
         editorMouseDownHandler: function(mouseEvent, color) {
-            console.log(`The button has been clicked ${color} times!`);
             this.board.dragNewPiece({role: 'pawn', color: color, promoted: false}, mouseEvent, true);
         }
     },
@@ -41,6 +40,7 @@ export default {
         $('.cg-board-wrap').append(highlightBoard);
 
         this.board.set({
+            // Only pawn starting position
             fen: '8/pppppppp/8/8/8/8/PPPPPPPP/8 w KQkq - 0 1',
             // Free moves allowed
             movable: {
@@ -55,6 +55,10 @@ export default {
         });
 
         EventBus.$on('editorMouseDown', this.editorMouseDownHandler);
+
+        this.board.set({
+            events: { change: () => { EventBus.$emit('boardChange'); } },
+        }) 
     }
 }
 </script>
