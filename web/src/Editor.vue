@@ -7,15 +7,14 @@ export default {
     extends: SpareBank,
     props: {
         pieces: { default () { return ['pawn-black', 'pawn-white']; } },
-        vertical: { default() { return "true"; }},
-        selectable: { default() { return "true"; }} 
+        vertical: { default() { return true; }},
+        selectable: { default() { return false; }} 
     },
     methods: {
         onMouseDown(event, i) {
-            /*
             let color = i === 0 ? 'black' : 'white';
             EventBus.$emit('editorMouseDown', event, color);
-            this.onMouseDownDefault(event, i);*/
+            this.onMouseDownDefault(event, i);
         }
     }
 }

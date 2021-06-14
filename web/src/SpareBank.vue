@@ -1,23 +1,23 @@
 <template>
-<div>
-    <div class="spares">
-        <div v-for="(piece, i) in pieces" :key="keyPrefix + i">
-            <div :class="'spare-back ' + spareBackClass(i) + ' ' + selectedClass(i)">
-                <button @mousedown="onMouseDown($event, i)" @click="onClick($event, i)" :class="'spare spare-' + piece"></button>
-            </div> 
-        </div>
-    </div>
+<div class="spares" :id="id">
+    <div v-for="(piece, i) in pieces"
+        :key="id + i"
+        :class="['spare-back', spareBackClass(i), selectedClass(i)]"
+        :style="[vertical ? {} : { 'float': 'left' }]">
+
+        <button @mousedown="onMouseDown($event, i)" @click="onClick($event, i)" :class="'spare spare-' + piece"></button>
+    </div> 
 </div>
 </template>
 
 <script>
 export default {
     /*
-        keyPrefix: unique key for the bank
+        id: unique key for the bank
         vertical: boolean whether bank is vertical or horizontal
         pieces: list of piece strings like 'pawn-black'
     */
-    props: ['keyPrefix', 'vertical', 'selectable', 'pieces'],
+    props: ['id', 'vertical', 'selectable', 'pieces'],
     data: function() {
         return {
             selected: -1
@@ -46,7 +46,7 @@ export default {
         onClickDefault(event, i) {
             this.$emit('spareClick', event, i);
             if (this.selectable) {
-                this.selected = i;
+                this.selected = this.selected === i ? -1 : i;
             }
         },
         onMouseDown(event, i) {
@@ -69,11 +69,10 @@ export default {
 
 
 .spare-back {
-    transition: background 0.7s ease;
+    transition: background 0.4s ease;
 }
 .spare-back.selected {
     background: $secondary-highlight
-    // background: scale-color($secondary-highlight, $alpha: +0%);
 }
 .spare-back.not-selected:hover {
     background: scale-color($secondary-highlight, $alpha: -30%);
@@ -88,7 +87,7 @@ export default {
     border-radius: 0px 0px $border-radii $border-radii
 }
 .spare-back-left {
-    border-radius: 0px $border-radii 0px $border-radii 
+    border-radius: $border-radii 0px 0px $border-radii 
 }
 .spare-back-middle {
     border-radius: 0px 0px 0px 0px

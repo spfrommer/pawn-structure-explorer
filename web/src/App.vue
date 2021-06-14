@@ -1,7 +1,11 @@
 <template>
     <div id="app">
-        <Board ref="board" :highlights="highlights" :free="true"/>
-        <Editor :keyPrefix="'editor'" id="editor"/>
+        <SpareBank :id="'upperBank'" :vertical="false" :selectable="true" :pieces="piecesUpper"/>
+        <div id="boardEditor">
+            <Board ref="board" :highlights="highlights" :free="true"/>
+            <Editor :id="'editor'"/>
+        </div>
+        <SpareBank :id="'lowerBank'" :vertical="false" :selectable="true" :pieces="piecesLower"/>
     </div>
 </template>
 
@@ -22,7 +26,8 @@ export default {
     },
     data: function() {
         return {
-            pieces: ['pawn-black', 'pawn-white'],
+            piecesUpper: ['rook-black', 'knight-black', 'bishop-black', 'queen-black', 'king-black', 'bishop-black', 'knight-black', 'rook-black'],
+            piecesLower: ['rook-white', 'knight-white', 'bishop-white', 'queen-white', 'king-white', 'bishop-white', 'knight-white', 'rook-white'],
             highlights: {
                 // colormap: interpolate(['rgba(2,0,36,0.0)', 'rgba(193,103,255,0.0)', 'rgba(0,212,255,0.0)']),
                 // colormap: interpolate(['rgba(193,103,255,0.2)', 'rgba(0,212,255,0.2)']),
@@ -38,14 +43,16 @@ export default {
 
 
 <style lang="scss">
+body {
+    background-color: $primary;
+}
 #app {
     font-family: 'Roboto', Sans-Serif;
     font-weight: 600;
-    text-align: left;
-    display: inline;
+    display: inline-block;
 }
-body {
-    background-color: $primary;
+#upperBank {
+    margin-bottom: 15px;
 }
 #editor {
     transform: translate(20px, 116px);
