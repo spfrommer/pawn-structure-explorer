@@ -90,9 +90,6 @@ export default {
             return Object.keys(this.pieceLocs).length !== 0;
         },
         highlights: function () {
-            console.log('---------------------');
-            console.log(this.highlightHues);
-            console.log(this.highlightIntensities);
             return {
                 colormap: this.highlightColormap,
                 hues: this.highlightHues,
@@ -115,9 +112,9 @@ export default {
         },
     },
     data: function () {
-        const startColor = Color(variables.accent2).string();
+        const startColor = Color(variables.accent3).string();
         const midColor = Color(variables.accent1).string();
-        const endColor = Color(variables.accent3).string();
+        const endColor = Color(variables.accent2).string();
         return {
             piecesUpper: ['rook-black', 'knight-black', 'bishop-black', 'queen-black', 'king-black', 'bishop-black', 'knight-black', 'rook-black'],
             piecesLower: ['rook-white', 'knight-white', 'bishop-white', 'queen-white', 'king-white', 'bishop-white', 'knight-white', 'rook-white'],

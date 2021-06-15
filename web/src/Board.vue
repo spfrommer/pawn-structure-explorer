@@ -7,6 +7,7 @@ const Color = require('color');
 import { EventBus } from './event-bus';
 import variables from './styles/_variables.scss';
 
+const HUE_SCALE = 10;
 const INTENSITY_CAP = 0.5;
 
 export default {
@@ -26,7 +27,7 @@ export default {
                 for (let i = 0; i < 8; i++) {
                     for (let j = 0; j < 8; j++) {
                         const intensity =  INTENSITY_CAP * intensities[7 - j][i] / maxIntensity;
-                        const hue = hues[7 - j][i] / maxIntensity;
+                        const hue = HUE_SCALE * hues[7 - j][i] / maxIntensity + 0.5;
 
                         const color = Color(highlights.colormap(hue)).alpha(intensity).string();
                         $(`#highlight-board square:nth-child(${i * 8 + j + 1}`).css('background-color', color);
