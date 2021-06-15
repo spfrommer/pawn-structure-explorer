@@ -32,7 +32,7 @@ class GameIndexer {
             delete pieceLocs[from];
         }
 
-        onPosition(this.getPawnFen(chessPlay), pieceLocs);
+        onPosition(this.getStructure(chessPlay), pieceLocs);
 
         for (const move of this.chess.history({'verbose': true})) {
             let movedOriginal = move.from in pieceLocs; // move non promoted piece
@@ -54,7 +54,7 @@ class GameIndexer {
                 }
             }
 
-            onPosition(this.getPawnFen(chessPlay), pieceLocs);
+            onPosition(this.getStructure(chessPlay), pieceLocs);
         }
     }
 
@@ -72,7 +72,7 @@ class GameIndexer {
         return { 'rank': this.chess.rank(squareNum), 'file': this.chess.file(squareNum) }
     }
 
-    getPawnFen(chess) {
+    getStructure(chess) {
         let pawnChess = new Chess(chess.fen());
         for (const square of pawnChess.SQUARES) {
             let piece = pawnChess.get(square);

@@ -8,10 +8,10 @@ const utils = require('./utils.js');
 
 class Database {
     constructor(mongoUri, pgnsDir) {
-        this.db = mongojs(mongoUri + '/db', ['pieceLocs'])
+        this.db = mongojs(mongoUri + '/db', ['structurePieceLocs'])
         this.pgnsDir = pgnsDir;
 
-        this.seenPawnFens = new Set();
+        this.seenStructures = new Set();
 
         this.bulkPieceInits = null;
         this.bulkPieceUpdates = null;
@@ -19,7 +19,7 @@ class Database {
 
     drop() {
         return new Promise((resolve, reject) => {
-            this.db.pieceLocs.drop((err, doc) => {
+            this.db.structurePieceLocs.drop((err, doc) => {
                 if (err !== null) reject();
                 resolve(doc);
             });
@@ -30,11 +30,11 @@ class Database {
     // Querying 
     //================================================================================
 
-    getPieceLocs(pawnFen) {
+    getPieceLocs(structure) {
         return new Promise((resolve, reject) => {
-            this.db.pieceLocs.findOne({ _id: pawnFen }, (err, doc) => {
+            this.db.structurePieceLocs.findOne({ _id: structure }, (err, pieceLocs) => {
                 if (err !== null) reject();
-                resolve(doc);
+                resolve(pieceLocs);
             });
         });
     }
@@ -44,13 +44,11 @@ class Database {
     //================================================================================
 
     buildIndex() {
-        let self = this;
-
         const indexAll = async () => {
             let pgnFiles = fs.readdirSync(this.pgnsDir).filter(f => f.endsWith('.pgn')); 
             for (const pgnFile of pgnFiles) {
                 let startTime = process.hrtime();
-                let pgnCount = await self.indexPgnFile(pgnFile);
+                let pgnCount = await this.indexPgnFile(pgnFile);
                 let elapsedSeconds = utils.hrtimeToSeconds(process.hrtime(startTime));
 
                 let pgnCountPadded = pgnCount.toString().padStart(7, '0');
@@ -60,12 +58,13 @@ class Database {
                 console.log(`${pgnFile}; ${pgnCountPadded} pgns in ${elapsedSecondsPadded} (${ratePadded}/s)`);
             }
         }
+
         return indexAll();
     }
 
     indexPgnFile(pgnFile) {
-        this.bulkPieceInits = this.db.pieceLocs.initializeUnorderedBulkOp();
-        this.bulkPieceUpdates = this.db.pieceLocs.initializeUnorderedBulkOp();
+        this.bulkPieceInits = this.db.structurePieceLocs.initializeUnorderedBulkOp();
+        this.bulkPieceUpdates = this.db.structurePieceLocs.initializeUnorderedBulkOp();
 
         let self = this;
 
@@ -90,20 +89,20 @@ class Database {
         });
     }
 
-    indexOnPosition(pawnFen, pieceLocs) {
-        if (!this.seenPawnFens.has(pawnFen)) {
-            this.bulkPieceInits.find({ _id: pawnFen }).upsert().updateOne({
+    indexOnPosition(structure, pieceLocs) {
+        if (!this.seenStructures.has(structure)) {
+            this.bulkPieceInits.find({ _id: structure }).upsert().updateOne({
                 $setOnInsert: this.defaultPieceLocs(),
             });
 
-            this.seenPawnFens.add(pawnFen);
+            this.seenStructures.add(structure);
         }
 
         for (let [loc, piece] of Object.entries(pieceLocs)) {
             loc = utils.toFileRank(loc);
             let updateKey = `${piece.color}.${piece.piece}.${loc.rank}.${loc.file}`;
 
-            this.bulkPieceUpdates.find({ _id: pawnFen }).update({
+            this.bulkPieceUpdates.find({ _id: structure }).update({
                 $inc: { [updateKey]: 1 }
             });
         }
