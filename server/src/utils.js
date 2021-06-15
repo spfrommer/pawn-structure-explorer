@@ -1,4 +1,7 @@
 module.exports = {
+    zeros: function(rows, columns) {
+        return Array(rows).fill().map(() => Array(columns).fill(0));
+    },
     readSplit: function*(file, delim) {
         const { LineReader } = require('line-reader');
         const lines = LineReader(file)
