@@ -49,8 +49,15 @@ class Database {
         const indexAll = async () => {
             let pgnFiles = fs.readdirSync(this.pgnsDir).filter(f => f.endsWith('.pgn')); 
             for (const pgnFile of pgnFiles) {
-                console.log("Indexing: " + pgnFile);
-                await self.indexPgnFile(pgnFile);
+                let startTime = process.hrtime();
+                let pgnCount = await self.indexPgnFile(pgnFile);
+                let elapsedSeconds = utils.hrtimeToSeconds(process.hrtime(startTime));
+
+                let pgnCountPadded = pgnCount.toString().padStart(7, '0');
+                let elapsedSecondsPadded = elapsedSeconds.toFixed(2).padStart(7, '0');
+                let ratePadded = (pgnCount / elapsedSeconds).toFixed(2).padStart(6, '0');
+
+                console.log(`${pgnFile}; ${pgnCountPadded} pgns in ${elapsedSecondsPadded} (${ratePadded}/s)`);
             }
         }
         return indexAll();
@@ -63,9 +70,11 @@ class Database {
         let self = this;
 
         const pgns = utils.readSplit(path.join(this.pgnsDir, pgnFile), '[Event');
+        let pgnsCount = 0;
         for (const pgn of pgns) {
             const indexer = new GameIndexer(pgn);
             indexer.index(this.indexOnPosition.bind(this));
+            pgnsCount++;
         }
 
         return new Promise((resolve, reject) => {
@@ -75,7 +84,7 @@ class Database {
                 self.bulkPieceUpdates.execute((err, res) => {
                     if (err !== null) reject(err);
 
-                    resolve();
+                    resolve(pgnsCount);
                 });
             });
         });
