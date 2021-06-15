@@ -3,10 +3,25 @@ const utils = require('./utils.js');
 
 class GameIndexer {
     constructor(pgn) {
-        let pgnMoves = pgn.split('\n').filter(l => l[0] !== '[').join(' ').replace('\n', '');
-
         this.chess = new Chess();
+        let pgnMoves = pgn.split('\n').filter(l => l[0] !== '[').join(' ').replace('\n', '');
         this.chess.load_pgn(pgnMoves);
+
+        this.tags = this.getGameTags(pgn);
+    }
+
+    getGameTags(pgn) {
+        let tags = {};
+
+        let tagLines = pgn.split('\n').filter(l => l[0] === '[');
+        tagLines = tagLines.map(l => l.replace('[', '').replace('"]', ''));
+        for (const tagLine of tagLines) {
+            let parts = tagLine.split(' "');
+            console.assert(parts.length === 2);
+            tags[parts[0]] = parts[1];
+        }
+
+        return tags;
     }
 
     index(onPosition) {

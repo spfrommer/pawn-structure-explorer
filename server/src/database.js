@@ -35,11 +35,6 @@ class Database {
                 resolve(doc);
             });
         });
-        /*
-        console.log(this.db.pieceLocs.findOne);
-        let findPromise = nodeUtil.promisify(this.db.pieceLocs.findOne);
-        return findPromise({ _id: pawnFen });
-        */
     }
 
     //================================================================================
