@@ -1,22 +1,22 @@
 const { Chess } = require('chess.js');
-const utils = require('./utils.js');
+const utils = require('./utils');
 
 class GameIndexer {
     constructor(pgn) {
+        const pgnMoves = pgn.split('\n').filter(l => l[0] !== '[').join(' ').replace('\n', '');
         this.chess = new Chess();
-        let pgnMoves = pgn.split('\n').filter(l => l[0] !== '[').join(' ').replace('\n', '');
         this.chess.load_pgn(pgnMoves);
 
-        this.tags = this.getGameTags(pgn);
+        this.tags = this.constructor.getGameTags(pgn);
     }
 
-    getGameTags(pgn) {
-        let tags = {};
+    static getGameTags(pgn) {
+        const tags = {};
 
         let tagLines = pgn.split('\n').filter(l => l[0] === '[');
         tagLines = tagLines.map(l => l.replace('[', '').replace('"]', ''));
         for (const tagLine of tagLines) {
-            let parts = tagLine.split(' "');
+            const parts = tagLine.split(' "');
             console.assert(parts.length === 2);
             tags[parts[0]] = parts[1];
         }
@@ -25,63 +25,63 @@ class GameIndexer {
     }
 
     index(onPosition) {
-        let chessPlay = new Chess();
-        let pieceLocs = this.initialPieceLocs();
+        const chessPlay = new Chess();
+        const pieceLocs = this.constructor.initialPieceLocs();
         function movePiece(from, to) {
             pieceLocs[to] = pieceLocs[from];
             delete pieceLocs[from];
         }
 
-        onPosition(this.getStructure(chessPlay), pieceLocs);
+        onPosition(this.constructor.getStructure(chessPlay), pieceLocs);
 
-        for (const move of this.chess.history({'verbose': true})) {
-            let movedOriginal = move.from in pieceLocs; // move non promoted piece
+        for (const move of this.chess.history({ verbose: true })) {
+            const movedOriginal = move.from in pieceLocs; // move non promoted piece
             chessPlay.move(move);
 
             if (movedOriginal) {
                 if (move.piece !== 'p') {
                     movePiece(move.from, move.to);
-                    
+
                     // Move rook if castle
-                    let homeRank = move.color === 'w' ? 1 : 8;
+                    const homeRank = move.color === 'w' ? 1 : 8;
                     if (move.flags === 'k') {
-                        movePiece('h' + homeRank, 'f' + homeRank);
+                        movePiece(`h${homeRank}`, `f${homeRank}`);
                     } else if (move.flags === 'q') {
-                        movePiece('a' + homeRank, 'd' + homeRank);
+                        movePiece(`a${homeRank}`, `d${homeRank}`);
                     }
                 } else if (move.captured !== 'p') {
                     delete pieceLocs[move.to];
                 }
             }
 
-            onPosition(this.getStructure(chessPlay), pieceLocs);
+            onPosition(this.constructor.getStructure(chessPlay), pieceLocs);
         }
     }
 
-    initialPieceLocs() {
-        let pieceLocs = {};
+    coordinates(square) {
+        const squareNum = this.chess.SQUARES[square];
+        return { rank: this.chess.rank(squareNum), file: this.chess.file(squareNum) };
+    }
+
+    static getStructure(chess) {
+        const pawnChess = new Chess(chess.fen());
+        for (const square of pawnChess.SQUARES) {
+            const piece = pawnChess.get(square);
+            if (piece !== null && piece.type !== 'p') {
+                pawnChess.remove(square);
+            }
+        }
+
+        return pawnChess.fen().split(' ')[0];
+    }
+
+    static initialPieceLocs() {
+        const pieceLocs = {};
         for (let i = 0; i < 8; i++) {
             pieceLocs[utils.toSquare(i, 1)] = { color: 'white', piece: i };
             pieceLocs[utils.toSquare(i, 8)] = { color: 'black', piece: i };
         }
         return pieceLocs;
-    }
-
-    coordinates(square) {
-        let squareNum = this.chess.SQUARES[square];
-        return { 'rank': this.chess.rank(squareNum), 'file': this.chess.file(squareNum) }
-    }
-
-    getStructure(chess) {
-        let pawnChess = new Chess(chess.fen());
-        for (const square of pawnChess.SQUARES) {
-            let piece = pawnChess.get(square);
-            if (piece !== null && piece['type'] !== 'p') {
-                pawnChess.remove(square);
-            }
-        }
-
-        return pawnChess.fen().split(" ")[0];
     }
 }
 

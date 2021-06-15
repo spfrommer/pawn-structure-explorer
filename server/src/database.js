@@ -25,10 +25,6 @@ class Database {
         });
     }
 
-    // ================================================================================
-    // Querying
-    // ================================================================================
-
     getPieceLocs(structure) {
         return new Promise((resolve, reject) => {
             this.db.structurePieceLocs.findOne({ _id: structure }, (err, pieceLocs) => {
@@ -44,7 +40,7 @@ class Database {
 
     buildIndex() {
         const indexAll = async () => {
-            const pgnFiles = fs.readdirSync(this.pgnsDir).filter((f) => f.endsWith('.pgn'));
+            const pgnFiles = fs.readdirSync(this.pgnsDir).filter(f => f.endsWith('.pgn'));
             for (const pgnFile of pgnFiles) {
                 const startTime = process.hrtime();
                 const pgnCount = await this.indexPgnFile(pgnFile);
@@ -76,10 +72,10 @@ class Database {
         }
 
         return new Promise((resolve, reject) => {
-            self.bulkPieceInits.execute((err) => {
+            self.bulkPieceInits.execute(err => {
                 if (err !== null) reject(err);
 
-                self.bulkPieceUpdates.execute((err) => {
+                self.bulkPieceUpdates.execute(err => {
                     if (err !== null) reject(err);
 
                     resolve(pgnsCount);
@@ -91,7 +87,7 @@ class Database {
     indexOnPosition(structure, pieceLocs) {
         if (!this.seenStructures.has(structure)) {
             this.bulkPieceInits.find({ _id: structure }).upsert().updateOne({
-                $setOnInsert: this.defaultPieceLocs(),
+                $setOnInsert: this.constructor.defaultPieceLocs(),
             });
 
             this.seenStructures.add(structure);

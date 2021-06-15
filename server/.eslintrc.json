@@ -16,6 +16,9 @@
         "no-restricted-syntax": "off",
         "no-await-in-loop": "off",
         "no-plusplus": "off",
-        "no-shadow": "off"
+        "no-shadow": "off",
+        "radix": "off",
+        "arrow-parens": ["error", "as-needed"],
+        "prefer-destructuring": "off"
     }
 }
