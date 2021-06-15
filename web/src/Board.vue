@@ -2,8 +2,12 @@
 import { chessboard } from 'vue-chessboard';
 import $ from 'jquery';
 
+const Color = require('color');
+
 import { EventBus } from './event-bus';
 import variables from './styles/_variables.scss';
+
+const INTENSITY_CAP = 0.5;
 
 export default {
     name: 'CustomBoard',
@@ -13,6 +17,7 @@ export default {
         highlights: {
             handler: function (highlights) {
                 const intensities = highlights.intensities;
+                const hues = highlights.hues;
 
                 const maxRow = intensities.map(row => Math.max(...row));
                 let maxIntensity = Math.max.apply(null, maxRow);
@@ -20,8 +25,11 @@ export default {
 
                 for (let i = 0; i < 8; i++) {
                     for (let j = 0; j < 8; j++) {
-                        const intensity = intensities[7 - j][i] / maxIntensity;
-                        $(`#highlight-board square:nth-child(${i * 8 + j + 1}`).css('background-color', highlights.colormap(intensity));
+                        const intensity =  INTENSITY_CAP * intensities[7 - j][i] / maxIntensity;
+                        const hue = hues[7 - j][i] / maxIntensity;
+
+                        const color = Color(highlights.colormap(hue)).alpha(intensity).string();
+                        $(`#highlight-board square:nth-child(${i * 8 + j + 1}`).css('background-color', color);
                     }
                 }
             },

@@ -7,7 +7,7 @@
             @spareClick="upperBankClick"/>
         <div id="boardEditor">
             <Board ref="board"
-                :highlights="{colormap: highlightColormap, intensities: highlightIntensities}"
+                :highlights="highlights"
                 :free="true"
                 @boardChange="boardChange"/>
             <Editor :id="'editor'"/>
@@ -56,35 +56,26 @@ export default {
                 this.pieceLocs = (responseJson === null) ? {} : responseJson;
             }, err => { console.error(err); });
         },
-    },
-    computed: {
-        hasPieceLocs: function () {
-            return Object.keys(this.pieceLocs).length !== 0;
-        },
-        highlightIntensities: function () {
-            console.log(this.pieceLocs);
-
-            if (this.hasPieceLocs && this.selectedColor !== '' && this.selectedPiece !== -1) {
-                // return this.pieceLocs[this.selectedColor][this.selectedPiece];
-                return this.combinedPieceLocs[this.selectedColor][this.selectedPiece];
-            }
-
-            return this.$utils.zeros(8, 8);
-        },
-        combinedPieceLocs: function () {
+        combinePieceLocs: function (weighResult) {
             const combined = {};
 
             for (const color of ['black', 'white']) {
                 combined[color] = {};
 
+                const isWhite = color === 'white';
                 for (const piece of Array.from(Array(8).keys())) {
                     if (this.hasPieceLocs) {
-                        const whiteWin = this.pieceLocs['1-0'][color][piece];
-                        const blackWin = this.pieceLocs['0-1'][color][piece];
-                        const draw = this.pieceLocs['1/2-1/2'][color][piece];
+                        let wWin = this.pieceLocs['1-0'][color][piece];
+                        let bWin = this.pieceLocs['0-1'][color][piece];
+                        let draw = this.pieceLocs['1/2-1/2'][color][piece];
 
-                        combined[color][piece] = this.$utils.sumArrays(draw,
-                            this.$utils.sumArrays(whiteWin, blackWin));
+                        if (weighResult) {
+                            wWin = this.$utils.scalarMultiplyArray(isWhite ? 1 : -1, wWin);
+                            bWin = this.$utils.scalarMultiplyArray(isWhite ? -1 : 1, bWin);
+                            draw = this.$utils.scalarMultiplyArray(0, draw);
+                        }
+
+                        combined[color][piece] = [wWin, bWin, draw].reduce(this.$utils.sumArrays);
                     } else {
                         combined[color][piece] = this.$utils.zeros(8, 8);
                     }
@@ -94,14 +85,44 @@ export default {
             return combined;
         },
     },
+    computed: {
+        hasPieceLocs: function () {
+            return Object.keys(this.pieceLocs).length !== 0;
+        },
+        highlights: function () {
+            console.log('---------------------');
+            console.log(this.highlightHues);
+            console.log(this.highlightIntensities);
+            return {
+                colormap: this.highlightColormap,
+                hues: this.highlightHues,
+                intensities: this.highlightIntensities,
+            };
+        },
+        highlightHues: function () {
+            if (this.hasPieceLocs && this.selectedColor !== '' && this.selectedPiece !== -1) {
+                return this.combinePieceLocs(true)[this.selectedColor][this.selectedPiece];
+            }
+
+            return this.$utils.zeros(8, 8);
+        },
+        highlightIntensities: function () {
+            if (this.hasPieceLocs && this.selectedColor !== '' && this.selectedPiece !== -1) {
+                return this.combinePieceLocs(false)[this.selectedColor][this.selectedPiece];
+            }
+
+            return this.$utils.zeros(8, 8);
+        },
+    },
     data: function () {
-        const startColor = Color(variables.accent1).alpha(0.0);
-        const endColor = Color(variables.accent1).alpha(0.5);
+        const startColor = Color(variables.accent2).string();
+        const midColor = Color(variables.accent1).string();
+        const endColor = Color(variables.accent3).string();
         return {
             piecesUpper: ['rook-black', 'knight-black', 'bishop-black', 'queen-black', 'king-black', 'bishop-black', 'knight-black', 'rook-black'],
             piecesLower: ['rook-white', 'knight-white', 'bishop-white', 'queen-white', 'king-white', 'bishop-white', 'knight-white', 'rook-white'],
             pieceLocs: {},
-            highlightColormap: interpolate([startColor.string(), endColor.string()]),
+            highlightColormap: interpolate([startColor, midColor, endColor]),
             selectedColor: '',
             selectedPiece: -1,
         };

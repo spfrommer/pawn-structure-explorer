@@ -1,11 +1,11 @@
 export default {
-    zeros: function zeros(rows, columns) {
+    zeros: function (rows, columns) {
         return Array(rows).fill().map(() => Array(columns).fill(0));
     },
-    random: function random(rows, columns) {
+    random: function (rows, columns) {
         return Array(rows).fill().map(() => Array.from({ length: columns }, () => Math.random()));
     },
-    sumArrays: function sumArrays(arr1, arr2) {
+    sumArrays: function (arr1, arr2) {
         console.assert(arr1.length === arr2.length);
         const newArr = [];
         for (let i = 0; i < arr1.length; i++) {
@@ -13,9 +13,19 @@ export default {
             const row2 = arr2[i];
 
             console.assert(row1.length === row2.length);
-            newArr[i] = [];
+            newArr.push([]);
             for (let j = 0; j < row1.length; j++) {
                 newArr[i].push(row1[j] + row2[j]);
+            }
+        }
+        return newArr;
+    },
+    scalarMultiplyArray: function (scalar, arr) {
+        const newArr = [];
+        for (let i = 0; i < arr.length; i++) {
+            newArr.push([]);
+            for (let j = 0; j < arr[i].length; j++) {
+                newArr[i].push(scalar * arr[i][j]);
             }
         }
         return newArr;
