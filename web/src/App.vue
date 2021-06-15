@@ -2,7 +2,7 @@
     <div id="app">
         <SpareBank ref="upperBank" :id="'upperBank'" :vertical="false" :selectable="true" :pieces="piecesUpper" @spareClick="upperBankClick"/>
         <div id="boardEditor">
-            <Board ref="board" :highlights="highlights" :free="true" @boardChange="boardChange"/>
+            <Board ref="board" :highlights="{colormap: highlightColormap, intensities: highlightIntensities}" :free="true" @boardChange="boardChange"/>
             <Editor :id="'editor'"/>
         </div>
         <SpareBank ref="lowerBank" :id="'lowerBank'" :vertical="false" :selectable="true" :pieces="piecesLower" @spareClick="lowerBankClick"/>
@@ -27,13 +27,15 @@ export default {
         Editor
     },
     methods: {
-        upperBankClick(i) {
+        upperBankClick(event, i) {
             this.$refs.lowerBank.clearSelection();
-            this.highlights.intensities = this.$utils.random(8, 8);
+            this.selectedColor = 'black';
+            this.selectedPiece = i;
         },
-        lowerBankClick(i) {
+        lowerBankClick(event, i) {
             this.$refs.upperBank.clearSelection();
-            this.highlights.intensities = this.$utils.random(8, 8);
+            this.selectedColor = 'white';
+            this.selectedPiece = i;
         },
         boardChange() {
             let self = this;
@@ -41,9 +43,29 @@ export default {
             let endpoint = `/api/pieceLocs?pawnfen=${this.$refs.board.pawnFen()}`;
             this.$http.get(endpoint).then(response => {
                 response = JSON.parse(response.bodyText);
-                console.log(response);
                 self.pieceLocs = response;
             }, err => { console.error(err); });
+        }
+    },
+    computed: {
+        highlightIntensities: function() {
+            if (Object.keys(this.pieceLocs).length === 0) {
+                return this.$utils.zeros(8, 8);
+            }
+            console.log(this.pieceLocs);
+            console.log(this.selectedColor);
+            console.log(this.selectedPiece);
+
+            if (this.selectedColor !== '' && this.selectedPiece !== -1) {
+                return this.pieceLocs[this.selectedColor][this.selectedPiece];
+            }
+
+            return this.$utils.zeros(8, 8);
+            /*
+            console.log(this.pieceLocs);
+            console.log("getting ints");
+            return this.$utils.random(8, 8);
+            */
         }
     },
     data: function() {
@@ -51,14 +73,9 @@ export default {
             piecesUpper: ['rook-black', 'knight-black', 'bishop-black', 'queen-black', 'king-black', 'bishop-black', 'knight-black', 'rook-black'],
             piecesLower: ['rook-white', 'knight-white', 'bishop-white', 'queen-white', 'king-white', 'bishop-white', 'knight-white', 'rook-white'],
             pieceLocs: {},
-            highlights: {
-                // colormap: interpolate(['rgba(2,0,36,0.0)', 'rgba(193,103,255,0.0)', 'rgba(0,212,255,0.0)']),
-                // colormap: interpolate(['rgba(193,103,255,0.2)', 'rgba(0,212,255,0.2)']),
-                // colormap: interpolate(['rgba(0, 255, 254, 0.2)', 'rgba(222, 0, 255, 0.2)']),
-                // colormap: interpolate(['rgba(0, 255, 254, 0.0)', 'rgba(0, 255, 254, 0.3)']),
-                colormap: interpolate([Color(variables.accent1).alpha(0.0).string(), Color(variables.accent1).alpha(0.5).string()]),
-                intensities: this.$utils.random(8, 8)
-            }
+            highlightColormap: interpolate([Color(variables.accent1).alpha(0.0).string(), Color(variables.accent1).alpha(0.5).string()]),
+            selectedColor: '',
+            selectedPiece: -1
         }
     }
 }
