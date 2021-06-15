@@ -1,14 +1,13 @@
 const fs = require('fs');
 const path = require('path');
-const mongojs = require('mongojs')
-const async = require('async');
+const mongojs = require('mongojs');
 
-const GameIndexer = require('./indexer.js');
-const utils = require('./utils.js');
+const GameIndexer = require('./indexer');
+const utils = require('./utils');
 
 class Database {
     constructor(mongoUri, pgnsDir) {
-        this.db = mongojs(mongoUri + '/db', ['structurePieceLocs'])
+        this.db = mongojs(`${mongoUri}/db`, ['structurePieceLocs', 'structureGames']);
         this.pgnsDir = pgnsDir;
 
         this.seenStructures = new Set();
@@ -26,9 +25,9 @@ class Database {
         });
     }
 
-    //================================================================================
-    // Querying 
-    //================================================================================
+    // ================================================================================
+    // Querying
+    // ================================================================================
 
     getPieceLocs(structure) {
         return new Promise((resolve, reject) => {
@@ -39,25 +38,25 @@ class Database {
         });
     }
 
-    //================================================================================
+    // ================================================================================
     // Indexing
-    //================================================================================
+    // ================================================================================
 
     buildIndex() {
         const indexAll = async () => {
-            let pgnFiles = fs.readdirSync(this.pgnsDir).filter(f => f.endsWith('.pgn')); 
+            const pgnFiles = fs.readdirSync(this.pgnsDir).filter((f) => f.endsWith('.pgn'));
             for (const pgnFile of pgnFiles) {
-                let startTime = process.hrtime();
-                let pgnCount = await this.indexPgnFile(pgnFile);
-                let elapsedSeconds = utils.hrtimeToSeconds(process.hrtime(startTime));
+                const startTime = process.hrtime();
+                const pgnCount = await this.indexPgnFile(pgnFile);
+                const elapsedSeconds = utils.hrtimeToSeconds(process.hrtime(startTime));
 
-                let pgnCountPadded = pgnCount.toString().padStart(7, '0');
-                let elapsedSecondsPadded = elapsedSeconds.toFixed(2).padStart(7, '0');
-                let ratePadded = (pgnCount / elapsedSeconds).toFixed(2).padStart(6, '0');
+                const pgnCountPadded = pgnCount.toString().padStart(7, '0');
+                const elapsedSecondsPadded = elapsedSeconds.toFixed(2).padStart(7, '0');
+                const ratePadded = (pgnCount / elapsedSeconds).toFixed(2).padStart(6, '0');
 
                 console.log(`${pgnFile}; ${pgnCountPadded} pgns in ${elapsedSecondsPadded} (${ratePadded}/s)`);
             }
-        }
+        };
 
         return indexAll();
     }
@@ -66,7 +65,7 @@ class Database {
         this.bulkPieceInits = this.db.structurePieceLocs.initializeUnorderedBulkOp();
         this.bulkPieceUpdates = this.db.structurePieceLocs.initializeUnorderedBulkOp();
 
-        let self = this;
+        const self = this;
 
         const pgns = utils.readSplit(path.join(this.pgnsDir, pgnFile), '[Event');
         let pgnsCount = 0;
@@ -77,10 +76,10 @@ class Database {
         }
 
         return new Promise((resolve, reject) => {
-            self.bulkPieceInits.execute((err, res) => {
+            self.bulkPieceInits.execute((err) => {
                 if (err !== null) reject(err);
 
-                self.bulkPieceUpdates.execute((err, res) => {
+                self.bulkPieceUpdates.execute((err) => {
                     if (err !== null) reject(err);
 
                     resolve(pgnsCount);
@@ -98,18 +97,18 @@ class Database {
             this.seenStructures.add(structure);
         }
 
-        for (let [loc, piece] of Object.entries(pieceLocs)) {
-            loc = utils.toFileRank(loc);
-            let updateKey = `${piece.color}.${piece.piece}.${loc.rank}.${loc.file}`;
+        for (const [square, piece] of Object.entries(pieceLocs)) {
+            const loc = utils.toFileRank(square);
+            const updateKey = `${piece.color}.${piece.piece}.${loc.rank}.${loc.file}`;
 
             this.bulkPieceUpdates.find({ _id: structure }).update({
-                $inc: { [updateKey]: 1 }
+                $inc: { [updateKey]: 1 },
             });
         }
     }
 
-    defaultPieceLocs() {
-        let pieceLocs = { black: {}, white: {} };
+    static defaultPieceLocs() {
+        const pieceLocs = { black: {}, white: {} };
         for (let i = 0; i < 8; i++) {
             pieceLocs.black[i] = utils.zeros(8, 8);
             pieceLocs.white[i] = utils.zeros(8, 8);
