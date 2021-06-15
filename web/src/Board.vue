@@ -1,8 +1,10 @@
 <script>
 import { EventBus } from './event-bus';
 import { chessboard }  from 'vue-chessboard';
-import variables from './styles/_variables.scss';
+import Chess from 'chess.js';
 import $ from 'jquery';
+
+import variables from './styles/_variables.scss';
 
 export default {
     name: 'CustomBoard',
@@ -26,6 +28,17 @@ export default {
     methods: {
         editorMouseDownHandler: function(mouseEvent, color) {
             this.board.dragNewPiece({role: 'pawn', color: color, promoted: false}, mouseEvent, true);
+        },
+        pawnFen: function() {
+            let pawnChess = new Chess(this.game.fen());
+            for (const square of pawnChess.SQUARES) {
+                let piece = pawnChess.get(square);
+                if (piece !== null && piece['type'] !== 'p') {
+                    pawnChess.remove(square);
+                }
+            }
+
+            return pawnChess.fen().split(" ")[0];
         }
     },
     mounted() {
@@ -40,7 +53,6 @@ export default {
                 $('#highlight-board').append(square); 
             }
         }
-
 
         this.board.set({
             // Only pawn starting position
@@ -60,7 +72,7 @@ export default {
         EventBus.$on('editorMouseDown', this.editorMouseDownHandler);
 
         this.board.set({
-            events: { change: () => { EventBus.$emit('boardChange'); } },
+            events: { change: () => { this.$emit('boardChange'); } },
         }) 
     }
 }

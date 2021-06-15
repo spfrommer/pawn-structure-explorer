@@ -16,6 +16,15 @@ class Database {
         this.bulkPieceUpdates = null;
     }
 
+    drop() {
+        return new Promise((resolve, reject) => {
+            this.db.pieceLocs.drop((err, doc) => {
+                if (err !== null) reject();
+                resolve(doc);
+            });
+        });
+    }
+
     //================================================================================
     // Querying 
     //================================================================================
@@ -84,8 +93,6 @@ class Database {
     }
 
     indexOnPosition(seenPawnFens, pawnFen, pieceLocs) {
-        pawnFen = pawnFen.split(" ")[0];
-
         if (!seenPawnFens.has(pawnFen)) {
             this.bulkPieceInits.find({ _id: pawnFen }).upsert().updateOne({
                 $setOnInsert: { 'black': this.defaultPieceLocs().black, 'white': this.defaultPieceLocs().white },

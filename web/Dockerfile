@@ -8,9 +8,13 @@ COPY ./package*.json ./
 RUN apk add --no-cache --virtual .gyp \
         python \
         make \
-        g++ \
-    && npm install \
-    && apk del .gyp
+        g++
+# && npm install \
+# && apk del .gyp
+
+RUN npm install
+RUN apk del .gyp
+
 
 COPY ./assets ./assets
 COPY ./public ./public

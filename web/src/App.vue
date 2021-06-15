@@ -2,7 +2,7 @@
     <div id="app">
         <SpareBank ref="upperBank" :id="'upperBank'" :vertical="false" :selectable="true" :pieces="piecesUpper" @spareClick="upperBankClick"/>
         <div id="boardEditor">
-            <Board ref="board" :highlights="highlights" :free="true"/>
+            <Board ref="board" :highlights="highlights" :free="true" @boardChange="boardChange"/>
             <Editor :id="'editor'"/>
         </div>
         <SpareBank ref="lowerBank" :id="'lowerBank'" :vertical="false" :selectable="true" :pieces="piecesLower" @spareClick="lowerBankClick"/>
@@ -28,18 +28,29 @@ export default {
     },
     methods: {
         upperBankClick(i) {
-            this.highlights.intensities = this.$utils.random(8, 8);
             this.$refs.lowerBank.clearSelection();
+            this.highlights.intensities = this.$utils.random(8, 8);
         },
         lowerBankClick(i) {
-            this.highlights.intensities = this.$utils.random(8, 8);
             this.$refs.upperBank.clearSelection();
+            this.highlights.intensities = this.$utils.random(8, 8);
+        },
+        boardChange() {
+            let self = this;
+
+            let endpoint = `/api/pieceLocs?pawnfen=${this.$refs.board.pawnFen()}`;
+            this.$http.get(endpoint).then(response => {
+                response = JSON.parse(response.bodyText);
+                console.log(response);
+                self.pieceLocs = response;
+            }, err => { console.error(err); });
         }
     },
     data: function() {
         return {
             piecesUpper: ['rook-black', 'knight-black', 'bishop-black', 'queen-black', 'king-black', 'bishop-black', 'knight-black', 'rook-black'],
             piecesLower: ['rook-white', 'knight-white', 'bishop-white', 'queen-white', 'king-white', 'bishop-white', 'knight-white', 'rook-white'],
+            pieceLocs: {},
             highlights: {
                 // colormap: interpolate(['rgba(2,0,36,0.0)', 'rgba(193,103,255,0.0)', 'rgba(0,212,255,0.0)']),
                 // colormap: interpolate(['rgba(193,103,255,0.2)', 'rgba(0,212,255,0.2)']),

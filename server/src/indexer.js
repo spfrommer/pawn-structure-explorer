@@ -63,7 +63,7 @@ class GameIndexer {
             }
         }
 
-        return pawnChess.fen();
+        return pawnChess.fen().split(" ")[0];
     }
 }
 

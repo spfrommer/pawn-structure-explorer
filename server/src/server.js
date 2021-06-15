@@ -17,7 +17,7 @@ app.get('/api/index', (req, res) => {
             res.send('ERROR');
         });
 });
-app.get('/api/search', (req, res) => {
+app.get('/api/pieceLocs', (req, res) => {
     db.getPieceLocs(req.query.pawnfen)
         .then((doc) => { res.json(doc); })
         .catch((err) => { 
@@ -25,6 +25,15 @@ app.get('/api/search', (req, res) => {
             res.send('ERROR');
         });
 });
+app.get('/api/drop', (req, res) => {
+    db.drop()
+        .then(() => { res.send('DROPPED') })
+        .catch((err) => { 
+            console.error(err);
+            res.send('ERROR');
+        });
+});
+
 
 app.listen(8081, '0.0.0.0');
 console.log('Server running');
