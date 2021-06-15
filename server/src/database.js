@@ -11,6 +11,8 @@ class Database {
         this.db = mongojs(mongoUri + '/db', ['pieceLocs'])
         this.pgnsDir = pgnsDir;
 
+        this.seenPawnFens = new Set();
+
         this.bulkPieceInits = null;
         this.bulkPieceUpdates = null;
     }
@@ -45,16 +47,13 @@ class Database {
         let self = this;
 
         const indexAll = async () => {
-            for (const pgnFile of self.pgnFiles()) {
+            let pgnFiles = fs.readdirSync(this.pgnsDir).filter(f => f.endsWith('.pgn')); 
+            for (const pgnFile of pgnFiles) {
                 console.log("Indexing: " + pgnFile);
                 await self.indexPgnFile(pgnFile);
             }
         }
         return indexAll();
-    }
-
-    pgnFiles() {
-        return fs.readdirSync(this.pgnsDir).filter(f => f.endsWith('.pgn'));
     }
 
     indexPgnFile(pgnFile) {
@@ -63,11 +62,10 @@ class Database {
 
         let self = this;
 
-        let seenPawnFens = new Set();
         const pgns = utils.readSplit(path.join(this.pgnsDir, pgnFile), '[Event');
         for (const pgn of pgns) {
             const indexer = new GameIndexer(pgn);
-            indexer.index(this.indexOnPosition.bind(this, seenPawnFens));
+            indexer.index(this.indexOnPosition.bind(this));
         }
 
         return new Promise((resolve, reject) => {
@@ -83,22 +81,13 @@ class Database {
         });
     }
 
-    defaultPieceLocs() {
-        let pieceLocs = { black: {}, white: {} };
-        for (let i = 0; i < 8; i++) {
-            pieceLocs.black[i] = utils.zeros(8, 8);
-            pieceLocs.white[i] = utils.zeros(8, 8);
-        }
-        return pieceLocs;
-    }
-
-    indexOnPosition(seenPawnFens, pawnFen, pieceLocs) {
-        if (!seenPawnFens.has(pawnFen)) {
+    indexOnPosition(pawnFen, pieceLocs) {
+        if (!this.seenPawnFens.has(pawnFen)) {
             this.bulkPieceInits.find({ _id: pawnFen }).upsert().updateOne({
-                $setOnInsert: { 'black': this.defaultPieceLocs().black, 'white': this.defaultPieceLocs().white },
+                $setOnInsert: this.defaultPieceLocs(),
             });
 
-            seenPawnFens.add(pawnFen);
+            this.seenPawnFens.add(pawnFen);
         }
 
         for (let [loc, piece] of Object.entries(pieceLocs)) {
@@ -109,6 +98,15 @@ class Database {
                 $inc: { [updateKey]: 1 }
             });
         }
+    }
+
+    defaultPieceLocs() {
+        let pieceLocs = { black: {}, white: {} };
+        for (let i = 0; i < 8; i++) {
+            pieceLocs.black[i] = utils.zeros(8, 8);
+            pieceLocs.white[i] = utils.zeros(8, 8);
+        }
+        return pieceLocs;
     }
 }
 

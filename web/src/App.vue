@@ -51,6 +51,7 @@ export default {
     },
     computed: {
         highlightIntensities: function() {
+            console.log(this.pieceLocs);
             if (Object.keys(this.pieceLocs).length === 0) {
                 return this.$utils.zeros(8, 8);
             }
@@ -59,11 +60,6 @@ export default {
             }
 
             return this.$utils.zeros(8, 8);
-            /*
-            console.log(this.pieceLocs);
-            console.log("getting ints");
-            return this.$utils.random(8, 8);
-            */
         }
     },
     data: function() {
