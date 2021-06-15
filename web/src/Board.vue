@@ -32,20 +32,20 @@ export default {
         editorMouseDownHandler: function editorMouseDown(mouseEvent, color) {
             this.board.dragNewPiece({ role: 'pawn', color, promoted: false }, mouseEvent, true);
         },
-        structure: function() {
-            return this.board.getFen()
-        }
+        structure: function structure() {
+            return this.board.getFen();
+        },
     },
     mounted() {
         // Add overlay highlight squares
-        let highlightBoard = $('<div></div>').addClass('cg-board').attr('id', 'highlight-board');
+        const highlightBoard = $('<div></div>').addClass('cg-board').attr('id', 'highlight-board');
         $('.cg-board-wrap').append(highlightBoard);
-        for (var i = 0; i < 8; i++) {
-            for (var j = 0; j < 8; j++) {
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
                 let square = $('<square></square>').addClass('highlight');
                 square = square.css('transform', `translate(${i * variables.squareSizeInt}px, ${j * variables.squareSizeInt}px)`);
                 square = square.css('background-color', 'rgba(0, 0, 0, 0.0)');
-                $('#highlight-board').append(square); 
+                $('#highlight-board').append(square);
             }
         }
 
@@ -56,21 +56,21 @@ export default {
             movable: {
                 color: 'both',
                 free: true,
-                events: { after: undefined }
+                events: { after: undefined },
             },
             // Drag pieces off board to delete
             draggable: {
-                deleteOnDropOff: true
-            }
+                deleteOnDropOff: true,
+            },
         });
 
         EventBus.$on('editorMouseDown', this.editorMouseDownHandler);
 
         this.board.set({
             events: { change: () => { this.$emit('boardChange'); } },
-        }) 
-    }
-}
+        });
+    },
+};
 </script>
 
 <style lang="scss">

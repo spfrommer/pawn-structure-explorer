@@ -20,48 +20,45 @@
     </div>
 </template>
 
-
 <script>
-const interpolate = require('color-interpolate');
-const Color = require('color');
-
 import Board from './Board.vue';
 import Editor from './Editor.vue';
 import SpareBank from './SpareBank.vue';
 import variables from './styles/_variables.scss';
+
+const interpolate = require('color-interpolate');
+const Color = require('color');
 
 export default {
     name: 'App',
     components: {
         Board,
         SpareBank,
-        Editor
+        Editor,
     },
     methods: {
         upperBankClick(event, i) {
             this.$refs.lowerBank.clearSelection();
-            let unselect = this.selectedColor === 'black' && this.selectedPiece === i;
+            const unselect = this.selectedColor === 'black' && this.selectedPiece === i;
             this.selectedColor = unselect ? '' : 'black';
             this.selectedPiece = unselect ? -1 : i;
         },
         lowerBankClick(event, i) {
             this.$refs.upperBank.clearSelection();
-            let unselect = this.selectedColor === 'white' && this.selectedPiece === i;
+            const unselect = this.selectedColor === 'white' && this.selectedPiece === i;
             this.selectedColor = unselect ? '' : 'white';
             this.selectedPiece = unselect ? -1 : i;
         },
         boardChange() {
-            let self = this;
-
-            let endpoint = `/api/pieceLocs?structure=${this.$refs.board.structure()}`;
+            const endpoint = `/api/pieceLocs?structure=${this.$refs.board.structure()}`;
             this.$http.get(endpoint).then(response => {
-                response = JSON.parse(response.bodyText);
-                this.pieceLocs = (response === null) ? {} : response;
+                const responseJson = JSON.parse(response.bodyText);
+                this.pieceLocs = (responseJson === null) ? {} : responseJson;
             }, err => { console.error(err); });
-        }
+        },
     },
     computed: {
-        highlightIntensities: function() {
+        highlightIntensities: function highlightIntensities() {
             console.log(this.pieceLocs);
             if (Object.keys(this.pieceLocs).length === 0) {
                 return this.$utils.zeros(8, 8);
@@ -71,24 +68,25 @@ export default {
             }
 
             return this.$utils.zeros(8, 8);
-        }
+        },
     },
-    data: function() {
+    data: function data() {
+        const startColor = Color(variables.accent1).alpha(0.0);
+        const endColor = Color(variables.accent1).alpha(0.5);
         return {
             piecesUpper: ['rook-black', 'knight-black', 'bishop-black', 'queen-black', 'king-black', 'bishop-black', 'knight-black', 'rook-black'],
             piecesLower: ['rook-white', 'knight-white', 'bishop-white', 'queen-white', 'king-white', 'bishop-white', 'knight-white', 'rook-white'],
             pieceLocs: {},
-            highlightColormap: interpolate([Color(variables.accent1).alpha(0.0).string(), Color(variables.accent1).alpha(0.5).string()]),
+            highlightColormap: interpolate([startColor.string(), endColor.string()]),
             selectedColor: '',
-            selectedPiece: -1
-        }
+            selectedPiece: -1,
+        };
     },
     mounted() {
         this.boardChange();
-    }
-}
+    },
+};
 </script>
-
 
 <style lang="scss">
 body {
