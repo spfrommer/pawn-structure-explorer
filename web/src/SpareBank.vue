@@ -1,12 +1,15 @@
 <template>
 <div class="spares" :id="id">
-    <div v-for="(piece, i) in pieces"
-        :key="id + i"
+    <div v-for="(piece, i) in pieces" :key="id + i"
         :class="['spare-back', spareBackClass(i), selectedClass(i)]"
         :style="[vertical ? {} : { 'float': 'left' }]">
 
-        <button @mousedown="onMouseDown($event, i)" @click="onClick($event, i)" :class="'spare spare-' + piece"></button>
-    </div> 
+        <button
+            :class="'spare spare-' + piece"
+            @mousedown="onMouseDown($event, i)"
+            @click="onClick($event, i)">
+        </button>
+    </div>
 </div>
 </template>
 
@@ -18,20 +21,20 @@ export default {
         pieces: list of piece strings like 'pawn-black'
     */
     props: ['id', 'vertical', 'selectable', 'pieces'],
-    data: function() {
+    data: function data() {
         return {
-            selected: -1
-        }
+            selected: -1,
+        };
     },
     methods: {
         spareBackClass(i) {
             if (i === 0) {
-                return this.vertical ? "spare-back-top" : "spare-back-left";
+                return this.vertical ? 'spare-back-top' : 'spare-back-left';
             }
             if (i === this.pieces.length - 1) {
-                return this.vertical ? "spare-back-bottom" : "spare-back-right";
+                return this.vertical ? 'spare-back-bottom' : 'spare-back-right';
             }
-            return "spare-back-middle";
+            return 'spare-back-middle';
         },
         selectedClass(i) {
             return i === this.selected ? 'selected' : 'not-selected';
@@ -55,8 +58,8 @@ export default {
         onMouseDownDefault(event, i) {
             this.$emit('spareMouseDown', event, i);
         },
-    }
-}
+    },
+};
 </script>
 
 <style lang="scss">
@@ -66,7 +69,6 @@ export default {
     border-radius: $border-radii;
     box-shadow: 0px 0px 2px $secondary-shadow inset;
 }
-
 
 .spare-back {
     transition: background 0.4s ease;
@@ -87,7 +89,7 @@ export default {
     border-radius: 0px 0px $border-radii $border-radii
 }
 .spare-back-left {
-    border-radius: $border-radii 0px 0px $border-radii 
+    border-radius: $border-radii 0px 0px $border-radii
 }
 .spare-back-middle {
     border-radius: 0px 0px 0px 0px
@@ -139,4 +141,3 @@ export default {
     background: url($king-black) (0px 0px) / ($square-size $square-size) no-repeat;
 }
 </style>
-

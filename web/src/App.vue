@@ -1,11 +1,22 @@
 <template>
     <div id="app">
-        <SpareBank ref="upperBank" :id="'upperBank'" :vertical="false" :selectable="true" :pieces="piecesUpper" @spareClick="upperBankClick"/>
+        <SpareBank ref="upperBank" :id="'upperBank'"
+            :vertical="false"
+            :selectable="true"
+            :pieces="piecesUpper"
+            @spareClick="upperBankClick"/>
         <div id="boardEditor">
-            <Board ref="board" :highlights="{colormap: highlightColormap, intensities: highlightIntensities}" :free="true" @boardChange="boardChange"/>
+            <Board ref="board"
+                :highlights="{colormap: highlightColormap, intensities: highlightIntensities}"
+                :free="true"
+                @boardChange="boardChange"/>
             <Editor :id="'editor'"/>
         </div>
-        <SpareBank ref="lowerBank" :id="'lowerBank'" :vertical="false" :selectable="true" :pieces="piecesLower" @spareClick="lowerBankClick"/>
+        <SpareBank ref="lowerBank" :id="'lowerBank'"
+            :vertical="false"
+            :selectable="true"
+            :pieces="piecesLower"
+            @spareClick="lowerBankClick"/>
     </div>
 </template>
 
@@ -42,7 +53,7 @@ export default {
         boardChange() {
             let self = this;
 
-            let endpoint = `/api/pieceLocs?pawnfen=${this.$refs.board.pawnFen()}`;
+            let endpoint = `/api/pieceLocs?structure=${this.$refs.board.structure()}`;
             this.$http.get(endpoint).then(response => {
                 response = JSON.parse(response.bodyText);
                 this.pieceLocs = (response === null) ? {} : response;

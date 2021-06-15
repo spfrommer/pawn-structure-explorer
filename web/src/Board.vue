@@ -1,9 +1,8 @@
 <script>
-import { EventBus } from './event-bus';
-import { chessboard }  from 'vue-chessboard';
-import Chess from 'chess.js';
+import { chessboard } from 'vue-chessboard';
 import $ from 'jquery';
 
+import { EventBus } from './event-bus';
 import variables from './styles/_variables.scss';
 
 export default {
@@ -11,29 +10,29 @@ export default {
     extends: chessboard,
     props: ['highlights'],
     watch: {
-        'highlights': {
-            handler: function(highlights) {
-                let intensities = highlights.intensities;
+        highlights: {
+            handler: function handler(highlights) {
+                const intensities = highlights.intensities;
 
-                var maxRow = intensities.map(function(row){ return Math.max.apply(Math, row); });
-                var maxIntensity = Math.max.apply(null, maxRow);
+                const maxRow = intensities.map(row => Math.max(...row));
+                let maxIntensity = Math.max.apply(null, maxRow);
                 if (maxIntensity === 0) maxIntensity = 1;
 
-                for (var i = 0; i < 8; i++) {
-                    for (var j = 0; j < 8; j++) {
-                        let intensity = intensities[7-j][i] / maxIntensity;
-                        $(`#highlight-board square:nth-child(${i * 8 + j + 1}`).css('background-color', highlights.colormap(intensity)); 
+                for (let i = 0; i < 8; i++) {
+                    for (let j = 0; j < 8; j++) {
+                        const intensity = intensities[7 - j][i] / maxIntensity;
+                        $(`#highlight-board square:nth-child(${i * 8 + j + 1}`).css('background-color', highlights.colormap(intensity));
                     }
                 }
             },
-            deep: true
-        }
+            deep: true,
+        },
     },
     methods: {
-        editorMouseDownHandler: function(mouseEvent, color) {
-            this.board.dragNewPiece({role: 'pawn', color: color, promoted: false}, mouseEvent, true);
+        editorMouseDownHandler: function editorMouseDown(mouseEvent, color) {
+            this.board.dragNewPiece({ role: 'pawn', color, promoted: false }, mouseEvent, true);
         },
-        pawnFen: function() {
+        structure: function() {
             return this.board.getFen()
         }
     },

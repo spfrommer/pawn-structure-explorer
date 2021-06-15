@@ -16,7 +16,7 @@ app.get('/api/index', (req, res) => {
         });
 });
 app.get('/api/pieceLocs', (req, res) => {
-    db.getPieceLocs(req.query.pawnfen)
+    db.getPieceLocs(req.query.structure)
         .then(doc => { res.json(doc); })
         .catch(err => {
             console.error(err);
