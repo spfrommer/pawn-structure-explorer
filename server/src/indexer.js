@@ -20,20 +20,23 @@ class GameIndexer {
         onPosition(this.getPawnFen(chessPlay), pieceLocs);
 
         for (const move of this.chess.history({'verbose': true})) {
+            let movedOriginal = move.from in pieceLocs; // move non promoted piece
             chessPlay.move(move);
 
-            if (move.piece !== 'p') {
-                movePiece(move.from, move.to);
-                
-                // Move rook if castle
-                let homeRank = move.color === 'w' ? 1 : 8;
-                if (move.flags === 'k') {
-                    movePiece('h' + homeRank, 'f' + homeRank);
-                } else if (move.flags === 'q') {
-                    movePiece('a' + homeRank, 'd' + homeRank);
+            if (movedOriginal) {
+                if (move.piece !== 'p') {
+                    movePiece(move.from, move.to);
+                    
+                    // Move rook if castle
+                    let homeRank = move.color === 'w' ? 1 : 8;
+                    if (move.flags === 'k') {
+                        movePiece('h' + homeRank, 'f' + homeRank);
+                    } else if (move.flags === 'q') {
+                        movePiece('a' + homeRank, 'd' + homeRank);
+                    }
+                } else if (move.captured !== 'p') {
+                    delete pieceLocs[move.to];
                 }
-            } else if (move.captured !== 'p') {
-                delete pieceLocs[move.to];
             }
 
             onPosition(this.getPawnFen(chessPlay), pieceLocs);

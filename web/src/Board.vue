@@ -15,9 +15,13 @@ export default {
             handler: function(highlights) {
                 let intensities = highlights.intensities;
 
+                var maxRow = intensities.map(function(row){ return Math.max.apply(Math, row); });
+                var maxIntensity = Math.max.apply(null, maxRow);
+                if (maxIntensity === 0) maxIntensity = 1;
+
                 for (var i = 0; i < 8; i++) {
                     for (var j = 0; j < 8; j++) {
-                        let intensity = intensities[i][j];
+                        let intensity = intensities[7-j][i] / maxIntensity;
                         $(`#highlight-board square:nth-child(${i * 8 + j + 1}`).css('background-color', highlights.colormap(intensity)); 
                     }
                 }
@@ -30,15 +34,7 @@ export default {
             this.board.dragNewPiece({role: 'pawn', color: color, promoted: false}, mouseEvent, true);
         },
         pawnFen: function() {
-            let pawnChess = new Chess(this.game.fen());
-            for (const square of pawnChess.SQUARES) {
-                let piece = pawnChess.get(square);
-                if (piece !== null && piece['type'] !== 'p') {
-                    pawnChess.remove(square);
-                }
-            }
-
-            return pawnChess.fen().split(" ")[0];
+            return this.board.getFen()
         }
     },
     mounted() {

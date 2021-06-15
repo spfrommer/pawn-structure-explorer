@@ -1,11 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const mongojs = require('mongojs')
+const async = require('async');
 
 const GameIndexer = require('./indexer.js');
 const utils = require('./utils.js');
-
-const nodeUtil = require('util')
 
 class Database {
     constructor(mongoUri, pgnsDir) {
@@ -50,7 +49,13 @@ class Database {
     buildIndex() {
         let self = this;
 
-        return this.indexPgnFile(self.pgnFiles()[0]);
+        const indexAll = async () => {
+            for (const pgnFile of self.pgnFiles()) {
+                console.log("Indexing: " + pgnFile);
+                await self.indexPgnFile(pgnFile);
+            }
+        }
+        return indexAll();
     }
 
     pgnFiles() {

@@ -29,13 +29,15 @@ export default {
     methods: {
         upperBankClick(event, i) {
             this.$refs.lowerBank.clearSelection();
-            this.selectedColor = 'black';
-            this.selectedPiece = i;
+            let unselect = this.selectedColor === 'black' && this.selectedPiece === i;
+            this.selectedColor = unselect ? '' : 'black';
+            this.selectedPiece = unselect ? -1 : i;
         },
         lowerBankClick(event, i) {
             this.$refs.upperBank.clearSelection();
-            this.selectedColor = 'white';
-            this.selectedPiece = i;
+            let unselect = this.selectedColor === 'white' && this.selectedPiece === i;
+            this.selectedColor = unselect ? '' : 'white';
+            this.selectedPiece = unselect ? -1 : i;
         },
         boardChange() {
             let self = this;
@@ -43,7 +45,7 @@ export default {
             let endpoint = `/api/pieceLocs?pawnfen=${this.$refs.board.pawnFen()}`;
             this.$http.get(endpoint).then(response => {
                 response = JSON.parse(response.bodyText);
-                self.pieceLocs = response;
+                this.pieceLocs = (response === null) ? {} : response;
             }, err => { console.error(err); });
         }
     },
@@ -52,10 +54,6 @@ export default {
             if (Object.keys(this.pieceLocs).length === 0) {
                 return this.$utils.zeros(8, 8);
             }
-            console.log(this.pieceLocs);
-            console.log(this.selectedColor);
-            console.log(this.selectedPiece);
-
             if (this.selectedColor !== '' && this.selectedPiece !== -1) {
                 return this.pieceLocs[this.selectedColor][this.selectedPiece];
             }
@@ -77,6 +75,9 @@ export default {
             selectedColor: '',
             selectedPiece: -1
         }
+    },
+    mounted() {
+        this.boardChange();
     }
 }
 </script>
