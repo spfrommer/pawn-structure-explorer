@@ -11,7 +11,7 @@ export default {
     props: ['highlights'],
     watch: {
         highlights: {
-            handler: function handler(highlights) {
+            handler: function (highlights) {
                 const intensities = highlights.intensities;
 
                 const maxRow = intensities.map(row => Math.max(...row));
@@ -29,10 +29,10 @@ export default {
         },
     },
     methods: {
-        editorMouseDownHandler: function editorMouseDown(mouseEvent, color) {
+        editorMouseDownHandler: function (mouseEvent, color) {
             this.board.dragNewPiece({ role: 'pawn', color, promoted: false }, mouseEvent, true);
         },
-        structure: function structure() {
+        structure: function () {
             return this.board.getFen();
         },
     },

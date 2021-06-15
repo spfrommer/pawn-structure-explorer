@@ -84,7 +84,7 @@ class Database {
         });
     }
 
-    indexOnPosition(structure, pieceLocs) {
+    indexOnPosition(structure, pieceLocs, result) {
         if (!this.seenStructures.has(structure)) {
             this.bulkPieceInits.find({ _id: structure }).upsert().updateOne({
                 $setOnInsert: this.constructor.defaultPieceLocs(),
@@ -95,7 +95,8 @@ class Database {
 
         for (const [square, piece] of Object.entries(pieceLocs)) {
             const loc = utils.toFileRank(square);
-            const updateKey = `${piece.color}.${piece.piece}.${loc.rank}.${loc.file}`;
+            const updateKey = `${result}.${piece.color}.${piece.piece}.${loc.rank}.${loc.file}`;
+            // console.log(updateKey);
 
             this.bulkPieceUpdates.find({ _id: structure }).update({
                 $inc: { [updateKey]: 1 },
@@ -104,12 +105,15 @@ class Database {
     }
 
     static defaultPieceLocs() {
-        const pieceLocs = { black: {}, white: {} };
-        for (let i = 0; i < 8; i++) {
-            pieceLocs.black[i] = utils.zeros(8, 8);
-            pieceLocs.white[i] = utils.zeros(8, 8);
+        function createPieceLocs() {
+            const pieceLocs = { black: {}, white: {} };
+            for (let i = 0; i < 8; i++) {
+                pieceLocs.black[i] = utils.zeros(8, 8);
+                pieceLocs.white[i] = utils.zeros(8, 8);
+            }
+            return pieceLocs;
         }
-        return pieceLocs;
+        return { '1-0': createPieceLocs(), '1/2-1/2': createPieceLocs(), '0-1': createPieceLocs() };
     }
 }
 

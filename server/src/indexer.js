@@ -32,7 +32,7 @@ class GameIndexer {
             delete pieceLocs[from];
         }
 
-        onPosition(this.constructor.getStructure(chessPlay), pieceLocs);
+        onPosition(this.constructor.getStructure(chessPlay), pieceLocs, this.tags.Result);
 
         for (const move of this.chess.history({ verbose: true })) {
             const movedOriginal = move.from in pieceLocs; // move non promoted piece
@@ -54,7 +54,7 @@ class GameIndexer {
                 }
             }
 
-            onPosition(this.constructor.getStructure(chessPlay), pieceLocs);
+            onPosition(this.constructor.getStructure(chessPlay), pieceLocs, this.tags.Result);
         }
     }
 

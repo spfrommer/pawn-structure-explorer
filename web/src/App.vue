@@ -58,19 +58,43 @@ export default {
         },
     },
     computed: {
-        highlightIntensities: function highlightIntensities() {
+        hasPieceLocs: function () {
+            return Object.keys(this.pieceLocs).length !== 0;
+        },
+        highlightIntensities: function () {
             console.log(this.pieceLocs);
-            if (Object.keys(this.pieceLocs).length === 0) {
-                return this.$utils.zeros(8, 8);
-            }
-            if (this.selectedColor !== '' && this.selectedPiece !== -1) {
-                return this.pieceLocs[this.selectedColor][this.selectedPiece];
+
+            if (this.hasPieceLocs && this.selectedColor !== '' && this.selectedPiece !== -1) {
+                // return this.pieceLocs[this.selectedColor][this.selectedPiece];
+                return this.combinedPieceLocs[this.selectedColor][this.selectedPiece];
             }
 
             return this.$utils.zeros(8, 8);
         },
+        combinedPieceLocs: function () {
+            const combined = {};
+
+            for (const color of ['black', 'white']) {
+                combined[color] = {};
+
+                for (const piece of Array.from(Array(8).keys())) {
+                    if (this.hasPieceLocs) {
+                        const whiteWin = this.pieceLocs['1-0'][color][piece];
+                        const blackWin = this.pieceLocs['0-1'][color][piece];
+                        const draw = this.pieceLocs['1/2-1/2'][color][piece];
+
+                        combined[color][piece] = this.$utils.sumArrays(draw,
+                            this.$utils.sumArrays(whiteWin, blackWin));
+                    } else {
+                        combined[color][piece] = this.$utils.zeros(8, 8);
+                    }
+                }
+            }
+
+            return combined;
+        },
     },
-    data: function data() {
+    data: function () {
         const startColor = Color(variables.accent1).alpha(0.0);
         const endColor = Color(variables.accent1).alpha(0.5);
         return {

@@ -21,7 +21,7 @@ export default {
         pieces: list of piece strings like 'pawn-black'
     */
     props: ['id', 'vertical', 'selectable', 'pieces'],
-    data: function data() {
+    data: function () {
         return {
             selected: -1,
         };

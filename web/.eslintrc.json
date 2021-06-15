@@ -23,6 +23,8 @@
         "no-shadow": "off",
         "radix": "off",
         "arrow-parens": ["error", "as-needed"],
-        "prefer-destructuring": "off"
+        "prefer-destructuring": "off",
+        "func-names": "off",
+        "object-shorthand": "off"
     }
 }
