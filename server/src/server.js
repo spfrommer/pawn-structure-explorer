@@ -9,16 +9,22 @@ const db = new Database(uri, pgnsDir);
 
 // App
 const app = express();
-app.get('/api/index', async (req, res) => {
+app.get('/api/index', (req, res) => {
     db.buildIndex()
         .then(() => { res.send('INDEXED'); })
         .catch((err) => { 
             console.error(err);
             res.send('ERROR');
-        })
+        });
 });
-
-app.get('/api/')
+app.get('/api/search', (req, res) => {
+    db.getPieceLocs(req.query.pawnfen)
+        .then((doc) => { res.json(doc); })
+        .catch((err) => { 
+            console.error(err);
+            res.send('ERROR');
+        });
+});
 
 app.listen(8081, '0.0.0.0');
 console.log('Server running');

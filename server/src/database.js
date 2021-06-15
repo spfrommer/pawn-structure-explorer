@@ -5,6 +5,8 @@ const mongojs = require('mongojs')
 const GameIndexer = require('./indexer.js');
 const utils = require('./utils.js');
 
+const nodeUtil = require('util')
+
 class Database {
     constructor(mongoUri, pgnsDir) {
         this.db = mongojs(mongoUri + '/db', ['pieceLocs'])
@@ -13,6 +15,28 @@ class Database {
         this.bulkPieceInits = null;
         this.bulkPieceUpdates = null;
     }
+
+    //================================================================================
+    // Querying 
+    //================================================================================
+
+    getPieceLocs(pawnFen) {
+        return new Promise((resolve, reject) => {
+            this.db.pieceLocs.findOne({ _id: pawnFen }, (err, doc) => {
+                if (err !== null) reject();
+                resolve(doc);
+            });
+        });
+        /*
+        console.log(this.db.pieceLocs.findOne);
+        let findPromise = nodeUtil.promisify(this.db.pieceLocs.findOne);
+        return findPromise({ _id: pawnFen });
+        */
+    }
+
+    //================================================================================
+    // Indexing
+    //================================================================================
 
     buildIndex() {
         let self = this;
