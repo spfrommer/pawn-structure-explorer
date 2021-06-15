@@ -24,6 +24,13 @@ def core(action):
         subprocess.run(['docker-compose', 'stop'] + CORE)
 
 
+# @main.command()
+# def reset():
+    # subprocess.run(['docker-compose', 'stop'] + CORE)
+    # subprocess.run(['sudo', 'rm', '-rf', 'data/mongodb'])
+    # subprocess.run(['docker-compose', 'up', '-d'] + CORE)
+
+
 @main.command()
 def webapp():
     subprocess.run(['docker-compose', 'build'] + WEBAPP)

@@ -2,9 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const mongojs = require('mongojs')
 
-const { MongoClient } = require('mongodb');
-const { Chess } = require('chess.js');
-
 const GameIndexer = require('./indexer.js');
 const utils = require('./utils.js');
 
@@ -13,8 +10,14 @@ class Database {
         this.db = mongojs(mongoUri + '/db', ['pieceLocs'])
         this.pgnsDir = pgnsDir;
 
-        this.bulkPieceInitialize = null;
+        this.bulkPieceInits = null;
         this.bulkPieceUpdates = null;
+    }
+
+    buildIndex() {
+        let self = this;
+
+        return this.indexPgnFile(self.pgnFiles()[0]);
     }
 
     pgnFiles() {
@@ -22,12 +25,10 @@ class Database {
     }
 
     indexPgnFile(pgnFile) {
-        console.log('Indexing: ' + pgnFile);
-
-        this.bulkPieceInitialize = this.db.pieceLocs.initializeUnorderedBulkOp();
+        this.bulkPieceInits = this.db.pieceLocs.initializeUnorderedBulkOp();
         this.bulkPieceUpdates = this.db.pieceLocs.initializeUnorderedBulkOp();
 
-        let db = this.db;
+        let self = this;
 
         let seenPawnFens = new Set();
         const pgns = utils.readSplit(path.join(this.pgnsDir, pgnFile), '[Event');
@@ -36,31 +37,17 @@ class Database {
             indexer.index(this.indexOnPosition.bind(this, seenPawnFens));
         }
 
-        /*
-        initializeBulk.findAndModify({
-            query: { _id: pawnFen },
-            update: {
-                $setOnInsert: this.defaultPieceLocs(),
-            },
-            upsert: true
-        });
-        */
+        return new Promise((resolve, reject) => {
+            self.bulkPieceInits.execute((err, res) => {
+                if (err !== null) reject(err);
 
-        this.bulkPieceInitialize.execute(function (err, res) {
-            console.log('Done initializing pawn fens!')
-            // let ids = db.pieceLocs.find().project( {_id: 1} ).map(x => x._id).toArray();
-            // let ids = db.runCommand ( { distinct: "distinct", key: "_id" } )
-            /*
-            let ids = db.pieceLocs.distinct('_id', {}, {}, (err, result) => {
-                console.log('Distinct: ');
-                console.log(result);
+                self.bulkPieceUpdates.execute((err, res) => {
+                    if (err !== null) reject(err);
+
+                    resolve();
+                });
             });
-            */
-            db.pieceLocs.find((err, docs) => {
-                console.log('Got docs: ');
-                console.log(docs);
-            });
-        })
+        });
     }
 
     defaultPieceLocs() {
@@ -73,14 +60,23 @@ class Database {
     }
 
     indexOnPosition(seenPawnFens, pawnFen, pieceLocs) {
-        if (!seenPawnFens.has(pawnFen)) {
-            pawnFen = pawnFen.split(" ")[0];
+        pawnFen = pawnFen.split(" ")[0];
 
-            this.bulkPieceInitialize.find({ _id: pawnFen }).upsert().updateOne({
+        if (!seenPawnFens.has(pawnFen)) {
+            this.bulkPieceInits.find({ _id: pawnFen }).upsert().updateOne({
                 $setOnInsert: { 'black': this.defaultPieceLocs().black, 'white': this.defaultPieceLocs().white },
             });
 
             seenPawnFens.add(pawnFen);
+        }
+
+        for (let [loc, piece] of Object.entries(pieceLocs)) {
+            loc = utils.toFileRank(loc);
+            let updateKey = `${piece.color}.${piece.piece}.${loc.rank}.${loc.file}`;
+
+            this.bulkPieceUpdates.find({ _id: pawnFen }).update({
+                $inc: { [updateKey]: 1 }
+            });
         }
     }
 }

@@ -1,4 +1,5 @@
 const { Chess } = require('chess.js');
+const utils = require('./utils.js');
 
 class GameIndexer {
     constructor(pgn) {
@@ -42,9 +43,8 @@ class GameIndexer {
     initialPieceLocs() {
         let pieceLocs = {};
         for (let i = 0; i < 8; i++) {
-            let files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-            pieceLocs[files[i] + '1'] = { color: 'white', piece: i };
-            pieceLocs[files[i] + '8'] = { color: 'black', piece: i };
+            pieceLocs[utils.toSquare(i, 1)] = { color: 'white', piece: i };
+            pieceLocs[utils.toSquare(i, 8)] = { color: 'black', piece: i };
         }
         return pieceLocs;
     }
