@@ -74,7 +74,6 @@ class Database {
         return new Promise((resolve, reject) => {
             self.bulkPieceInits.execute(err => {
                 if (err !== null) reject(err);
-
                 self.bulkPieceUpdates.execute(err => {
                     if (err !== null) reject(err);
 
@@ -86,7 +85,8 @@ class Database {
 
     indexOnPosition(structure, pieceLocs, result) {
         if (!this.seenStructures.has(structure)) {
-            this.bulkPieceInits.find({ _id: structure }).upsert().updateOne({
+            // upsert.updateOne bombs out with doc size errors...
+            this.bulkPieceInits.find({ _id: structure }).upsert({
                 $setOnInsert: this.constructor.defaultPieceLocs(),
             });
 
@@ -96,7 +96,6 @@ class Database {
         for (const [square, piece] of Object.entries(pieceLocs)) {
             const loc = utils.toFileRank(square);
             const updateKey = `${result}.${piece.color}.${piece.piece}.${loc.rank}.${loc.file}`;
-            // console.log(updateKey);
 
             this.bulkPieceUpdates.find({ _id: structure }).update({
                 $inc: { [updateKey]: 1 },

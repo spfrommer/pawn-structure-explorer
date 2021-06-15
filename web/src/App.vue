@@ -90,6 +90,7 @@ export default {
             return Object.keys(this.pieceLocs).length !== 0;
         },
         highlights: function () {
+            console.log(this.pieceLocs);
             return {
                 colormap: this.highlightColormap,
                 hues: this.highlightHues,
