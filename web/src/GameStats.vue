@@ -40,6 +40,7 @@ export default {
 
 <style lang="scss">
 .game-stats {
-    color: $text-secondary
+    color: $text-secondary;
+    text-align: right
 }
 </style>

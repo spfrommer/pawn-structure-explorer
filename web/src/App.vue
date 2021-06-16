@@ -6,12 +6,13 @@
             :pieces="piecesUpper"
             @spareClick="upperBankClick"/>
         <div id="boardEditor">
+            <GameStats id="stats" :games="games"/>
+            <Editor :id="'editor'"/>
             <Board ref="board"
                 :highlights="highlights"
                 :free="true"
                 @boardChange="boardChange"/>
-            <Editor :id="'editor'"/>
-            <GameStats id="stats" :games="games"/>
+            <Openings id="openings" :games="games"/>
         </div>
         <SpareBank ref="lowerBank" :id="'lowerBank'"
             :vertical="false"
@@ -26,6 +27,7 @@ import Board from './Board.vue';
 import Editor from './Editor.vue';
 import SpareBank from './SpareBank.vue';
 import GameStats from './GameStats.vue';
+import Openings from './Openings.vue';
 
 import variables from './styles/_variables.scss';
 
@@ -39,6 +41,7 @@ export default {
         Editor,
         SpareBank,
         GameStats,
+        Openings,
     },
     methods: {
         upperBankClick(event, i) {
@@ -144,16 +147,19 @@ body {
     font-weight: 600;
     color: $text-primary;
     display: inline-block;
+    position: absolute;
+    transform: translate(100px, 40px);
 }
 #upperBank {
     margin-bottom: 15px;
 }
 #editor {
     position: absolute;
-    transform: translate(20px, 116px);
+    transform: translate(-55px, 116px);
 }
 #stats {
     position: absolute;
-    transform: translate(340px, 0px);
+    right: 340px;
+    width: 200px;
 }
 </style>
