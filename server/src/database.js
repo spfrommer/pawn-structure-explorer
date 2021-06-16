@@ -25,15 +25,24 @@ class Database {
     }
 
     drop() {
-        return utils.promiseBind(this.db.structurePieceLocs, 'drop')();
+        return utils.promiseBind(this.db.structurePieceLocs, 'drop')()
+            .then(utils.promiseBind(this.db.structureGames, 'drop')());
     }
 
     getPieceLocs(structure) {
         return utils.promiseBind(this.db.structurePieceLocs, 'findOne')({ _id: structure });
     }
 
-    findAll() {
+    getGames(structure) {
+        return utils.promiseBind(this.db.structureGames, 'findOne')({ _id: structure });
+    }
+
+    findAllPieceLocs() {
         return utils.promiseBind(this.db.structurePieceLocs, 'find')({});
+    }
+
+    findAllGames() {
+        return utils.promiseBind(this.db.structureGames, 'find')({});
     }
 
     stats() {

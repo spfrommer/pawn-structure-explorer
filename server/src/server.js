@@ -12,50 +12,48 @@ app.get('/api/pieceLocs', (req, res) => {
             console.log(`Got pieceLocs request ${req.query.structure}`);
             res.json(doc);
         })
-        .catch(err => {
-            console.error(err);
-            res.send('ERROR');
-        });
+        .catch(err => res.send(err));
 });
-
-app.get('/api/index', (req, res) => {
-    db.buildIndex()
-        .then(() => {
-            console.log('Got indexing request');
-            res.send('INDEXED');
+app.get('/api/games', (req, res) => {
+    db.getGames(req.query.structure)
+        .then(doc => {
+            console.log(`Got games request ${req.query.structure}`);
+            res.json(doc);
         })
-        .catch(err => {
-            console.error(err);
-            res.send('ERROR');
-        });
+        .catch(err => res.send(err));
 });
-app.get('/api/first', (req, res) => {
-    db.findAll()
+app.get('/api/pieceLocs/first', (req, res) => {
+    db.findAllPieceLocs()
         .then(docs => {
             res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
         })
-        .catch(err => {
-            console.error(err);
-            res.send('ERROR');
-        });
+        .catch(err => res.send(err));
+});
+app.get('/api/games/first', (req, res) => {
+    db.findAllGames()
+        .then(docs => {
+            res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
+        })
+        .catch(err => res.send(err));
+});
+
+
+app.get('/api/index', (req, res) => {
+    db.buildIndex()
+        .then(() => { res.send('INDEXED'); })
+        .catch(err => res.send(err));
+});
+app.get('/api/drop', (req, res) => {
+    db.drop()
+        .then(() => { res.send('DROPPED'); })
+        .catch(err => res.send(err));
 });
 app.get('/api/stats', (req, res) => {
     db.stats()
         .then(stats => {
             res.send(`<pre> ${JSON.stringify(stats, null, 4)} </pre>`);
         })
-        .catch(err => {
-            console.error(err);
-            res.send('ERROR');
-        });
-});
-app.get('/api/drop', (req, res) => {
-    db.drop()
-        .then(() => { res.send('DROPPED'); })
-        .catch(err => {
-            console.error(err);
-            res.send('ERROR');
-        });
+        .catch(err => res.send(err));
 });
 
 app.listen(8081, '0.0.0.0');
