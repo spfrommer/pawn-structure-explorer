@@ -179,10 +179,15 @@ class Database {
         if (newGame) indexingState.seenGames.add(tags.GameId);
 
         if (newStructure || newGame) {
-            const updateKey = `${tags.Result}.gameCount`;
+            const countUpdateKey = `${tags.Result}.gameCount`;
 
             indexingState.bulkUpdates.find({ _id: structure }).update({
-                $inc: { [updateKey]: 1 },
+                $inc: { [countUpdateKey]: 1 },
+            });
+
+            const openingUpdateKey = `${tags.Result}.openings.${tags.OpeningMain}.${tags.OpeningVariations}`;
+            indexingState.bulkUpdates.find({ _id: structure }).update({
+                $push: { [openingUpdateKey]: tags.GameId },
             });
         }
     }

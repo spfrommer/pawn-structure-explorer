@@ -25,27 +25,30 @@ app.get('/api/pieceLocs/first', (req, res) => {
         .then(docs => {
             res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
         })
-        .catch(err => res.send(err));
+        .catch(err => res.send(res.send(JSON.stringify(err, null, 4))));
 });
 app.get('/api/games/first', (req, res) => {
     db.findAllGames()
         .then(docs => {
             res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
         })
-        .catch(err => res.send(err));
+        .catch(err => res.send(JSON.stringify(err, null, 4)));
 });
 app.get('/api/gamePgn/first', (req, res) => {
     db.findAllGamePgn()
         .then(docs => {
             res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
         })
-        .catch(err => res.send(err));
+        .catch(err => res.send(res.send(JSON.stringify(err, null, 4))));
 });
 
 app.get('/api/index', (req, res) => {
     db.buildIndex()
         .then(() => { res.send('INDEXED'); })
-        .catch(err => res.send(err));
+        .catch(err => {
+            console.log(err);
+            res.send(err);
+        });
 });
 app.get('/api/drop', (req, res) => {
     db.drop()

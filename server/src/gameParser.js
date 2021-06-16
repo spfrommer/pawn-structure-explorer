@@ -7,13 +7,12 @@ class GameParser {
         this.chess = new Chess();
         this.chess.load_pgn(pgnMoves);
 
-        const tags = this.constructor.getGameTags(pgn);
-        tags.GameId = `${tags.White}-${tags.Black}-${tags.UTCDate}-${tags.UTCTime}`;
-        tags.pgn = pgn;
-        this.tags = tags;
+        this.tags = this.constructor.getGameTags(pgn);
     }
 
     static getGameTags(pgn) {
+        if (pgn === '') return {};
+
         const tags = {};
 
         let tagLines = pgn.split('\n').filter(l => l[0] === '[');
@@ -23,6 +22,14 @@ class GameParser {
             console.assert(parts.length === 2);
             tags[parts[0]] = parts[1];
         }
+
+        // Augment with additional info
+        tags.GameId = `${tags.White}-${tags.Black}-${tags.UTCDate}-${tags.UTCTime}`;
+        tags.Pgn = pgn;
+
+        const openingParts = tags.Opening.split(/:|,/).map(t => t.trim());
+        [tags.OpeningMain, ...tags.OpeningVariations] = openingParts;
+        tags.OpeningVariations = tags.OpeningVariations.join(',');
 
         return tags;
     }
