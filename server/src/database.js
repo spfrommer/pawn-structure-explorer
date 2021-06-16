@@ -71,11 +71,12 @@ class Database {
                     const pgnCount = await this.indexPgns(nextGroup);
                     const elapsedSeconds = utils.hrtimeToSeconds(process.hrtime(startTime));
 
-                    const pgnCountPadded = pgnCount.toString().padStart(7, '0');
-                    const elapsedSecondsPadded = elapsedSeconds.toFixed(2).padStart(7, '0');
-                    const ratePadded = (pgnCount / elapsedSeconds).toFixed(2).padStart(6, '0');
+                    const groupPadded = group.toString().padStart(5, '0');
+                    const pgnCountPadded = pgnCount.toString().padStart(2, '0');
+                    const elapsedSecondsPadded = elapsedSeconds.toFixed(2).padStart(4, '0');
+                    const ratePadded = (pgnCount / elapsedSeconds).toFixed(2).padStart(5, '0');
 
-                    console.log(`${pgnFile} (${group}): ${pgnCountPadded} pgns in ${elapsedSecondsPadded} (${ratePadded}/s)`);
+                    console.log(`Indexed: ${pgnFile} (${groupPadded}): ${pgnCountPadded} pgns in ${elapsedSecondsPadded} (${ratePadded}/s)`);
 
                     nextGroup = utils.takeList(pgnsAll, GROUP_SIZE);
                     group++;

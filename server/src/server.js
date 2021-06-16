@@ -9,7 +9,6 @@ const app = express();
 app.get('/api/pieceLocs', (req, res) => {
     db.getPieceLocs(req.query.structure)
         .then(doc => {
-            console.log(`Got pieceLocs request ${req.query.structure}`);
             res.json(doc);
         })
         .catch(err => res.send(err));
@@ -17,7 +16,6 @@ app.get('/api/pieceLocs', (req, res) => {
 app.get('/api/games', (req, res) => {
     db.getGames(req.query.structure)
         .then(doc => {
-            console.log(`Got games request ${req.query.structure}`);
             res.json(doc);
         })
         .catch(err => res.send(err));
