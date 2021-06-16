@@ -11,6 +11,7 @@ class Database {
         this.pgnsDir = pgnsDir;
 
         this.seenStructures = new Set();
+        this.seenGames = new Set();
 
         this.bulkPieceLocsInits = null;
         this.bulkPieceLocsUpdates = null;
@@ -75,6 +76,8 @@ class Database {
     indexPgns(pgns) {
         this.bulkPieceLocsInits = this.db.structurePieceLocs.initializeUnorderedBulkOp();
         this.bulkPieceLocsUpdates = this.db.structurePieceLocs.initializeUnorderedBulkOp();
+        this.bulkGamesInits = this.db.structureGames.initializeUnorderedBulkOp();
+        this.bulkGamesUpdates = this.db.structureGames.initializeUnorderedBulkOp();
 
         let pgnsCount = 0;
         for (const pgn of pgns) {
@@ -87,6 +90,9 @@ class Database {
         async function runBulkIndex() {
             await utils.promiseBind(self.bulkPieceLocsInits, 'execute')();
             await utils.promiseBind(self.bulkPieceLocsUpdates, 'execute')();
+            await utils.promiseBind(self.bulkGamesInits, 'execute')();
+            await utils.promiseBind(self.bulkGamesUpdates, 'execute')();
+
             return pgnsCount;
         }
         return runBulkIndex();
@@ -96,6 +102,11 @@ class Database {
         // TODO: only one bad pgn each doc, maybe pgn parsing is bad...
         if (tags.Result == null) return; // Sometimes don't have result data
 
+        this.indexPieceLocsOnPosition(structure, pieceLocs, tags);
+        this.indexGamesOnPosition(structure, pieceLocs, tags);
+    }
+
+    indexPieceLocsOnPosition(structure, pieceLocs, tags) {
         if (!this.seenStructures.has(structure)) {
             this.bulkPieceLocsInits.find({ _id: structure }).upsert().updateOne({
                 $setOnInsert: this.constructor.defaultPieceLocs(),
@@ -112,6 +123,10 @@ class Database {
                 $inc: { [updateKey]: 1 },
             });
         }
+    }
+
+    indexGamesOnPosition(structure, pieceLocs, tags) {
+
     }
 
     static defaultPieceLocs() {
