@@ -162,4 +162,9 @@ body {
     right: 340px;
     width: 200px;
 }
+#openings {
+    position: absolute;
+    transform: translate(340px, 116px);
+    text-align: left;
+}
 </style>

@@ -9,9 +9,7 @@
 
 <script>
 export default {
-    /*
-        games: games for the current structure, as returned by the server
-    */
+    // games: games for the current structure, as returned by the server
     props: ['games'],
     computed: {
         hasGames: function () {
