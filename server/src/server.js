@@ -31,7 +31,9 @@ app.get('/api/pieceLocs', (req, res) => {
 });
 app.get('/api/all', (req, res) => {
     db.findAll()
-        .then(docs => { res.send(JSON.stringify(docs, null, 4)); })
+        .then(docs => {
+            res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
+        })
         .catch(err => {
             console.error(err);
             res.send('ERROR');

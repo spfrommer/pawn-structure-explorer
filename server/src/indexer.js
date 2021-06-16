@@ -54,7 +54,7 @@ class GameIndexer {
                 }
             }
 
-            onPosition(this.constructor.getStructure(chessPlay), pieceLocs, this.tags.Result);
+            onPosition(this.constructor.getStructure(chessPlay), pieceLocs, this.tags);
         }
     }
 

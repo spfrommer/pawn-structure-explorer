@@ -93,14 +93,20 @@ class Database {
     }
 
     indexOnPosition(structure, pieceLocs, tags) {
-        if (tags.Result === null) return; // Sometimes don't have result data
+        // TODO: only one bad pgn each doc, maybe pgn parsing is bad...
+        if (tags.Result == null) return; // Sometimes don't have result data
 
         if (!this.seenStructures.has(structure)) {
             // upsert.updateOne bombs out with doc size errors...
+            /*
             this.bulkPieceInits.find({ _id: structure }).upsert({
             // this.bulkPieceInits.find({ _id: structure }).upsert().updateOne({
                 $setOnInsert: this.constructor.defaultPieceLocs(),
             });
+            */
+            const doc = this.constructor.defaultPieceLocs();
+            doc._id = structure;
+            this.bulkPieceInits.insert(doc);
 
             this.seenStructures.add(structure);
         }
