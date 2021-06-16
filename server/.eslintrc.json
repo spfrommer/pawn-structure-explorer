@@ -20,6 +20,7 @@
         "radix": "off",
         "arrow-parens": ["error", "as-needed"],
         "prefer-destructuring": "off",
-        "no-underscore-dangle": "off"
+        "no-underscore-dangle": "off",
+        "object-shorthand": "off",
     }
 }

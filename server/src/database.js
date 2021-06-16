@@ -59,29 +59,42 @@ class Database {
     buildIndex() {
         const indexAll = async () => {
             const pgnFiles = fs.readdirSync(this.pgnsDir).filter(f => f.endsWith('.pgn'));
+
             for (const pgnFile of pgnFiles) {
-                const startTime = process.hrtime();
-                const pgnCount = await this.indexPgnFile(pgnFile);
-                const elapsedSeconds = utils.hrtimeToSeconds(process.hrtime(startTime));
+                const pgnsAll = utils.readSplit(path.join(this.pgnsDir, pgnFile), '[Event');
 
-                const pgnCountPadded = pgnCount.toString().padStart(7, '0');
-                const elapsedSecondsPadded = elapsedSeconds.toFixed(2).padStart(7, '0');
-                const ratePadded = (pgnCount / elapsedSeconds).toFixed(2).padStart(6, '0');
+                // Group pgn updates into x games at a time; addresses mongodb bug
+                // where it hallucinates big docs if you do one big bulk write
+                const GROUP_SIZE = 10;
+                let nextGroup = utils.takeList(pgnsAll, GROUP_SIZE);
+                let group = 0;
+                
+                while (nextGroup.length > 0) {
+                    const startTime = process.hrtime();
+                    const pgnCount = await this.indexPgns(nextGroup);
+                    const elapsedSeconds = utils.hrtimeToSeconds(process.hrtime(startTime));
 
-                console.log(`${pgnFile}; ${pgnCountPadded} pgns in ${elapsedSecondsPadded} (${ratePadded}/s)`);
+                    const pgnCountPadded = pgnCount.toString().padStart(7, '0');
+                    const elapsedSecondsPadded = elapsedSeconds.toFixed(2).padStart(7, '0');
+                    const ratePadded = (pgnCount / elapsedSeconds).toFixed(2).padStart(6, '0');
+
+                    console.log(`${pgnFile} (${group}): ${pgnCountPadded} pgns in ${elapsedSecondsPadded} (${ratePadded}/s)`);
+
+                    nextGroup = utils.takeList(pgnsAll, GROUP_SIZE);
+                    group++;
+                }
             }
         };
 
         return indexAll();
     }
 
-    indexPgnFile(pgnFile) {
+    indexPgns(pgns) {
         this.bulkPieceInits = this.db.structurePieceLocs.initializeUnorderedBulkOp();
         this.bulkPieceUpdates = this.db.structurePieceLocs.initializeUnorderedBulkOp();
 
         const self = this;
 
-        const pgns = utils.readSplit(path.join(this.pgnsDir, pgnFile), '[Event');
         let pgnsCount = 0;
         for (const pgn of pgns) {
             const indexer = new GameIndexer(pgn);
@@ -92,6 +105,7 @@ class Database {
         return new Promise((resolve, reject) => {
             self.bulkPieceInits.execute(err => {
                 if (err !== null) reject(err);
+
                 self.bulkPieceUpdates.execute(err => {
                     if (err !== null) reject(err);
 
@@ -107,15 +121,10 @@ class Database {
 
         if (!this.seenStructures.has(structure)) {
             // upsert.updateOne bombs out with doc size errors...
-            /*
-            this.bulkPieceInits.find({ _id: structure }).upsert({
-            // this.bulkPieceInits.find({ _id: structure }).upsert().updateOne({
+            // this.bulkPieceInits.find({ _id: structure }).upsert({
+            this.bulkPieceInits.find({ _id: structure }).upsert().updateOne({
                 $setOnInsert: this.constructor.defaultPieceLocs(),
             });
-            */
-            const doc = this.constructor.defaultPieceLocs();
-            doc._id = structure;
-            this.bulkPieceInits.insert(doc);
 
             this.seenStructures.add(structure);
         }
