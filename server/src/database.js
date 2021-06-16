@@ -10,14 +10,18 @@ class Database {
         this.db = mongojs(`${mongoUri}/db`, ['structurePieceLocs', 'structureGames']);
         this.pgnsDir = pgnsDir;
 
-        this.seenStructures = new Set();
-        this.seenGames = new Set();
+        this.pieceLocsIndexing = {
+            seenStructures: new Set(),
+            bulkInits: null,
+            bulkUpdates: null,
+        }
 
-        this.bulkPieceLocsInits = null;
-        this.bulkPieceLocsUpdates = null;
-
-        this.bulkGamesInits = null;
-        this.bulkGamesUpdates = null;
+        this.gamesIndexing = {
+            seenStructures: new Set(),
+            seenGames: new Set(),
+            bulkInits: null,
+            bulkUpdates: null,
+        }
     }
 
     drop() {
@@ -74,10 +78,10 @@ class Database {
     }
 
     indexPgns(pgns) {
-        this.bulkPieceLocsInits = this.db.structurePieceLocs.initializeUnorderedBulkOp();
-        this.bulkPieceLocsUpdates = this.db.structurePieceLocs.initializeUnorderedBulkOp();
-        this.bulkGamesInits = this.db.structureGames.initializeUnorderedBulkOp();
-        this.bulkGamesUpdates = this.db.structureGames.initializeUnorderedBulkOp();
+        this.pieceLocsIndexing.bulkInits = this.db.structurePieceLocs.initializeUnorderedBulkOp();
+        this.pieceLocsIndexing.bulkUpdates = this.db.structurePieceLocs.initializeUnorderedBulkOp();
+        this.gamesIndexing.bulkInits = this.db.structureGames.initializeUnorderedBulkOp();
+        this.gamesIndexing.bulkUpdates = this.db.structureGames.initializeUnorderedBulkOp();
 
         let pgnsCount = 0;
         for (const pgn of pgns) {
@@ -88,10 +92,10 @@ class Database {
         const self = this;
 
         async function runBulkIndex() {
-            await utils.promiseBind(self.bulkPieceLocsInits, 'execute')();
-            await utils.promiseBind(self.bulkPieceLocsUpdates, 'execute')();
-            await utils.promiseBind(self.bulkGamesInits, 'execute')();
-            await utils.promiseBind(self.bulkGamesUpdates, 'execute')();
+            await utils.promiseBind(self.pieceLocsIndexing.bulkInits, 'execute')();
+            await utils.promiseBind(self.pieceLocsIndexing.bulkUpdates, 'execute')();
+            await utils.promiseBind(self.gamesIndexing.bulkInits, 'execute')();
+            await utils.promiseBind(self.gamesIndexing.bulkUpdates, 'execute')();
 
             return pgnsCount;
         }
@@ -103,29 +107,39 @@ class Database {
         if (tags.Result == null) return; // Sometimes don't have result data
 
         this.indexPieceLocsOnPosition(structure, pieceLocs, tags);
-        this.indexGamesOnPosition(structure, pieceLocs, tags);
+        // this.indexGamesOnPosition(structure, pieceLocs, tags);
     }
 
     indexPieceLocsOnPosition(structure, pieceLocs, tags) {
-        if (!this.seenStructures.has(structure)) {
-            this.bulkPieceLocsInits.find({ _id: structure }).upsert().updateOne({
+        if (!this.pieceLocsIndexing.seenStructures.has(structure)) {
+            this.pieceLocsIndexing.bulkInits.find({ _id: structure }).upsert().updateOne({
                 $setOnInsert: this.constructor.defaultPieceLocs(),
             });
 
-            this.seenStructures.add(structure);
+            this.pieceLocsIndexing.seenStructures.add(structure);
         }
 
         for (const [square, piece] of Object.entries(pieceLocs)) {
             const loc = utils.toFileRank(square);
             const updateKey = `${tags.Result}.${piece.color}.${piece.piece}.${loc.rank}.${loc.file}`;
 
-            this.bulkPieceLocsUpdates.find({ _id: structure }).update({
+            this.pieceLocsIndexing.bulkUpdates.find({ _id: structure }).update({
                 $inc: { [updateKey]: 1 },
             });
         }
     }
 
     indexGamesOnPosition(structure, pieceLocs, tags) {
+        let newStructure = !this.gamesIndexing.seenStructures.has(structure);
+        let newGame = !this.gamesIndexing.seenGames.has(structure);
+
+        if (newStructure) {
+            this.bulkGamesInits.find({ _id: structure }).upsert().updateOne({
+                $setOnInsert: this.constructor.defaultGames(),
+            });
+
+            this.seenGames.add(tags.GameId);
+        }
 
     }
 
