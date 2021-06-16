@@ -1,7 +1,7 @@
 const { Chess } = require('chess.js');
 const utils = require('./utils');
 
-class GameIndexer {
+class GameParser {
     constructor(pgn) {
         const pgnMoves = pgn.split('\n').filter(l => l[0] !== '[').join(' ').replace('\n', '');
         this.chess = new Chess();
@@ -26,7 +26,7 @@ class GameIndexer {
         return tags;
     }
 
-    index(onPosition) {
+    parse(onPosition) {
         const chessPlay = new Chess();
         const pieceLocs = this.constructor.initialPieceLocs();
         function movePiece(from, to) {
@@ -87,4 +87,4 @@ class GameIndexer {
     }
 }
 
-module.exports = GameIndexer;
+module.exports = GameParser;

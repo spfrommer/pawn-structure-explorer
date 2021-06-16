@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const mongojs = require('mongojs');
 
-const GameIndexer = require('./indexer');
+const GameParser = require('./gameParser');
 const utils = require('./utils');
 
 class Database {
@@ -81,7 +81,7 @@ class Database {
 
         let pgnsCount = 0;
         for (const pgn of pgns) {
-            new GameIndexer(pgn).index(this.indexOnPosition.bind(this));
+            new GameParser(pgn).parse(this.indexOnPosition.bind(this));
             pgnsCount++;
         }
 
