@@ -100,8 +100,4 @@ export default {
     height: 10.5%;
     transition: background-color 0.4s ease;
 }
-
-coord {
-    color: scale-color($secondary, $lightness: 50%);
-}
 </style>

@@ -11,6 +11,7 @@
                 :free="true"
                 @boardChange="boardChange"/>
             <Editor :id="'editor'"/>
+            <GameStats id="stats" :games="games"/>
         </div>
         <SpareBank ref="lowerBank" :id="'lowerBank'"
             :vertical="false"
@@ -24,6 +25,8 @@
 import Board from './Board.vue';
 import Editor from './Editor.vue';
 import SpareBank from './SpareBank.vue';
+import GameStats from './GameStats.vue';
+
 import variables from './styles/_variables.scss';
 
 const interpolate = require('color-interpolate');
@@ -33,8 +36,9 @@ export default {
     name: 'App',
     components: {
         Board,
-        SpareBank,
         Editor,
+        SpareBank,
+        GameStats,
     },
     methods: {
         upperBankClick(event, i) {
@@ -50,11 +54,17 @@ export default {
             this.selectedPiece = unselect ? -1 : i;
         },
         boardChange() {
-            const endpoint = `/api/pieceLocs?structure=${this.$refs.board.structure()}`;
-            this.$http.get(endpoint).then(response => {
+            const pieceLocsEndpoint = `/api/pieceLocs?structure=${this.$refs.board.structure()}`;
+            this.$http.get(pieceLocsEndpoint).then(response => {
                 const responseJson = JSON.parse(response.bodyText);
                 this.pieceLocs = (responseJson === null) ? {} : responseJson;
-                console.log(this.pieceLocs);
+            }, err => { console.error(err); });
+
+            const gamesEndpoint = `/api/games?structure=${this.$refs.board.structure()}`;
+            this.$http.get(gamesEndpoint).then(response => {
+                const responseJson = JSON.parse(response.bodyText);
+                this.games = (responseJson === null) ? {} : responseJson;
+                console.log(this.games);
             }, err => { console.error(err); });
         },
         combinePieceLocs(color, piece, weighResult) {
@@ -110,7 +120,10 @@ export default {
         return {
             piecesUpper: ['rook-black', 'knight-black', 'bishop-black', 'queen-black', 'king-black', 'bishop-black', 'knight-black', 'rook-black'],
             piecesLower: ['rook-white', 'knight-white', 'bishop-white', 'queen-white', 'king-white', 'bishop-white', 'knight-white', 'rook-white'],
+
             pieceLocs: {},
+            games: {},
+
             highlightColormap: interpolate([startColor, midColor, endColor]),
             selectedColor: '',
             selectedPiece: -1,
@@ -129,12 +142,18 @@ body {
 #app {
     font-family: 'Roboto', Sans-Serif;
     font-weight: 600;
+    color: $text-primary;
     display: inline-block;
 }
 #upperBank {
     margin-bottom: 15px;
 }
 #editor {
+    position: absolute;
     transform: translate(20px, 116px);
+}
+#stats {
+    position: absolute;
+    transform: translate(340px, 0px);
 }
 </style>

@@ -9,6 +9,9 @@ $secondary-shadow: scale-color($secondary, $lightness: -60%);
 $secondary-accent1: mix($secondary, $accent1, 50%);
 $secondary-accent2: mix($secondary, $accent2, 50%);
 
+$text-primary: #dfdfdf; 
+$text-secondary: #3692e7;
+
 $border-radii: 5px;
 $square-size: 40px;
 
