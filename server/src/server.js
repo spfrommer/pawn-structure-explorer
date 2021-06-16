@@ -34,7 +34,13 @@ app.get('/api/games/first', (req, res) => {
         })
         .catch(err => res.send(err));
 });
-
+app.get('/api/gamePgn/first', (req, res) => {
+    db.findAllGamePgn()
+        .then(docs => {
+            res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
+        })
+        .catch(err => res.send(err));
+});
 
 app.get('/api/index', (req, res) => {
     db.buildIndex()

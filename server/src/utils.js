@@ -2,7 +2,7 @@ const { LineReader } = require('line-reader');
 const nodeUtil = require('util');
 
 module.exports = {
-    promiseBind: function(object, functionName) {
+    promiseBind: function (object, functionName) {
         return nodeUtil.promisify(object[functionName]).bind(object);
     },
     zeros: function (rows, columns) {
@@ -38,10 +38,10 @@ module.exports = {
         yield buffer;
     },
     takeList: function (iterable, length) {
-        let list = [];
+        const list = [];
         const iterator = iterable[Symbol.iterator]();
         for (let l = length; l > 0; l--) {
-            let next = iterator.next().value;
+            const next = iterator.next().value;
             if (next != null) list.push(next);
         }
         return list;

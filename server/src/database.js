@@ -14,19 +14,19 @@ class Database {
             seenStructures: new Set(),
             bulkInits: null,
             bulkUpdates: null,
-        }
+        };
 
         this.gamesIndexing = {
             seenStructures: new Set(),
             seenGames: new Set(),
             bulkInits: null,
             bulkUpdates: null,
-        }
+        };
 
         this.gamePgnIndexing = {
             seenGames: new Set(),
             bulkInits: null,
-        }
+        };
     }
 
     drop() {
@@ -55,6 +55,10 @@ class Database {
         return utils.promiseBind(this.db.structureGames, 'find')({});
     }
 
+    findAllGamePgn() {
+        return utils.promiseBind(this.db.gamePgn, 'find')({});
+    }
+
     stats() {
         return utils.promiseBind(this.db.structurePieceLocs, 'stats')();
     }
@@ -75,7 +79,7 @@ class Database {
                 const GROUP_SIZE = 10;
                 let nextGroup = utils.takeList(pgnsAll, GROUP_SIZE);
                 let group = 0;
-                
+
                 while (nextGroup.length > 0) {
                     const startTime = process.hrtime();
                     const pgnCount = await this.indexPgns(nextGroup);
@@ -138,8 +142,8 @@ class Database {
     }
 
     indexPieceLocsOnPosition(structure, pieceLocs, tags) {
-        let indexingState = this.pieceLocsIndexing;
-        let newStructure = !indexingState.seenStructures.has(structure);
+        const indexingState = this.pieceLocsIndexing;
+        const newStructure = !indexingState.seenStructures.has(structure);
 
         if (newStructure) {
             indexingState.bulkInits.find({ _id: structure }).upsert().updateOne({
@@ -160,9 +164,9 @@ class Database {
     }
 
     indexGamesOnPosition(structure, pieceLocs, tags) {
-        let indexingState = this.gamesIndexing;
-        let newStructure = !indexingState.seenStructures.has(structure);
-        let newGame = !indexingState.seenGames.has(structure);
+        const indexingState = this.gamesIndexing;
+        const newStructure = !indexingState.seenStructures.has(structure);
+        const newGame = !indexingState.seenGames.has(structure);
 
         if (newStructure) {
             indexingState.bulkInits.find({ _id: structure }).upsert().updateOne({
@@ -184,8 +188,8 @@ class Database {
     }
 
     indexGamePgnOnPosition(structure, pieceLocs, tags) {
-        let indexingState = this.gamePgnIndexing;
-        let newGame = !indexingState.seenGames.has(structure);
+        const indexingState = this.gamePgnIndexing;
+        const newGame = !indexingState.seenGames.has(structure);
 
         if (newGame) {
             indexingState.bulkInits.find({ _id: tags.GameId }).upsert().updateOne({
@@ -214,7 +218,6 @@ class Database {
         }
         return { '1-0': createGames(), '1/2-1/2': createGames(), '0-1': createGames() };
     }
-
 }
 
 module.exports = Database;
