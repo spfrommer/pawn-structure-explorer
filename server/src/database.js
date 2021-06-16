@@ -7,7 +7,7 @@ const utils = require('./utils');
 
 class Database {
     constructor(mongoUri, pgnsDir) {
-        this.db = mongojs(`${mongoUri}/db`, ['structurePieceLocs', 'structureGames']);
+        this.db = mongojs(`${mongoUri}/db`, ['structurePieceLocs', 'structureGames', 'gamePgn']);
         this.pgnsDir = pgnsDir;
 
         this.pieceLocsIndexing = {
@@ -22,11 +22,17 @@ class Database {
             bulkInits: null,
             bulkUpdates: null,
         }
+
+        this.gamePgnIndexing = {
+            seenGames: new Set(),
+            bulkInits: null,
+        }
     }
 
     drop() {
         return utils.promiseBind(this.db.structurePieceLocs, 'drop')()
-            .then(utils.promiseBind(this.db.structureGames, 'drop')());
+            .then(utils.promiseBind(this.db.structureGames, 'drop')())
+            .then(utils.promiseBind(this.db.gamePgn, 'drop')());
     }
 
     getPieceLocs(structure) {
@@ -35,6 +41,10 @@ class Database {
 
     getGames(structure) {
         return utils.promiseBind(this.db.structureGames, 'findOne')({ _id: structure });
+    }
+
+    getPgn(gameId) {
+        return utils.promiseBind(this.db.gamePgn, 'findOne')({ _id: gameId });
     }
 
     findAllPieceLocs() {
@@ -88,10 +98,7 @@ class Database {
     }
 
     indexPgns(pgns) {
-        this.pieceLocsIndexing.bulkInits = this.db.structurePieceLocs.initializeUnorderedBulkOp();
-        this.pieceLocsIndexing.bulkUpdates = this.db.structurePieceLocs.initializeUnorderedBulkOp();
-        this.gamesIndexing.bulkInits = this.db.structureGames.initializeUnorderedBulkOp();
-        this.gamesIndexing.bulkUpdates = this.db.structureGames.initializeUnorderedBulkOp();
+        this.initializeBulkOps();
 
         let pgnsCount = 0;
         for (const pgn of pgns) {
@@ -106,10 +113,19 @@ class Database {
             await utils.promiseBind(self.pieceLocsIndexing.bulkUpdates, 'execute')();
             await utils.promiseBind(self.gamesIndexing.bulkInits, 'execute')();
             await utils.promiseBind(self.gamesIndexing.bulkUpdates, 'execute')();
+            await utils.promiseBind(self.gamePgnIndexing.bulkInits, 'execute')();
 
             return pgnsCount;
         }
         return runBulkIndex();
+    }
+
+    initializeBulkOps() {
+        this.pieceLocsIndexing.bulkInits = this.db.structurePieceLocs.initializeUnorderedBulkOp();
+        this.pieceLocsIndexing.bulkUpdates = this.db.structurePieceLocs.initializeUnorderedBulkOp();
+        this.gamesIndexing.bulkInits = this.db.structureGames.initializeUnorderedBulkOp();
+        this.gamesIndexing.bulkUpdates = this.db.structureGames.initializeUnorderedBulkOp();
+        this.gamePgnIndexing.bulkInits = this.db.gamePgn.initializeUnorderedBulkOp();
     }
 
     indexOnPosition(structure, pieceLocs, tags) {
@@ -118,6 +134,7 @@ class Database {
 
         this.indexPieceLocsOnPosition(structure, pieceLocs, tags);
         this.indexGamesOnPosition(structure, pieceLocs, tags);
+        this.indexGamePgnOnPosition(structure, pieceLocs, tags);
     }
 
     indexPieceLocsOnPosition(structure, pieceLocs, tags) {
@@ -163,6 +180,19 @@ class Database {
             indexingState.bulkUpdates.find({ _id: structure }).update({
                 $inc: { [updateKey]: 1 },
             });
+        }
+    }
+
+    indexGamePgnOnPosition(structure, pieceLocs, tags) {
+        let indexingState = this.gamePgnIndexing;
+        let newGame = !indexingState.seenGames.has(structure);
+
+        if (newGame) {
+            indexingState.bulkInits.find({ _id: tags.GameId }).upsert().updateOne({
+                $setOnInsert: tags.pgn,
+            });
+
+            indexingState.seenGames.add(tags.GameId);
         }
     }
 

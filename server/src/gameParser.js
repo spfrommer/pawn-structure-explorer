@@ -9,6 +9,7 @@ class GameParser {
 
         const tags = this.constructor.getGameTags(pgn);
         tags.GameId = `${tags.White}-${tags.Black}-${tags.UTCDate}-${tags.UTCTime}`; 
+        tags.pgn = pgn;
         this.tags = tags;
     }
 
