@@ -107,40 +107,53 @@ class Database {
         if (tags.Result == null) return; // Sometimes don't have result data
 
         this.indexPieceLocsOnPosition(structure, pieceLocs, tags);
-        // this.indexGamesOnPosition(structure, pieceLocs, tags);
+        this.indexGamesOnPosition(structure, pieceLocs, tags);
     }
 
     indexPieceLocsOnPosition(structure, pieceLocs, tags) {
-        if (!this.pieceLocsIndexing.seenStructures.has(structure)) {
-            this.pieceLocsIndexing.bulkInits.find({ _id: structure }).upsert().updateOne({
+        let indexingState = this.pieceLocsIndexing;
+        let newStructure = !indexingState.seenStructures.has(structure);
+
+        if (newStructure) {
+            indexingState.bulkInits.find({ _id: structure }).upsert().updateOne({
                 $setOnInsert: this.constructor.defaultPieceLocs(),
             });
 
-            this.pieceLocsIndexing.seenStructures.add(structure);
+            indexingState.seenStructures.add(structure);
         }
 
         for (const [square, piece] of Object.entries(pieceLocs)) {
             const loc = utils.toFileRank(square);
             const updateKey = `${tags.Result}.${piece.color}.${piece.piece}.${loc.rank}.${loc.file}`;
 
-            this.pieceLocsIndexing.bulkUpdates.find({ _id: structure }).update({
+            indexingState.bulkUpdates.find({ _id: structure }).update({
                 $inc: { [updateKey]: 1 },
             });
         }
     }
 
     indexGamesOnPosition(structure, pieceLocs, tags) {
-        let newStructure = !this.gamesIndexing.seenStructures.has(structure);
-        let newGame = !this.gamesIndexing.seenGames.has(structure);
+        let indexingState = this.gamesIndexing;
+        let newStructure = !indexingState.seenStructures.has(structure);
+        let newGame = !indexingState.seenGames.has(structure);
 
         if (newStructure) {
-            this.bulkGamesInits.find({ _id: structure }).upsert().updateOne({
+            indexingState.bulkInits.find({ _id: structure }).upsert().updateOne({
                 $setOnInsert: this.constructor.defaultGames(),
             });
 
-            this.seenGames.add(tags.GameId);
+            indexingState.seenStructures.add(structure);
         }
 
+        if (newGame) indexingState.seenGames.add(tags.GameId);
+
+        if (newStructure || newGame) {
+            const updateKey = `${tags.Result}.gameCount`;
+
+            indexingState.bulkUpdates.find({ _id: structure }).update({
+                $inc: { [updateKey]: 1 },
+            });
+        }
     }
 
     static defaultPieceLocs() {
