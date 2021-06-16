@@ -43,6 +43,15 @@ class Database {
         });
     }
 
+    stats() {
+        return new Promise((resolve, reject) => {
+            this.db.stats((err, stats) => {
+                if (err !== null) reject();
+                resolve(stats);
+            });
+        });
+    }
+
     // ================================================================================
     // Indexing
     // ================================================================================

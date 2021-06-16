@@ -7,17 +7,6 @@ const db = new Database(uri, pgnsDir);
 
 // App
 const app = express();
-app.get('/api/index', (req, res) => {
-    db.buildIndex()
-        .then(() => {
-            console.log('Got indexing request');
-            res.send('INDEXED');
-        })
-        .catch(err => {
-            console.error(err);
-            res.send('ERROR');
-        });
-});
 app.get('/api/pieceLocs', (req, res) => {
     db.getPieceLocs(req.query.structure)
         .then(doc => {
@@ -29,10 +18,32 @@ app.get('/api/pieceLocs', (req, res) => {
             res.send('ERROR');
         });
 });
-app.get('/api/all', (req, res) => {
+
+app.get('/api/index', (req, res) => {
+    db.buildIndex()
+        .then(() => {
+            console.log('Got indexing request');
+            res.send('INDEXED');
+        })
+        .catch(err => {
+            console.error(err);
+            res.send('ERROR');
+        });
+});
+app.get('/api/first', (req, res) => {
     db.findAll()
         .then(docs => {
             res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
+        })
+        .catch(err => {
+            console.error(err);
+            res.send('ERROR');
+        });
+});
+app.get('/api/stats', (req, res) => {
+    db.stats()
+        .then(stats => {
+            res.send(`<pre> ${JSON.stringify(stats, null, 4)} </pre>`);
         })
         .catch(err => {
             console.error(err);
