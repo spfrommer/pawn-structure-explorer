@@ -76,38 +76,20 @@ class Database {
         this.bulkPieceLocsInits = this.db.structurePieceLocs.initializeUnorderedBulkOp();
         this.bulkPieceLocsUpdates = this.db.structurePieceLocs.initializeUnorderedBulkOp();
 
-        const self = this;
-
         let pgnsCount = 0;
         for (const pgn of pgns) {
-            const indexer = new GameIndexer(pgn);
-            indexer.index(this.indexOnPosition.bind(this));
+            new GameIndexer(pgn).index(this.indexOnPosition.bind(this));
             pgnsCount++;
         }
 
-        // nodeUtil.promisify(self.bulkPieceLocsInits.execute);
+        const self = this;
 
-        /*
-        async function runBulkIndexing() {
-            try {
-                await self.bulkPieceLocsInits.execute(); // need to promisify
-            } catch(err) {
-                console.log(err);
-            }
+        async function runBulkIndex() {
+            await utils.promiseBind(self.bulkPieceLocsInits, 'execute')();
+            await utils.promiseBind(self.bulkPieceLocsUpdates, 'execute')();
+            return pgnsCount;
         }
-        */
-
-        return new Promise((resolve, reject) => {
-            self.bulkPieceLocsInits.execute(err => {
-                if (err !== null) reject(err);
-
-                self.bulkPieceLocsUpdates.execute(err => {
-                    if (err !== null) reject(err);
-
-                    resolve(pgnsCount);
-                });
-            });
-        });
+        return runBulkIndex();
     }
 
     indexOnPosition(structure, pieceLocs, tags) {
