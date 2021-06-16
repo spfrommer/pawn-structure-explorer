@@ -30,4 +30,8 @@ export default {
         }
         return newArr;
     },
+    maxArray: function (arr) {
+        const maxRow = arr.map(row => Math.max(...row));
+        return Math.max.apply(null, maxRow);
+    },
 };

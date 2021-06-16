@@ -9,7 +9,10 @@ const db = new Database(uri, pgnsDir);
 const app = express();
 app.get('/api/index', (req, res) => {
     db.buildIndex()
-        .then(() => { res.send('INDEXED'); })
+        .then(() => {
+            console.log('Got indexing request');
+            res.send('INDEXED');
+        })
         .catch(err => {
             console.error(err);
             res.send('ERROR');
@@ -17,7 +20,18 @@ app.get('/api/index', (req, res) => {
 });
 app.get('/api/pieceLocs', (req, res) => {
     db.getPieceLocs(req.query.structure)
-        .then(doc => { res.json(doc); })
+        .then(doc => {
+            console.log(`Got pieceLocs request ${req.query.structure}`);
+            res.json(doc);
+        })
+        .catch(err => {
+            console.error(err);
+            res.send('ERROR');
+        });
+});
+app.get('/api/all', (req, res) => {
+    db.findAll()
+        .then(docs => { res.send(JSON.stringify(docs, null, 4)); })
         .catch(err => {
             console.error(err);
             res.send('ERROR');

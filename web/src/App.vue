@@ -54,35 +54,26 @@ export default {
             this.$http.get(endpoint).then(response => {
                 const responseJson = JSON.parse(response.bodyText);
                 this.pieceLocs = (responseJson === null) ? {} : responseJson;
+                console.log(this.pieceLocs);
             }, err => { console.error(err); });
         },
-        combinePieceLocs: function (weighResult) {
-            const combined = {};
-
-            for (const color of ['black', 'white']) {
-                combined[color] = {};
-
-                const isWhite = color === 'white';
-                for (const piece of Array.from(Array(8).keys())) {
-                    if (this.hasPieceLocs) {
-                        let wWin = this.pieceLocs['1-0'][color][piece];
-                        let bWin = this.pieceLocs['0-1'][color][piece];
-                        let draw = this.pieceLocs['1/2-1/2'][color][piece];
-
-                        if (weighResult) {
-                            wWin = this.$utils.scalarMultiplyArray(isWhite ? 1 : -1, wWin);
-                            bWin = this.$utils.scalarMultiplyArray(isWhite ? -1 : 1, bWin);
-                            draw = this.$utils.scalarMultiplyArray(0, draw);
-                        }
-
-                        combined[color][piece] = [wWin, bWin, draw].reduce(this.$utils.sumArrays);
-                    } else {
-                        combined[color][piece] = this.$utils.zeros(8, 8);
-                    }
-                }
+        combinePieceLocs: function (color, piece, weighResult) {
+            if (!this.hasPieceLocs) {
+                return this.$utils.zeros(8, 8);
             }
 
-            return combined;
+            const isWhite = color === 'white';
+            let wWin = this.pieceLocs['1-0'][color][piece];
+            let bWin = this.pieceLocs['0-1'][color][piece];
+            let draw = this.pieceLocs['1/2-1/2'][color][piece];
+
+            if (weighResult) {
+                wWin = this.$utils.scalarMultiplyArray(isWhite ? 1 : -1, wWin);
+                bWin = this.$utils.scalarMultiplyArray(isWhite ? -1 : 1, bWin);
+                draw = this.$utils.scalarMultiplyArray(0, draw);
+            }
+
+            return [wWin, bWin, draw].reduce(this.$utils.sumArrays);
         },
     },
     computed: {
@@ -90,7 +81,6 @@ export default {
             return Object.keys(this.pieceLocs).length !== 0;
         },
         highlights: function () {
-            console.log(this.pieceLocs);
             return {
                 colormap: this.highlightColormap,
                 hues: this.highlightHues,
@@ -99,14 +89,14 @@ export default {
         },
         highlightHues: function () {
             if (this.hasPieceLocs && this.selectedColor !== '' && this.selectedPiece !== -1) {
-                return this.combinePieceLocs(true)[this.selectedColor][this.selectedPiece];
+                return this.combinePieceLocs(this.selectedColor, this.selectedPiece, true);
             }
 
             return this.$utils.zeros(8, 8);
         },
         highlightIntensities: function () {
             if (this.hasPieceLocs && this.selectedColor !== '' && this.selectedPiece !== -1) {
-                return this.combinePieceLocs(false)[this.selectedColor][this.selectedPiece];
+                return this.combinePieceLocs(this.selectedColor, this.selectedPiece, false);
             }
 
             return this.$utils.zeros(8, 8);

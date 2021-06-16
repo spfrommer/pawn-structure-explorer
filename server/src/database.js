@@ -34,6 +34,15 @@ class Database {
         });
     }
 
+    findAll() {
+        return new Promise((resolve, reject) => {
+            this.db.structurePieceLocs.find({ }, (err, docs) => {
+                if (err !== null) reject();
+                resolve(docs);
+            });
+        });
+    }
+
     // ================================================================================
     // Indexing
     // ================================================================================
@@ -83,10 +92,13 @@ class Database {
         });
     }
 
-    indexOnPosition(structure, pieceLocs, result) {
+    indexOnPosition(structure, pieceLocs, tags) {
+        if (tags.Result === null) return; // Sometimes don't have result data
+
         if (!this.seenStructures.has(structure)) {
             // upsert.updateOne bombs out with doc size errors...
             this.bulkPieceInits.find({ _id: structure }).upsert({
+            // this.bulkPieceInits.find({ _id: structure }).upsert().updateOne({
                 $setOnInsert: this.constructor.defaultPieceLocs(),
             });
 
@@ -95,7 +107,7 @@ class Database {
 
         for (const [square, piece] of Object.entries(pieceLocs)) {
             const loc = utils.toFileRank(square);
-            const updateKey = `${result}.${piece.color}.${piece.piece}.${loc.rank}.${loc.file}`;
+            const updateKey = `${tags.Result}.${piece.color}.${piece.piece}.${loc.rank}.${loc.file}`;
 
             this.bulkPieceUpdates.find({ _id: structure }).update({
                 $inc: { [updateKey]: 1 },

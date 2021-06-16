@@ -2,10 +2,10 @@
 import { chessboard } from 'vue-chessboard';
 import $ from 'jquery';
 
-const Color = require('color');
-
 import { EventBus } from './event-bus';
 import variables from './styles/_variables.scss';
+
+const Color = require('color');
 
 const HUE_SCALE = 10;
 const INTENSITY_CAP = 0.5;
@@ -17,17 +17,15 @@ export default {
     watch: {
         highlights: {
             handler: function (highlights) {
-                const intensities = highlights.intensities;
-                const hues = highlights.hues;
+                const { intensities, hues } = highlights;
 
-                const maxRow = intensities.map(row => Math.max(...row));
-                let maxIntensity = Math.max.apply(null, maxRow);
+                let maxIntensity = this.$utils.maxArray(intensities);
                 if (maxIntensity === 0) maxIntensity = 1;
 
                 for (let i = 0; i < 8; i++) {
                     for (let j = 0; j < 8; j++) {
-                        const intensity =  INTENSITY_CAP * intensities[7 - j][i] / maxIntensity;
-                        const hue = HUE_SCALE * hues[7 - j][i] / maxIntensity + 0.5;
+                        const intensity = INTENSITY_CAP * (intensities[7 - j][i] / maxIntensity);
+                        const hue = HUE_SCALE * (hues[7 - j][i] / maxIntensity) + 0.5;
 
                         const color = Color(highlights.colormap(hue)).alpha(intensity).string();
                         $(`#highlight-board square:nth-child(${i * 8 + j + 1}`).css('background-color', color);
@@ -49,10 +47,12 @@ export default {
         // Add overlay highlight squares
         const highlightBoard = $('<div></div>').addClass('cg-board').attr('id', 'highlight-board');
         $('.cg-board-wrap').append(highlightBoard);
+
+        const squareSize = variables.squareSizeInt;
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 let square = $('<square></square>').addClass('highlight');
-                square = square.css('transform', `translate(${i * variables.squareSizeInt}px, ${j * variables.squareSizeInt}px)`);
+                square = square.css('transform', `translate(${i * squareSize}px, ${j * squareSize}px)`);
                 square = square.css('background-color', 'rgba(0, 0, 0, 0.0)');
                 $('#highlight-board').append(square);
             }
