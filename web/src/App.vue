@@ -57,7 +57,7 @@ export default {
                 console.log(this.pieceLocs);
             }, err => { console.error(err); });
         },
-        combinePieceLocs: function (color, piece, weighResult) {
+        combinePieceLocs(color, piece, weighResult) {
             if (!this.hasPieceLocs) {
                 return this.$utils.zeros(8, 8);
             }
@@ -106,6 +106,7 @@ export default {
         const startColor = Color(variables.accent3).string();
         const midColor = Color(variables.accent1).string();
         const endColor = Color(variables.accent2).string();
+
         return {
             piecesUpper: ['rook-black', 'knight-black', 'bishop-black', 'queen-black', 'king-black', 'bishop-black', 'knight-black', 'rook-black'],
             piecesLower: ['rook-white', 'knight-white', 'bishop-white', 'queen-white', 'king-white', 'bishop-white', 'knight-white', 'rook-white'],

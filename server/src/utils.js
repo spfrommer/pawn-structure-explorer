@@ -1,6 +1,10 @@
 const { LineReader } = require('line-reader');
+const nodeUtil = require('util');
 
 module.exports = {
+    promiseBind: function(object, functionName) {
+        return nodeUtil.promisify(object[functionName]).bind(object);
+    },
     zeros: function (rows, columns) {
         return Array(rows).fill().map(() => Array(columns).fill(0));
     },

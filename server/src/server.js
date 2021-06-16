@@ -1,11 +1,10 @@
 const express = require('express');
 const Database = require('./database');
 
-const uri = 'mongodb://mongodb:27017'; // Connects to ongodb container
+const uri = 'mongodb://mongodb:27017'; // Connects to mongodb container
 const pgnsDir = '/pgns'; // Mapped as volume in docker-compose
 const db = new Database(uri, pgnsDir);
 
-// App
 const app = express();
 app.get('/api/pieceLocs', (req, res) => {
     db.getPieceLocs(req.query.structure)

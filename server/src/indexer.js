@@ -7,7 +7,9 @@ class GameIndexer {
         this.chess = new Chess();
         this.chess.load_pgn(pgnMoves);
 
-        this.tags = this.constructor.getGameTags(pgn);
+        const tags = this.constructor.getGameTags(pgn);
+        tags.GameId = `${tags.White}-${tags.Black}-${tags.UTCDate}-${tags.UTCTime}`; 
+        this.tags = tags;
     }
 
     static getGameTags(pgn) {

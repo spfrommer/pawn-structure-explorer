@@ -12,44 +12,27 @@ class Database {
 
         this.seenStructures = new Set();
 
-        this.bulkPieceInits = null;
-        this.bulkPieceUpdates = null;
+        this.bulkPieceLocsInits = null;
+        this.bulkPieceLocsUpdates = null;
+
+        this.bulkGamesInits = null;
+        this.bulkGamesUpdates = null;
     }
 
     drop() {
-        return new Promise((resolve, reject) => {
-            this.db.structurePieceLocs.drop((err, doc) => {
-                if (err !== null) reject();
-                resolve(doc);
-            });
-        });
+        return utils.promiseBind(this.db.structurePieceLocs, 'drop')();
     }
 
     getPieceLocs(structure) {
-        return new Promise((resolve, reject) => {
-            this.db.structurePieceLocs.findOne({ _id: structure }, (err, pieceLocs) => {
-                if (err !== null) reject();
-                resolve(pieceLocs);
-            });
-        });
+        return utils.promiseBind(this.db.structurePieceLocs, 'findOne')({ _id: structure });
     }
 
     findAll() {
-        return new Promise((resolve, reject) => {
-            this.db.structurePieceLocs.find({ }, (err, docs) => {
-                if (err !== null) reject();
-                resolve(docs);
-            });
-        });
+        return utils.promiseBind(this.db.structurePieceLocs, 'find')({});
     }
 
     stats() {
-        return new Promise((resolve, reject) => {
-            this.db.stats((err, stats) => {
-                if (err !== null) reject();
-                resolve(stats);
-            });
-        });
+        return utils.promiseBind(this.db.structurePieceLocs, 'stats')();
     }
 
     // ================================================================================
@@ -90,8 +73,8 @@ class Database {
     }
 
     indexPgns(pgns) {
-        this.bulkPieceInits = this.db.structurePieceLocs.initializeUnorderedBulkOp();
-        this.bulkPieceUpdates = this.db.structurePieceLocs.initializeUnorderedBulkOp();
+        this.bulkPieceLocsInits = this.db.structurePieceLocs.initializeUnorderedBulkOp();
+        this.bulkPieceLocsUpdates = this.db.structurePieceLocs.initializeUnorderedBulkOp();
 
         const self = this;
 
@@ -102,11 +85,23 @@ class Database {
             pgnsCount++;
         }
 
+        // nodeUtil.promisify(self.bulkPieceLocsInits.execute);
+
+        /*
+        async function runBulkIndexing() {
+            try {
+                await self.bulkPieceLocsInits.execute(); // need to promisify
+            } catch(err) {
+                console.log(err);
+            }
+        }
+        */
+
         return new Promise((resolve, reject) => {
-            self.bulkPieceInits.execute(err => {
+            self.bulkPieceLocsInits.execute(err => {
                 if (err !== null) reject(err);
 
-                self.bulkPieceUpdates.execute(err => {
+                self.bulkPieceLocsUpdates.execute(err => {
                     if (err !== null) reject(err);
 
                     resolve(pgnsCount);
@@ -120,9 +115,7 @@ class Database {
         if (tags.Result == null) return; // Sometimes don't have result data
 
         if (!this.seenStructures.has(structure)) {
-            // upsert.updateOne bombs out with doc size errors...
-            // this.bulkPieceInits.find({ _id: structure }).upsert({
-            this.bulkPieceInits.find({ _id: structure }).upsert().updateOne({
+            this.bulkPieceLocsInits.find({ _id: structure }).upsert().updateOne({
                 $setOnInsert: this.constructor.defaultPieceLocs(),
             });
 
@@ -133,7 +126,7 @@ class Database {
             const loc = utils.toFileRank(square);
             const updateKey = `${tags.Result}.${piece.color}.${piece.piece}.${loc.rank}.${loc.file}`;
 
-            this.bulkPieceUpdates.find({ _id: structure }).update({
+            this.bulkPieceLocsUpdates.find({ _id: structure }).update({
                 $inc: { [updateKey]: 1 },
             });
         }
@@ -150,6 +143,14 @@ class Database {
         }
         return { '1-0': createPieceLocs(), '1/2-1/2': createPieceLocs(), '0-1': createPieceLocs() };
     }
+
+    static defaultGames() {
+        function createGames() {
+            return { gameCount: 0, openings: {} };
+        }
+        return { '1-0': createGames(), '1/2-1/2': createGames(), '0-1': createGames() };
+    }
+
 }
 
 module.exports = Database;
