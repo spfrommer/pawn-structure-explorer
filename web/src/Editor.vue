@@ -8,20 +8,14 @@ export default {
     extends: SpareBank,
     props: {
         flipped: { default() { return false; } },
-        pieces: {
-            default() {
-                // TOOD: fix
-                const pieces = ['pawn-black', 'pawn-white'];
-                if (this.flipped) pieces.reverse();
-                return pieces;
-            },
-        },
         vertical: { default() { return true; } },
         selectable: { default() { return false; } },
+        // PIECES MUST BE PASSED IN W/ FORM ['pawn-black', 'pawn-white']
     },
     methods: {
         onMouseDown(event, i) {
-            const color = i === this.flipped ? 'black' : 'white';
+            // eslint-disable-next-line eqeqeq
+            const color = (i == this.flipped) ? 'black' : 'white';
             EventBus.$emit('editorMouseDown', event, color);
             this.onMouseDownDefault(event, i);
         },

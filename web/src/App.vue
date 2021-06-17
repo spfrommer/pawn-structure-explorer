@@ -7,7 +7,7 @@
             @spareClick="upperBankClick"/>
         <div id="boardEditor">
             <GameStats id="stats" :games="games"/>
-            <Editor :id="'editor'" :flipped="boardFlipped"/>
+            <Editor :id="'editor'" :flipped="boardFlipped" :pieces="piecesEditor"/>
             <Controls id="controls" @flip="flipBoard"/>
             <Board ref="board"
                 :highlights="highlights"
@@ -140,6 +140,11 @@ export default {
         },
         colorLower: function () {
             return this.boardFlipped ? 'black' : 'white';
+        },
+        piecesEditor: function () {
+            const pieces = ['pawn-black', 'pawn-white'];
+            if (this.boardFlipped) pieces.reverse();
+            return pieces;
         },
     },
     data: function () {
