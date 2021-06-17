@@ -1,7 +1,7 @@
 <script>
 import { chessboard } from 'vue-chessboard';
 
-const { Chess } = require('chess.js');
+const Chess = require('chess.js');
 
 export default {
     name: 'CustomBoard',
@@ -22,6 +22,12 @@ export default {
     },
     computed: {
         chess: function () {
+            console.log('Trying to comute game...');
+            console.log(this.pgn);
+            console.log(this.structure);
+
+            if (this.pgn == null) return new Chess();
+
             const chess = new Chess();
             chess.load_pgn(this.pgn);
 
@@ -30,11 +36,12 @@ export default {
             for (const move of chess.history({ verbose: true })) {
                 chessPlay.move(move);
                 if (this.structure === this.getStructure(chessPlay)) {
+                    console.log('Found chess!');
                     return chessPlay;
                 }
             }
 
-            throw Error('Could not find position for structure');
+            return new Chess();
         },
     },
     watch: {
@@ -56,8 +63,8 @@ export default {
 </script>
 
 <style lang="scss">
-.blue .cg-board-wrap {
-    background-size: 80px 80px;
+.snapshot.blue .cg-board-wrap {
+    background-size: 320px 320px;
     background-image: linear-gradient( rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4) ), url($metal);
 }
 </style>

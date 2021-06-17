@@ -17,7 +17,6 @@ export default {
         },
         whiteOpenings: function () {
             if (!this.hasGames) return 0;
-            console.log(Object.keys(this.games['1-0'].openings));
             return Object.keys(this.games['1-0'].openings);
         },
     },

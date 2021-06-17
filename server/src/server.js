@@ -9,28 +9,22 @@ const app = express();
 
 function errorHandle(res, err) {
     console.error(err);
-    res.send("ERROR");
+    res.send('ERROR');
 }
 
 app.get('/api/pieceLocs', (req, res) => {
     db.getPieceLocs(req.query.structure)
-        .then(doc => {
-            res.json(doc);
-        })
+        .then(doc => { res.send(doc); })
         .catch(errorHandle.bind(res));
 });
 app.get('/api/games', (req, res) => {
     db.getGames(req.query.structure)
-        .then(doc => {
-            res.json(doc);
-        })
+        .then(doc => { res.send(doc); })
         .catch(errorHandle.bind(res));
 });
 app.get('/api/gamePgn', (req, res) => {
     db.getPgn(req.query.gameId)
-        .then(docs => {
-            res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
-        })
+        .then(doc => { res.send(doc); })
         .catch(errorHandle.bind(res));
 });
 app.get('/api/pieceLocs/first', (req, res) => {

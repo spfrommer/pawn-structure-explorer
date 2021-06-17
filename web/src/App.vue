@@ -9,7 +9,7 @@
             <GameStats id="stats" :games="games"/>
             <Editor :id="'editor'" :flipped="boardFlipped" :pieces="piecesEditor"/>
             <Controls id="controls" @flip="flipBoard" @reset="resetBoard"/>
-            <Board ref="board"
+            <Board ref="board" id="board"
                 :highlights="highlights"
                 :flipped="boardFlipped"
                 @boardChange="boardChange"/>
@@ -20,6 +20,9 @@
             :selectable="true"
             :pieces="piecesLower"
             @spareClick="lowerBankClick"/>
+        <GameSnapshot class="snapshot"
+            :structure="this.games._id"
+            :pgn="testPgn"/>
     </div>
 </template>
 
@@ -30,6 +33,7 @@ import SpareBank from './SpareBank.vue';
 import GameStats from './GameStats.vue';
 import Openings from './Openings.vue';
 import Controls from './Controls.vue';
+import GameSnapshot from './GameSnapshot.vue';
 
 import variables from './styles/_variables.scss';
 
@@ -45,6 +49,25 @@ export default {
         GameStats,
         Openings,
         Controls,
+        GameSnapshot,
+    },
+    watch: {
+        games: function (newGames) {
+            console.log('Getting test pgn');
+            console.log(newGames);
+            if ('0-1' in newGames) {
+                const id = newGames['0-1'].openings['Alekhine Defense']['Two Pawn Attack'][0];
+                const pgnEndpoint = `/api/gamePgn?gameId=${id}`;
+                this.$http.get(pgnEndpoint).then(response => {
+                    console.log('Got pgn');
+                    console.log(response.bodyText);
+                    const responseJson = JSON.parse(response.bodyText);
+                    const pgn = (responseJson === null) ? {} : responseJson;
+                    console.log(pgn);
+                    this.pgn = pgn;
+                }, err => { console.error(err); });
+            }
+        },
     },
     methods: {
         upperBankClick(event, i) {
@@ -157,6 +180,8 @@ export default {
         const endColor = Color(variables.accent2).string();
 
         return {
+            testPgn: '',
+
             boardFlipped: false,
 
             pieceLocs: {},
