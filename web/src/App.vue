@@ -8,7 +8,7 @@
         <div id="boardEditor">
             <GameStats id="stats" :games="games"/>
             <Editor :id="'editor'" :flipped="boardFlipped" :pieces="piecesEditor"/>
-            <Controls id="controls" @flip="flipBoard"/>
+            <Controls id="controls" @flip="flipBoard" @reset="resetBoard"/>
             <Board ref="board"
                 :highlights="highlights"
                 :flipped="boardFlipped"
@@ -65,6 +65,10 @@ export default {
             this.boardFlipped = !this.boardFlipped;
             this.selectedColor = '';
             this.selectedPiece = -1;
+        },
+        resetBoard() {
+            this.$refs.board.board.set({ fen: '8/pppppppp/8/8/8/8/PPPPPPPP/8 w KQkq - 0 1' });
+            this.boardChange();
         },
         boardChange() {
             const pieceLocsEndpoint = `/api/pieceLocs?structure=${this.$refs.board.structure()}`;
@@ -174,8 +178,7 @@ body {
     background-color: $primary;
 }
 #app {
-    font-family: 'Roboto', Sans-Serif;
-    font-weight: 600;
+    font: 400 13.3333px Arial;
     color: $text-primary;
     display: inline-block;
     position: absolute;
@@ -190,7 +193,15 @@ body {
 }
 #stats {
     position: absolute;
+    text-align: right;
     right: 340px;
+    width: 200px;
+}
+#controls {
+    position: absolute;
+    text-align: right;
+    right: 335px;
+    top: 350px;
     width: 200px;
 }
 #openings {

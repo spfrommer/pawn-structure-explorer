@@ -1,6 +1,6 @@
 <template>
 <div class="game-stats">
-    {{ gameCount }} Games
+    {{ gameCount }} games
     <br>
     {{ percentWhite }}% / {{ percentDraw }}% / {{ percentBlack }}%
 </div>
