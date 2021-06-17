@@ -8,6 +8,7 @@
         <div id="boardEditor">
             <GameStats id="stats" :games="games"/>
             <Editor :id="'editor'"/>
+            <Controls id="controls" @flip="flipBoard"/>
             <Board ref="board"
                 :highlights="highlights"
                 :free="true"
@@ -28,6 +29,7 @@ import Editor from './Editor.vue';
 import SpareBank from './SpareBank.vue';
 import GameStats from './GameStats.vue';
 import Openings from './Openings.vue';
+import Controls from './Controls.vue';
 
 import variables from './styles/_variables.scss';
 
@@ -42,6 +44,7 @@ export default {
         SpareBank,
         GameStats,
         Openings,
+        Controls,
     },
     methods: {
         upperBankClick(event, i) {
@@ -55,6 +58,9 @@ export default {
             const unselect = this.selectedColor === 'white' && this.selectedPiece === i;
             this.selectedColor = unselect ? '' : 'white';
             this.selectedPiece = unselect ? -1 : i;
+        },
+        flipBoard() {
+            this.$refs.board.board.toggleOrientation();
         },
         boardChange() {
             const pieceLocsEndpoint = `/api/pieceLocs?structure=${this.$refs.board.structure()}`;
@@ -114,6 +120,14 @@ export default {
 
             return this.$utils.zeros(8, 8);
         },
+        piecesUpper: function () {
+            const color = this.boardFlipped ? '-white' : '-black';
+            return this.pieces.map(piece => piece + color);
+        },
+        piecesLower: function () {
+            const color = this.boardFlipped ? '-black' : '-white';
+            return this.pieces.map(piece => piece + color);
+        },
     },
     data: function () {
         const startColor = Color(variables.accent3).string();
@@ -121,8 +135,8 @@ export default {
         const endColor = Color(variables.accent2).string();
 
         return {
-            piecesUpper: ['rook-black', 'knight-black', 'bishop-black', 'queen-black', 'king-black', 'bishop-black', 'knight-black', 'rook-black'],
-            piecesLower: ['rook-white', 'knight-white', 'bishop-white', 'queen-white', 'king-white', 'bishop-white', 'knight-white', 'rook-white'],
+            pieces: ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'],
+            boardFlipped: false,
 
             pieceLocs: {},
             games: {},
@@ -164,7 +178,7 @@ body {
 }
 #openings {
     position: absolute;
-    transform: translate(340px, 116px);
+    transform: translate(340px, 0px);
     text-align: left;
 }
 </style>
