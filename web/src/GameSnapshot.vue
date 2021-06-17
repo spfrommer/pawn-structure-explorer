@@ -22,25 +22,17 @@ export default {
     },
     computed: {
         chess: function () {
-            console.log('Trying to compute game...');
-            console.log(this.structure);
-
             if (this.pgn == null) return new Chess();
 
             const pgnMoves = this.pgn.split('\n').filter(l => l[0] !== '[').join(' ').replace('\n', '');
             const chess = new Chess();
             chess.load_pgn(pgnMoves);
-            console.log(chess);
 
             const chessPlay = new Chess();
 
             for (const move of chess.history({ verbose: true })) {
                 chessPlay.move(move);
-                console.log('-----------');
-                console.log(this.structure);
-                console.log(this.getStructure(chessPlay));
                 if (this.structure === this.getStructure(chessPlay)) {
-                    console.log('Found chess!');
                     return chessPlay;
                 }
             }

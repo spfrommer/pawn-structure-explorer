@@ -25,6 +25,7 @@
         "arrow-parens": ["error", "as-needed"],
         "prefer-destructuring": "off",
         "func-names": "off",
-        "object-shorthand": "off"
+        "object-shorthand": "off",
+        "no-empty": "off"
     }
 }

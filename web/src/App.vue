@@ -92,13 +92,19 @@ export default {
         boardChange() {
             const pieceLocsEndpoint = `/api/pieceLocs?structure=${this.$refs.board.structure()}`;
             this.$http.get(pieceLocsEndpoint).then(response => {
-                const responseJson = JSON.parse(response.bodyText);
+                let responseJson = null;
+                try {
+                    responseJson = JSON.parse(response.bodyText);
+                } catch { }
                 this.pieceLocs = (responseJson === null) ? {} : responseJson;
             }, err => { console.error(err); });
 
             const gamesEndpoint = `/api/games?structure=${this.$refs.board.structure()}`;
             this.$http.get(gamesEndpoint).then(response => {
-                const responseJson = JSON.parse(response.bodyText);
+                let responseJson = null;
+                try {
+                    responseJson = JSON.parse(response.bodyText);
+                } catch { }
                 this.games = (responseJson === null) ? {} : responseJson;
             }, err => { console.error(err); });
         },
