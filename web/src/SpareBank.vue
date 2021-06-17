@@ -26,6 +26,11 @@ export default {
             selected: -1,
         };
     },
+    watch: {
+        pieces: function () {
+            this.selected = -1;
+        },
+    },
     methods: {
         spareBackClass(i) {
             if (i === 0) {

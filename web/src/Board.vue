@@ -57,9 +57,10 @@ export default {
             const squareSize = variables.squareSizeInt;
             for (let i = 0; i < 8; i++) {
                 for (let j = 0; j < 8; j++) {
+                    const iFlip = boardFlipped ? 7 - i : i;
                     const jFlip = boardFlipped ? 7 - j : j;
                     let square = $('<square></square>').addClass('highlight');
-                    square = square.css('transform', `translate(${i * squareSize}px, ${jFlip * squareSize}px)`);
+                    square = square.css('transform', `translate(${iFlip * squareSize}px, ${jFlip * squareSize}px)`);
                     square = square.css('background-color', 'rgba(0, 0, 0, 0.0)');
                     $('#highlight-board').append(square);
                 }

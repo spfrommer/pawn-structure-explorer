@@ -7,11 +7,10 @@
             @spareClick="upperBankClick"/>
         <div id="boardEditor">
             <GameStats id="stats" :games="games"/>
-            <Editor :id="'editor'"/>
+            <Editor :id="'editor'" :flipped="boardFlipped"/>
             <Controls id="controls" @flip="flipBoard"/>
             <Board ref="board"
                 :highlights="highlights"
-                :free="true"
                 :flipped="boardFlipped"
                 @boardChange="boardChange"/>
             <Openings id="openings" :games="games"/>
@@ -50,18 +49,22 @@ export default {
     methods: {
         upperBankClick(event, i) {
             this.$refs.lowerBank.clearSelection();
-            const unselect = this.selectedColor === 'black' && this.selectedPiece === i;
-            this.selectedColor = unselect ? '' : 'black';
-            this.selectedPiece = unselect ? -1 : i;
+            this.bankClick(i, this.colorUpper);
         },
         lowerBankClick(event, i) {
             this.$refs.upperBank.clearSelection();
-            const unselect = this.selectedColor === 'white' && this.selectedPiece === i;
-            this.selectedColor = unselect ? '' : 'white';
-            this.selectedPiece = unselect ? -1 : i;
+            this.bankClick(i, this.colorLower);
+        },
+        bankClick(i, color) {
+            const iFlip = this.boardFlipped ? 7 - i : i;
+            const unselect = this.selectedColor === color && this.selectedPiece === iFlip;
+            this.selectedColor = unselect ? '' : color;
+            this.selectedPiece = unselect ? -1 : iFlip;
         },
         flipBoard() {
             this.boardFlipped = !this.boardFlipped;
+            this.selectedColor = '';
+            this.selectedPiece = -1;
         },
         boardChange() {
             const pieceLocsEndpoint = `/api/pieceLocs?structure=${this.$refs.board.structure()}`;
@@ -121,13 +124,22 @@ export default {
 
             return this.$utils.zeros(8, 8);
         },
+        pieces: function () {
+            const pieces = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'];
+            if (this.boardFlipped) pieces.reverse();
+            return pieces;
+        },
         piecesUpper: function () {
-            const color = this.boardFlipped ? '-white' : '-black';
-            return this.pieces.map(piece => piece + color);
+            return this.pieces.map(piece => `${piece}-${this.colorUpper}`);
         },
         piecesLower: function () {
-            const color = this.boardFlipped ? '-black' : '-white';
-            return this.pieces.map(piece => piece + color);
+            return this.pieces.map(piece => `${piece}-${this.colorLower}`);
+        },
+        colorUpper: function () {
+            return this.boardFlipped ? 'white' : 'black';
+        },
+        colorLower: function () {
+            return this.boardFlipped ? 'black' : 'white';
         },
     },
     data: function () {
@@ -136,7 +148,6 @@ export default {
         const endColor = Color(variables.accent2).string();
 
         return {
-            pieces: ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'],
             boardFlipped: false,
 
             pieceLocs: {},

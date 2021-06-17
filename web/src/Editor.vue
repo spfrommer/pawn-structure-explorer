@@ -7,13 +7,21 @@ export default {
     name: 'Editor',
     extends: SpareBank,
     props: {
-        pieces: { default() { return ['pawn-black', 'pawn-white']; } },
+        flipped: { default() { return false; } },
+        pieces: {
+            default() {
+                // TOOD: fix
+                const pieces = ['pawn-black', 'pawn-white'];
+                if (this.flipped) pieces.reverse();
+                return pieces;
+            },
+        },
         vertical: { default() { return true; } },
         selectable: { default() { return false; } },
     },
     methods: {
         onMouseDown(event, i) {
-            const color = i === 0 ? 'black' : 'white';
+            const color = i === this.flipped ? 'black' : 'white';
             EventBus.$emit('editorMouseDown', event, color);
             this.onMouseDownDefault(event, i);
         },
