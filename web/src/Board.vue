@@ -80,9 +80,11 @@ export default {
                 free: true,
                 events: { after: undefined },
             },
-            // Drag pieces off board to delete
             draggable: {
                 deleteOnDropOff: true,
+            },
+            animation: {
+                enabled: false,
             },
         });
 

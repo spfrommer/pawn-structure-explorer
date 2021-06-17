@@ -185,23 +185,23 @@ body {
     transform: translate(100px, 40px);
 }
 #upperBank {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 #editor {
     position: absolute;
-    transform: translate(-55px, 116px);
+    transform: translate(-55px, 117px);
 }
 #stats {
     position: absolute;
     text-align: right;
-    right: 340px;
+    right: 330px;
     width: 200px;
 }
 #controls {
     position: absolute;
     text-align: right;
-    right: 335px;
-    top: 350px;
+    right: 325px;
+    top: 340px;
     width: 200px;
 }
 #openings {
