@@ -53,18 +53,14 @@ export default {
     },
     watch: {
         games: function (newGames) {
-            console.log('Getting test pgn');
-            console.log(newGames);
             if ('0-1' in newGames) {
+                const self = this;
+
                 const id = newGames['0-1'].openings['Alekhine Defense']['Two Pawn Attack'][0];
                 const pgnEndpoint = `/api/gamePgn?gameId=${id}`;
                 this.$http.get(pgnEndpoint).then(response => {
-                    console.log('Got pgn');
-                    console.log(response.bodyText);
-                    const responseJson = JSON.parse(response.bodyText);
-                    const pgn = (responseJson === null) ? {} : responseJson;
-                    console.log(pgn);
-                    this.pgn = pgn;
+                    const responseJson = JSON.parse(response.bodyText).pgn;
+                    self.testPgn = (responseJson === null) ? {} : responseJson;
                 }, err => { console.error(err); });
             }
         },
@@ -104,7 +100,6 @@ export default {
             this.$http.get(gamesEndpoint).then(response => {
                 const responseJson = JSON.parse(response.bodyText);
                 this.games = (responseJson === null) ? {} : responseJson;
-                console.log(this.games);
             }, err => { console.error(err); });
         },
         combinePieceLocs(color, piece, weighResult) {
