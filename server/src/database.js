@@ -112,7 +112,7 @@ class Database {
 
         const self = this;
 
-        async function runBulkIndex() {
+        async function runBulkOps() {
             await utils.promiseBind(self.pieceLocsIndexing.bulkInits, 'execute')();
             await utils.promiseBind(self.pieceLocsIndexing.bulkUpdates, 'execute')();
             await utils.promiseBind(self.gamesIndexing.bulkInits, 'execute')();
@@ -121,7 +121,7 @@ class Database {
 
             return pgnsCount;
         }
-        return runBulkIndex();
+        return runBulkOps();
     }
 
     initializeBulkOps() {
@@ -194,11 +194,11 @@ class Database {
 
     indexGamePgnOnPosition(structure, pieceLocs, tags) {
         const indexingState = this.gamePgnIndexing;
-        const newGame = !indexingState.seenGames.has(structure);
+        const newGame = !indexingState.seenGames.has(tags.GameId);
 
         if (newGame) {
             indexingState.bulkInits.find({ _id: tags.GameId }).upsert().updateOne({
-                $setOnInsert: tags.pgn,
+                $setOnInsert: { pgn: tags.Pgn },
             });
 
             indexingState.seenGames.add(tags.GameId);

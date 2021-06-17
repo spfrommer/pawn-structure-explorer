@@ -6,40 +6,53 @@ const pgnsDir = '/pgns'; // Mapped as volume in docker-compose
 const db = new Database(uri, pgnsDir);
 
 const app = express();
+
+function errorHandle(res, err) {
+    console.error(err);
+    res.send("ERROR");
+}
+
 app.get('/api/pieceLocs', (req, res) => {
     db.getPieceLocs(req.query.structure)
         .then(doc => {
             res.json(doc);
         })
-        .catch(err => res.send(err));
+        .catch(errorHandle.bind(res));
 });
 app.get('/api/games', (req, res) => {
     db.getGames(req.query.structure)
         .then(doc => {
             res.json(doc);
         })
-        .catch(err => res.send(err));
+        .catch(errorHandle.bind(res));
+});
+app.get('/api/gamePgn', (req, res) => {
+    db.getPgn(req.query.gameId)
+        .then(docs => {
+            res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
+        })
+        .catch(errorHandle.bind(res));
 });
 app.get('/api/pieceLocs/first', (req, res) => {
     db.findAllPieceLocs()
         .then(docs => {
             res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
         })
-        .catch(err => res.send(res.send(JSON.stringify(err, null, 4))));
+        .catch(errorHandle.bind(res));
 });
 app.get('/api/games/first', (req, res) => {
     db.findAllGames()
         .then(docs => {
             res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
         })
-        .catch(err => res.send(JSON.stringify(err, null, 4)));
+        .catch(errorHandle.bind(res));
 });
 app.get('/api/gamePgn/first', (req, res) => {
     db.findAllGamePgn()
         .then(docs => {
             res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
         })
-        .catch(err => res.send(res.send(JSON.stringify(err, null, 4))));
+        .catch(errorHandle.bind(res));
 });
 
 app.get('/api/index', (req, res) => {
