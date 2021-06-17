@@ -6,7 +6,7 @@ const Chess = require('chess.js');
 export default {
     name: 'CustomBoard',
     extends: chessboard,
-    props: ['pgn', 'structure'],
+    props: ['pgn', 'structure', 'flipped'],
     methods: {
         getStructure: function (chess) {
             const pawnChess = new Chess(chess.fen());
@@ -46,6 +46,11 @@ export default {
                 fen: newChess.fen(),
             });
         },
+        flipped: {
+            handler: function () {
+                this.board.toggleOrientation();
+            },
+        },
     },
     mounted() {
         this.board.set({
@@ -53,6 +58,7 @@ export default {
             animation: {
                 enabled: true,
             },
+            viewOnly: true,
         });
     },
 };
@@ -62,5 +68,10 @@ export default {
 .snapshot.blue .cg-board-wrap {
     background-size: 320px 320px;
     background-image: linear-gradient( rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4) ), url($metal);
+    zoom: 0.5;
+}
+// Disabling coordinates attribute doesn't work
+.snapshot.blue {
+    color: rgba(0, 0, 0, 0);
 }
 </style>

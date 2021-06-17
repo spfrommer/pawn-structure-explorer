@@ -22,7 +22,8 @@
             @spareClick="lowerBankClick"/>
         <GameSnapshot class="snapshot"
             :structure="this.games._id"
-            :pgn="testPgn"/>
+            :pgn="testPgn"
+            :flipped="boardFlipped"/>
     </div>
 </template>
 
