@@ -13,7 +13,7 @@ const INTENSITY_CAP = 0.5;
 export default {
     name: 'CustomBoard',
     extends: chessboard,
-    props: ['highlights'],
+    props: ['highlights', 'flipped'],
     watch: {
         highlights: {
             handler: function (highlights) {
@@ -34,6 +34,12 @@ export default {
             },
             deep: true,
         },
+        flipped: {
+            handler: function (boardFlipped) {
+                this.board.toggleOrientation();
+                this.addHighlightOverlays(boardFlipped);
+            },
+        },
     },
     methods: {
         editorMouseDownHandler: function (mouseEvent, color) {
@@ -42,21 +48,27 @@ export default {
         structure: function () {
             return this.board.getFen();
         },
+        addHighlightOverlays: function (boardFlipped) {
+            $('#highlight-board').remove();
+
+            const highlightBoard = $('<div></div>').addClass('cg-board').attr('id', 'highlight-board');
+            $('.cg-board-wrap').append(highlightBoard);
+
+            const squareSize = variables.squareSizeInt;
+            for (let i = 0; i < 8; i++) {
+                for (let j = 0; j < 8; j++) {
+                    const jFlip = boardFlipped ? 7 - j : j;
+                    let square = $('<square></square>').addClass('highlight');
+                    square = square.css('transform', `translate(${i * squareSize}px, ${jFlip * squareSize}px)`);
+                    square = square.css('background-color', 'rgba(0, 0, 0, 0.0)');
+                    $('#highlight-board').append(square);
+                }
+            }
+        },
     },
     mounted() {
         // Add overlay highlight squares
-        const highlightBoard = $('<div></div>').addClass('cg-board').attr('id', 'highlight-board');
-        $('.cg-board-wrap').append(highlightBoard);
-
-        const squareSize = variables.squareSizeInt;
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                let square = $('<square></square>').addClass('highlight');
-                square = square.css('transform', `translate(${i * squareSize}px, ${j * squareSize}px)`);
-                square = square.css('background-color', 'rgba(0, 0, 0, 0.0)');
-                $('#highlight-board').append(square);
-            }
-        }
+        this.addHighlightOverlays();
 
         this.board.set({
             // Only pawn starting position

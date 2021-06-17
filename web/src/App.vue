@@ -12,6 +12,7 @@
             <Board ref="board"
                 :highlights="highlights"
                 :free="true"
+                :flipped="boardFlipped"
                 @boardChange="boardChange"/>
             <Openings id="openings" :games="games"/>
         </div>
@@ -60,7 +61,7 @@ export default {
             this.selectedPiece = unselect ? -1 : i;
         },
         flipBoard() {
-            this.$refs.board.board.toggleOrientation();
+            this.boardFlipped = !this.boardFlipped;
         },
         boardChange() {
             const pieceLocsEndpoint = `/api/pieceLocs?structure=${this.$refs.board.structure()}`;
