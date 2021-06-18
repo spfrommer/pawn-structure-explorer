@@ -2,15 +2,13 @@ FROM node:15.5-alpine
 
 WORKDIR /home/pse/web
 
-COPY ./package*.json ./
-
-# Install python & build tools for scss, run npm install
+# Install python & build tools for scss
 RUN apk add --no-cache --virtual .gyp \
         python \
         make \
         g++
-# && npm install \
-# && apk del .gyp
+
+COPY ./package*.json ./
 
 RUN npm install
 RUN apk del .gyp

@@ -20,10 +20,6 @@
             :selectable="true"
             :pieces="piecesLower"
             @spareClick="lowerBankClick"/>
-        <GameSnapshot class="snapshot"
-            :structure="this.games._id"
-            :pgn="testPgn"
-            :flipped="boardFlipped"/>
     </div>
 </template>
 
@@ -34,7 +30,6 @@ import SpareBank from './SpareBank.vue';
 import GameStats from './GameStats.vue';
 import Openings from './Openings.vue';
 import Controls from './Controls.vue';
-import GameSnapshot from './GameSnapshot.vue';
 
 import variables from './styles/_variables.scss';
 
@@ -50,21 +45,6 @@ export default {
         GameStats,
         Openings,
         Controls,
-        GameSnapshot,
-    },
-    watch: {
-        games: function (newGames) {
-            if ('0-1' in newGames) {
-                const self = this;
-
-                const id = newGames['0-1'].openings['Alekhine Defense']['Two Pawn Attack'][0];
-                const pgnEndpoint = `/api/gamePgn?gameId=${id}`;
-                this.$http.get(pgnEndpoint).then(response => {
-                    const responseJson = JSON.parse(response.bodyText).pgn;
-                    self.testPgn = (responseJson === null) ? {} : responseJson;
-                }, err => { console.error(err); });
-            }
-        },
     },
     methods: {
         upperBankClick(event, i) {
@@ -182,8 +162,6 @@ export default {
         const endColor = Color(variables.accent2).string();
 
         return {
-            testPgn: '',
-
             boardFlipped: false,
 
             pieceLocs: {},
