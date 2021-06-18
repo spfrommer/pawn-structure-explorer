@@ -1,6 +1,6 @@
 <template>
-    <div id="app">
-        <SpareBank ref="upperBank" :id="'upperBank'"
+    <div id="App">
+        <SpareBank ref="UpperBank" :id="'UpperBank'"
             :vertical="false"
             :selectable="true"
             :pieces="piecesUpper"
@@ -8,14 +8,14 @@
         <div id="boardEditor">
             <GameStats id="GameStats" :games="games"/>
             <Editor :id="'Editor'" :flipped="boardFlipped" :pieces="piecesEditor"/>
-            <Controls id="controls" @flip="flipBoard" @reset="resetBoard"/>
-            <Board ref="board" id="board"
+            <Controls id="Controls" @flip="flipBoard" @reset="resetBoard"/>
+            <Board ref="board" id="Board"
                 :highlights="highlights"
                 :flipped="boardFlipped"
                 @boardChange="boardChange"/>
-            <Openings id="openings" :games="games" :flipped="boardFlipped"/>
+            <Openings id="Openings" :games="games" :flipped="boardFlipped"/>
         </div>
-        <SpareBank ref="lowerBank" :id="'lowerBank'"
+        <SpareBank ref="LowerBank" :id="'LowerBank'"
             :vertical="false"
             :selectable="true"
             :pieces="piecesLower"
@@ -48,11 +48,11 @@ export default {
     },
     methods: {
         upperBankClick(event, i) {
-            this.$refs.lowerBank.clearSelection();
+            this.$refs.LowerBank.clearSelection();
             this.bankClick(i, this.colorUpper);
         },
         lowerBankClick(event, i) {
-            this.$refs.upperBank.clearSelection();
+            this.$refs.UpperBank.clearSelection();
             this.bankClick(i, this.colorLower);
         },
         bankClick(i, color) {
@@ -182,14 +182,14 @@ export default {
 body {
     background-color: $primary;
 }
-#app {
+#App {
     font: 400 13.3333px Arial;
     color: $text-primary;
     display: inline-block;
     position: absolute;
     transform: translate(100px, 40px);
 }
-#upperBank {
+#UpperBank {
     margin-bottom: 10px;
 }
 #Editor {
@@ -202,14 +202,14 @@ body {
     right: 330px;
     width: 200px;
 }
-#controls {
+#Controls {
     position: absolute;
     text-align: right;
     right: 325px;
     top: 340px;
     width: 200px;
 }
-#openings {
+#Openings {
     position: absolute;
     transform: translate(340px, -55px);
     text-align: left;

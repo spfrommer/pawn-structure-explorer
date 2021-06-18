@@ -1,5 +1,5 @@
 <template>
-<div class="controls">
+<div>
     <button @click="flipClicked">
         FLIP
     </button>
@@ -20,11 +20,11 @@ export default {
 </script>
 
 <style lang="scss">
-.controls {
+#Controls {
     color: $text-secondary;
     text-align: right;
 }
-button {
+#Controls button {
     background-color: rgba(0, 0, 0, 0);
     color: $text-secondary;
     border: 0px;

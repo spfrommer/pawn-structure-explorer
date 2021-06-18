@@ -98,17 +98,17 @@ export default {
 </script>
 
 <style lang="scss">
-#board.blue {
+#Board.blue {
     float: left;
 }
-#board.blue .cg-board-wrap {
+#Board.blue .cg-board-wrap {
     background-size: 320px 320px;
     background-image: linear-gradient( rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4) ), url($metal);
 }
-#board .cg-board:not(#highlight-board) square {
+#Board .cg-board:not(#highlight-board) square {
     opacity: 0.0;
 }
-#board #highlight-board square {
+#Board #highlight-board square {
     top: 1%;
     left: 1%;
     width: 10.5%;

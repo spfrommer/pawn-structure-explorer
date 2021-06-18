@@ -28,7 +28,6 @@
 import GameSnapshot from './GameSnapshot.vue';
 
 export default {
-    // games: games for the current structure, as returned by the server
     props: ['games', 'flipped'],
     components: { GameSnapshot },
     methods: {
@@ -121,7 +120,7 @@ export default {
 </script>
 
 <style lang="scss">
-.game-stats {
-    color: $text-secondary
+#Openings square.last-move {
+    background-color: scale-color($accent1, $alpha: -70%);
 }
 </style>
