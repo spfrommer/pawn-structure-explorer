@@ -1,26 +1,27 @@
 <template>
 <div class="game-stats">
-    White wins
+    <GameSnapshot v-for="(game, index) in selectedGames['1-0']"
+        :key = "game.gameId"
+        :structure="games._id"
+        :pgn="selectedPgns['1-0'][index]"
+        :flipped="flipped"
+        class="snapshot" />
+
     <!--
-    <GameSnapshot class="snapshot"
-        :structure="this.games._id"
-        :pgn="testPgn"
-        :flipped="boardFlipped"/>
-        -->
-
     {{ selectedGames }}
-
     <br>
     {{ selectedPgns }}
-    <br>
-    Black wins
+    -->
 </div>
 </template>
 
 <script>
+import GameSnapshot from './GameSnapshot.vue';
+
 export default {
     // games: games for the current structure, as returned by the server
-    props: ['games'],
+    props: ['games', 'flipped'],
+    components: { GameSnapshot },
     watch: {
         games: function (newGames) {
             if ('0-1' in newGames) {

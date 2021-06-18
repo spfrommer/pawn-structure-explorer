@@ -13,7 +13,7 @@
                 :highlights="highlights"
                 :flipped="boardFlipped"
                 @boardChange="boardChange"/>
-            <Openings id="openings" :games="games"/>
+            <Openings id="openings" :games="games" :flipped="boardFlipped"/>
         </div>
         <SpareBank ref="lowerBank" :id="'lowerBank'"
             :vertical="false"
