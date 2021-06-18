@@ -6,14 +6,14 @@
             :selectable="true"
             :pieces="piecesUpper"
             @spareClick="upperBankClick"/>
-        <div id="boardEditor">
-            <GameStats id="GameStats" :games="games"/>
-            <Editor :id="'Editor'" :flipped="boardFlipped" :pieces="piecesEditor"/>
-            <Controls id="Controls" @flip="flipBoard" @reset="resetBoard"/>
+        <div id="BoardEditor">
             <Board ref="board" id="Board"
                 :highlights="highlights"
                 :flipped="boardFlipped"
                 @boardChange="boardChange"/>
+            <Controls id="Controls" @flip="flipBoard" @reset="resetBoard"/>
+            <GameStats id="GameStats" :games="games"/>
+            <Editor :id="'Editor'" :flipped="boardFlipped" :pieces="piecesEditor"/>
         </div>
         <SpareBank ref="LowerBank" :id="'LowerBank'"
             :vertical="false"
@@ -192,28 +192,32 @@ body {
     font-family: Arial;
 
     color: $text-primary;
-
-    margin: 0 auto;
-    padding: 20px;
+    transform: translate(-50px, 20px);
 }
 #UpperBank {
     margin-bottom: 10px;
 }
+#BoardEditor {
+    position: relative;
+    top: 0px;
+    left: 0px;
+}
 #Editor {
     position: absolute;
-    transform: translate(-55px, 117px);
+    transform: translate(-370px, 118px);
 }
 #GameStats {
     position: absolute;
     text-align: right;
-    right: 690px;
+    // transform: translate(-370px, 0px);
+    right: 330px;
     width: 200px;
 }
 #Controls {
     position: absolute;
     text-align: right;
-    right: 680px;
-    top: 370px;
+    right: 324px;
+    top: 285px;
     width: 200px;
 }
 #Openings {
