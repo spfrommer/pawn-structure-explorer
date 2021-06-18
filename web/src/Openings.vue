@@ -98,19 +98,29 @@ export default {
     },
     asyncComputed: {
         selectedPgns: function () {
+            const promises = [];
             for (const result of ['1-0', '1/2-1/2', '0-1']) {
                 console.log(result);
                 console.log(this.selectedGames[result]);
+                for (const selectedGame of this.selectedGames[result]) {
+                    const pgnEndpoint = `/api/gamePgn?gameId=${selectedGame.gameId}`;
+                    promises.push(this.$http.get(pgnEndpoint).then(response => {
+                        const responseJson = JSON.parse(response.bodyText).pgn;
+                        return (responseJson === null) ? {} : responseJson;
+                    }, err => { console.error(err); }));
+                }
             }
-            return Promise.resolve(1);
-            /*
-            const id = newGames['0-1'].openings['Alekhine Defense']['Two Pawn Attack'][0];
-            const pgnEndpoint = `/api/gamePgn?gameId=${id}`;
-            this.$http.get(pgnEndpoint).then(response => {
-                const responseJson = JSON.parse(response.bodyText).pgn;
-                self.testPgn = (responseJson === null) ? {} : responseJson;
-            }, err => { console.error(err); });
-            */
+            return Promise.all(promises).then(pgns => {
+                const resultPgns = {};
+
+                let i = 0;
+                for (const result of ['1-0', '1/2-1/2', '0-1']) {
+                    resultPgns[result] = pgns.splice(i, i + this.selectedGames[result].length);
+                    i += this.selectedGames[result].length;
+                }
+
+                return resultPgns;
+            });
         },
     },
 };
