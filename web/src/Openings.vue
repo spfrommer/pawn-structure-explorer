@@ -1,5 +1,7 @@
 <template>
 <div>
+    <vue-slider v-model="value" v-bind="sliderOptions"/>
+
     <div v-for="(game, index) in selectedGames['1-0']" :key = "game.gameId">
     <p class="main"> {{ processMain(game.main) }} </p>
     <p class="variation"> {{ processVariation(game.variation) }} </p>
@@ -28,11 +30,48 @@
 </template>
 
 <script>
+import VueSlider from 'vue-slider-component';
+import 'vue-slider-component/theme/antd.css';
 import GameSnapshot from './GameSnapshot.vue';
+
+import variables from './styles/_variables.scss';
 
 export default {
     props: ['games', 'flipped'],
-    components: { GameSnapshot },
+    components: { GameSnapshot, VueSlider },
+    data: function () {
+        return {
+            value: 'white',
+            sliderOptions: {
+                width: 90,
+                dotSize: 14,
+                data: ['white', 'draw', 'black'],
+                dotOptions: {
+                    tooltip: 'none',
+                    focusStyle: 'none',
+                },
+                marks: val => {
+                    const style = {
+                        'box-shadow': '0 0 0 0px ' + variables.textSecondary,
+                        // 'box-shadow': 'none',
+                        width: '12px',
+                        height: '12px',
+                        transform: 'translate(-4px, -4px)',
+                    };
+                    const color = {
+                        white: variables.textPrimary,
+                        draw: variables.textSecondary,
+                        black: '#333',
+                    };
+                    style.backgroundColor = color[val];
+                    return { style: style };
+                },
+                'hide-label': true,
+                railStyle: { 'background-color': '#656565' },
+                absorb: true,
+            },
+        };
+    },
     methods: {
         processMain(main) {
             if (main != null) {
@@ -149,5 +188,20 @@ export default {
     font-family: Arial;
     color: $text-secondary;
     margin: 0px 0px 5px 0px;
+}
+
+#Openings .vue-slider {
+    position: relative;
+    margin-top: -30px;
+    margin-bottom: 15px;
+    margin-left: 13px;
+}
+#Openings .vue-slider-process {
+    background-color: #656565;
+}
+#Openings .vue-slider-dot-handle {
+    background-color: rgba(0, 0, 0, 0);
+    border-color: $accent1;
+    transition: none;
 }
 </style>

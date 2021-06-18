@@ -17,6 +17,9 @@ $border-radii: 5px;
 $square-size: 40px;
 
 :export {
+    textPrimary: $text-primary;
+    textSecondary: $text-secondary;
+
     accent1: $accent1;
     accent2: $accent2;
     accent3: $accent3;

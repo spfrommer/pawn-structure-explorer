@@ -192,7 +192,7 @@ body {
     font-family: Arial;
 
     color: $text-primary;
-    transform: translate(-50px, 20px);
+    transform: translate(-50px, 30px);
 }
 #UpperBank {
     margin-bottom: 10px;
