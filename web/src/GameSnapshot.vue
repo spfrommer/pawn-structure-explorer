@@ -42,19 +42,14 @@ export default {
     },
     watch: {
         chess: function (newChess) {
-            const history = newChess.history({ verbose: true });
-            const chessPlay = new Chess();
-            for (const move of history.slice(0, -1)) {
-                chessPlay.move(move);
-            }
-
             this.board.set({
-                fen: chessPlay.fen(),
+                fen: newChess.fen(),
             });
 
+            const history = newChess.history({ verbose: true });
             const lastMove = history[history.length - 1];
             if (lastMove != null) {
-                this.board.move(lastMove.from, lastMove.to);
+                this.board.state.lastMove = [lastMove.from, lastMove.to];
             }
         },
         flipped: {

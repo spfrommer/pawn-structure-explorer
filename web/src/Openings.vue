@@ -1,11 +1,14 @@
 <template>
 <div>
-    <GameSnapshot v-for="(game, index) in selectedGames['1-0']"
-        :key = "game.gameId"
+    <div v-for="(game, index) in selectedGames['1-0']" :key = "game.gameId">
+    <p> {{ game.main }} </p>
+    <p> {{ game.variation }} </p>
+    <GameSnapshot
         :structure="games._id"
         :pgn="selectedPgns['1-0'][index]"
         :flipped="flipped"
         class="snapshot" />
+    </div>
     <!--
     <GameSnapshot v-for="(game, index) in selectedGames['1/2-1/2']"
         :key = "game.gameId"
@@ -122,5 +125,12 @@ export default {
 <style lang="scss">
 #Openings square.last-move {
     background-color: scale-color($accent1, $alpha: -70%);
+}
+#Openings p {
+    font-size: 10px;
+    font-family: Arial;
+    color: $text-primary;
+    margin: 0px;
+    padding: 0px;
 }
 </style>

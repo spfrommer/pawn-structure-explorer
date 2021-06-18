@@ -183,7 +183,10 @@ body {
     background-color: $primary;
 }
 #App {
-    font: 400 13.3333px Arial;
+    // font: 400 13.3333px Arial;
+    font-size: 13.33px;
+    font-family: Arial;
+
     color: $text-primary;
     display: inline-block;
     position: absolute;

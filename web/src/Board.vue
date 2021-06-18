@@ -109,10 +109,12 @@ export default {
     opacity: 0.0;
 }
 #Board #highlight-board square {
+    /*
     top: 1%;
     left: 1%;
     width: 10.5%;
     height: 10.5%;
+    */
     transition: background-color 0.4s ease;
 }
 </style>
