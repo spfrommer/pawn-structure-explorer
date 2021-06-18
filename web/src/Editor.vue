@@ -24,10 +24,10 @@ export default {
 </script>
 
 <style lang="scss">
-#editor .spare-back.selected {
+#Editor .spare-back.selected {
     background: $secondary-accent2
 }
-#editor .spare-back.not-selected:hover {
+#Editor .spare-back.not-selected:hover {
     background: scale-color($secondary-accent2, $alpha: -30%);
 }
 </style>

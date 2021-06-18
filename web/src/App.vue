@@ -6,8 +6,8 @@
             :pieces="piecesUpper"
             @spareClick="upperBankClick"/>
         <div id="boardEditor">
-            <GameStats id="stats" :games="games"/>
-            <Editor :id="'editor'" :flipped="boardFlipped" :pieces="piecesEditor"/>
+            <GameStats id="GameStats" :games="games"/>
+            <Editor :id="'Editor'" :flipped="boardFlipped" :pieces="piecesEditor"/>
             <Controls id="controls" @flip="flipBoard" @reset="resetBoard"/>
             <Board ref="board" id="board"
                 :highlights="highlights"
@@ -192,11 +192,11 @@ body {
 #upperBank {
     margin-bottom: 10px;
 }
-#editor {
+#Editor {
     position: absolute;
     transform: translate(-55px, 117px);
 }
-#stats {
+#GameStats {
     position: absolute;
     text-align: right;
     right: 330px;

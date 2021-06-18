@@ -1,5 +1,5 @@
 <template>
-<div class="game-stats">
+<div>
     <GameSnapshot v-for="(game, index) in selectedGames['1-0']"
         :key = "game.gameId"
         :structure="games._id"

@@ -1,5 +1,5 @@
 <template>
-<div class="game-stats">
+<div>
     {{ gameCount }} games
     <br>
     {{ percentWhite }}% / {{ percentDraw }}% / {{ percentBlack }}%
@@ -36,7 +36,7 @@ export default {
 </script>
 
 <style lang="scss">
-.game-stats {
+#GameStats {
     color: $text-secondary;
     text-align: right
 }

@@ -42,9 +42,20 @@ export default {
     },
     watch: {
         chess: function (newChess) {
+            const history = newChess.history({ verbose: true });
+            const chessPlay = new Chess();
+            for (const move of history.slice(0, -1)) {
+                chessPlay.move(move);
+            }
+
             this.board.set({
-                fen: newChess.fen(),
+                fen: chessPlay.fen(),
             });
+
+            const lastMove = history[history.length - 1];
+            if (lastMove != null) {
+                this.board.move(lastMove.from, lastMove.to);
+            }
         },
         flipped: {
             handler: function () {
