@@ -182,15 +182,19 @@ export default {
 body {
     background-color: $primary;
 }
+#app {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 #App {
-    // font: 400 13.3333px Arial;
     font-size: 13.33px;
     font-family: Arial;
 
     color: $text-primary;
-    display: inline-block;
-    position: absolute;
-    transform: translate(200px, 40px);
+
+    margin: 0 auto;
+    padding: 20px;
 }
 #UpperBank {
     margin-bottom: 10px;
@@ -202,14 +206,14 @@ body {
 #GameStats {
     position: absolute;
     text-align: right;
-    right: 330px;
+    right: 690px;
     width: 200px;
 }
 #Controls {
     position: absolute;
     text-align: right;
-    right: 325px;
-    top: 340px;
+    right: 680px;
+    top: 370px;
     width: 200px;
 }
 #Openings {
