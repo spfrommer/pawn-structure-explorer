@@ -5,6 +5,12 @@ export default {
     random: function (rows, columns) {
         return Array(rows).fill().map(() => Array.from({ length: columns }, () => Math.random()));
     },
+    truncate: function (string, maxLength) {
+        if (string.length > maxLength) {
+            return string.substring(0, maxLength) + '...';
+        }
+        return string;
+    },
     sumArrays: function (arr1, arr2) {
         console.assert(arr1.length === arr2.length);
         const newArr = [];

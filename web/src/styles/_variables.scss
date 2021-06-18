@@ -10,7 +10,8 @@ $secondary-accent1: mix($secondary, $accent1, 50%);
 $secondary-accent2: mix($secondary, $accent2, 50%);
 
 $text-primary: #dfdfdf; 
-$text-secondary: #3692e7;
+$text-secondary: #9e9e9e;
+$text-tertiary: scale-color($accent1, $alpha: -10%);
 
 $border-radii: 5px;
 $square-size: 40px;

@@ -26,6 +26,7 @@
         "prefer-destructuring": "off",
         "func-names": "off",
         "object-shorthand": "off",
-        "no-empty": "off"
+        "no-empty": "off",
+        "prefer-template": "off"
     }
 }

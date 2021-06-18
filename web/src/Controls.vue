@@ -20,13 +20,10 @@ export default {
 </script>
 
 <style lang="scss">
-#Controls {
-    color: $text-secondary;
-    text-align: right;
-}
 #Controls button {
     background-color: rgba(0, 0, 0, 0);
-    color: $text-secondary;
+    text-align: right;
+    color: $text-tertiary;
     border: 0px;
 }
 </style>

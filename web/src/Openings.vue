@@ -1,8 +1,8 @@
 <template>
 <div>
     <div v-for="(game, index) in selectedGames['1-0']" :key = "game.gameId">
-    <p> {{ game.main }} </p>
-    <p> {{ game.variation }} </p>
+    <p class="main"> {{ processMain(game.main) }} </p>
+    <p class="variation"> {{ processVariation(game.variation) }} </p>
     <GameSnapshot
         :structure="games._id"
         :pgn="selectedPgns['1-0'][index]"
@@ -34,6 +34,18 @@ export default {
     props: ['games', 'flipped'],
     components: { GameSnapshot },
     methods: {
+        processMain(main) {
+            if (main != null) {
+                return this.$utils.truncate(main, 20);
+            }
+            return main;
+        },
+        processVariation(variation) {
+            if (variation != null) {
+                return this.$utils.truncate(variation.split(',')[0], 30);
+            }
+            return variation;
+        },
         commonOpenings(result, n) {
             if (!this.hasGames) return [];
 
@@ -126,11 +138,16 @@ export default {
 #Openings square.last-move {
     background-color: scale-color($accent1, $alpha: -70%);
 }
-#Openings p {
+#Openings p.main {
     font-size: 10px;
     font-family: Arial;
     color: $text-primary;
-    margin: 0px;
-    padding: 0px;
+    margin: -8px 0px 0px 0px;
+}
+#Openings p.variation {
+    font-size: 8px;
+    font-family: Arial;
+    color: $text-secondary;
+    margin: 0px 0px 5px 0px;
 }
 </style>

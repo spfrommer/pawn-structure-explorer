@@ -37,7 +37,7 @@ export default {
 
 <style lang="scss">
 #GameStats {
-    color: $text-secondary;
+    color: $text-primary;
     text-align: right
 }
 </style>

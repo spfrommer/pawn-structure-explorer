@@ -1,5 +1,6 @@
 <template>
     <div id="App">
+        <Openings id="Openings" :games="games" :flipped="boardFlipped"/>
         <SpareBank ref="UpperBank" :id="'UpperBank'"
             :vertical="false"
             :selectable="true"
@@ -13,7 +14,6 @@
                 :highlights="highlights"
                 :flipped="boardFlipped"
                 @boardChange="boardChange"/>
-            <Openings id="Openings" :games="games" :flipped="boardFlipped"/>
         </div>
         <SpareBank ref="LowerBank" :id="'LowerBank'"
             :vertical="false"
@@ -190,7 +190,7 @@ body {
     color: $text-primary;
     display: inline-block;
     position: absolute;
-    transform: translate(100px, 40px);
+    transform: translate(200px, 40px);
 }
 #UpperBank {
     margin-bottom: 10px;
@@ -214,7 +214,7 @@ body {
 }
 #Openings {
     position: absolute;
-    transform: translate(340px, -55px);
+    transform: translate(340px, 5px);
     text-align: left;
 }
 </style>
