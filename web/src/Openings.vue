@@ -6,12 +6,21 @@
         :pgn="selectedPgns['1-0'][index]"
         :flipped="flipped"
         class="snapshot" />
-
     <!--
-    {{ selectedGames }}
-    <br>
-    {{ selectedPgns }}
-    -->
+    <GameSnapshot v-for="(game, index) in selectedGames['1/2-1/2']"
+        :key = "game.gameId"
+        :structure="games._id"
+        :pgn="selectedPgns['1/2-1/2'][index]"
+        :flipped="flipped"
+        class="snapshot" />
+
+    <GameSnapshot v-for="(game, index) in selectedGames['0-1']"
+        :key = "game.gameId"
+        :structure="games._id"
+        :pgn="selectedPgns['0-1'][index]"
+        :flipped="flipped"
+        class="snapshot" />
+        -->
 </div>
 </template>
 
@@ -22,20 +31,6 @@ export default {
     // games: games for the current structure, as returned by the server
     props: ['games', 'flipped'],
     components: { GameSnapshot },
-    watch: {
-        games: function (newGames) {
-            if ('0-1' in newGames) {
-                const self = this;
-
-                const id = newGames['0-1'].openings['Alekhine Defense']['Two Pawn Attack'][0];
-                const pgnEndpoint = `/api/gamePgn?gameId=${id}`;
-                this.$http.get(pgnEndpoint).then(response => {
-                    const responseJson = JSON.parse(response.bodyText).pgn;
-                    self.testPgn = (responseJson === null) ? {} : responseJson;
-                }, err => { console.error(err); });
-            }
-        },
-    },
     methods: {
         commonOpenings(result, n) {
             if (!this.hasGames) return [];
@@ -101,8 +96,6 @@ export default {
         selectedPgns: function () {
             const promises = [];
             for (const result of ['1-0', '1/2-1/2', '0-1']) {
-                console.log(result);
-                console.log(this.selectedGames[result]);
                 for (const selectedGame of this.selectedGames[result]) {
                     const pgnEndpoint = `/api/gamePgn?gameId=${selectedGame.gameId}`;
                     promises.push(this.$http.get(pgnEndpoint).then(response => {

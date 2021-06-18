@@ -187,7 +187,7 @@ class Database {
 
             const openingUpdateKey = `${tags.Result}.openings.${tags.OpeningMain}.${tags.OpeningVariations}`;
             indexingState.bulkUpdates.find({ _id: structure }).update({
-                $push: { [openingUpdateKey]: tags.GameId },
+                $addToSet: { [openingUpdateKey]: tags.GameId },
             });
         }
     }
