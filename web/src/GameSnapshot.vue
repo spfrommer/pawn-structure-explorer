@@ -72,6 +72,10 @@ export default {
                 fen: this.chess.fen(),
             });
         }
+
+        if (this.flipped) {
+            this.board.toggleOrientation();
+        }
     },
 };
 </script>
