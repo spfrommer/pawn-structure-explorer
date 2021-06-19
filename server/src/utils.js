@@ -1,4 +1,4 @@
-const { LineReader } = require('line-reader');
+const fs = require('fs');
 const nodeUtil = require('util');
 
 module.exports = {
@@ -19,23 +19,13 @@ module.exports = {
         return { file: files.indexOf(square[0]), rank: parseInt(square[1]) - 1 };
     },
     readSplit: function* (file, delim) {
-        const lines = LineReader(file);
-
-        let buffer = '';
-        for (const line of lines) {
-            const segments = line.split(delim);
-            for (const [i, seg] of segments.entries()) {
-                if (i === 0) {
-                    buffer += seg;
-                }
-                if (i > 0) {
-                    yield buffer;
-                    buffer = delim + seg;
-                }
-            }
-            buffer += '\n';
+        // TODO: actually make line by line
+        const splits = fs.readFileSync(file, 'utf-8')
+            .split(delim)
+            .filter(Boolean);
+        for (const split of splits) {
+            yield delim + split;
         }
-        yield buffer;
     },
     takeList: function (iterable, length) {
         const list = [];
