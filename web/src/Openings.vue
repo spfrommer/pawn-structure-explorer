@@ -117,12 +117,10 @@ export default {
             return gameIds;
         },
         openGameLichess(pgn) {
-            console.log(pgn);
-            const importEndpoint = 'https://lichess.org/api/import';
-            this.$http.post(importEndpoint, { pgn: pgn }).then(response => {
-                console.log(response);
-                window.open(response.body.url);
-            }, err => { console.error(err); });
+            const siteMarker = 'LichessURL';
+            const siteLine = pgn.split('\n').filter(l => l.startsWith('[' + siteMarker))[0];
+            const url = siteLine.slice(siteMarker.length + 3, -2);
+            window.open(url);
         },
     },
     computed: {
