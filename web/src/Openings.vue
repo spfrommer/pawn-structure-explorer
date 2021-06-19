@@ -98,15 +98,15 @@ export default {
         selectGames(result, openings) {
             // openings is a list of ['main', 'variation'] tuples
             // Returns list of { 'gameId': str, 'main': str, 'variation': str }
-            const gameIds = [];
+            const games = [];
             let counter = 0;
-            while (gameIds.length < nSel) {
-                const newIds = [];
+            while (games.length < nSel) {
+                const newGames = [];
                 for (const opening of openings) {
                     const [main, variation] = opening;
                     const openingIds = this.games[result].openings[main][variation];
                     if (openingIds.length > counter) {
-                        newIds.push({
+                        newGames.push({
                             gameId: openingIds[counter],
                             main: main,
                             variation: variation,
@@ -114,13 +114,13 @@ export default {
                     }
                 }
 
-                if (newIds.length === 0) return gameIds;
+                if (newGames.length === 0) return games;
 
-                gameIds.push(...newIds.slice(0, nSel - gameIds.length));
+                games.push(...newGames.slice(0, nSel - games.length));
                 counter++;
             }
 
-            return gameIds;
+            return games;
         },
         openGameLichess(pgn) {
             const siteMarker = 'LichessURL';

@@ -85,7 +85,7 @@ export default {
 .snapshot.blue .cg-board-wrap {
     background-size: 320px 320px;
     background-image: linear-gradient( rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4) ), url($metal);
-    zoom: 0.36;
+    zoom: 0.355;
 }
 // Disabling coordinates attribute doesn't work
 .snapshot.blue {
