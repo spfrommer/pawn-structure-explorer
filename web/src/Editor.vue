@@ -25,9 +25,9 @@ export default {
 
 <style lang="scss">
 #Editor .spare-back.selected {
-    background: $secondary-accent2
+    background: $secondary-accent1
 }
 #Editor .spare-back.not-selected:hover {
-    background: scale-color($secondary-accent2, $alpha: -30%);
+    background: scale-color($secondary-accent1, $alpha: -30%);
 }
 </style>

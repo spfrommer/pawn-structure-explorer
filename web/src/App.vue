@@ -218,7 +218,7 @@ body {
     position: absolute;
     text-align: right;
     right: 324px;
-    top: 285px;
+    top: 278px;
     width: 200px;
 }
 #Openings {

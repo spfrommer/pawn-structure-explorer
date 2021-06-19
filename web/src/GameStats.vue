@@ -2,11 +2,15 @@
 <div>
     {{ gameCount }} games
     <br>
-    {{ percentWhite }}% / {{ percentDraw }}% / {{ percentBlack }}%
+    {{ percents }}
+    <br>
+    <span> white / draw / black </span>
 </div>
 </template>
 
 <script>
+import percentRound from 'percent-round';
+
 export default {
     props: ['games'],
     computed: {
@@ -15,21 +19,17 @@ export default {
         },
         gameCount: function () {
             if (!this.hasGames) return 0;
-            return this.games['1-0'].gameCount
-                 + this.games['1/2-1/2'].gameCount
-                 + this.games['0-1'].gameCount;
+            return this.count('1-0') + this.count('1/2-1/2') + this.count('0-1');
         },
-        percentWhite: function () {
-            if (this.gameCount === 0) return '-';
-            return Math.round(100 * (this.games['1-0'].gameCount / this.gameCount));
+        percents: function () {
+            if (!this.hasGames) return '- / - / -';
+            const percents = percentRound([this.count('1-0'), this.count('1/2-1/2'), this.count('0-1')]);
+            return percents.map(p => p + '%').join(' / ');
         },
-        percentDraw: function () {
-            if (this.gameCount === 0) return '-';
-            return Math.round(100 * (this.games['1/2-1/2'].gameCount / this.gameCount));
-        },
-        percentBlack: function () {
-            if (this.gameCount === 0) return '-';
-            return Math.round(100 * (this.games['0-1'].gameCount / this.gameCount));
+    },
+    methods: {
+        count: function (result) {
+            return this.games[result].gameCount;
         },
     },
 };
@@ -39,5 +39,8 @@ export default {
 #GameStats {
     color: $text-primary;
     text-align: right
+}
+#GameStats span {
+    color: $text-secondary;
 }
 </style>

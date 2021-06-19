@@ -2,7 +2,7 @@
 <div>
     <div id="SliderDiv">
         <vue-slider v-model="sliderValue" v-bind="sliderOptions"/>
-        <span v-html="processSliderValue(sliderValue)"></span>
+        <span id="SliderOuter" v-html="processSliderValue(sliderValue)"></span>
     </div>
     <div v-for="(game, index) in selectedGames[sliderValue]" :key = "game.gameId">
         <p class="main"> {{ processMain(game.main) }} </p>
@@ -75,7 +75,10 @@ export default {
             return variation;
         },
         processSliderValue(sliderValue) {
-            return sliderValue.replace('-', ' ⁠– ').replaceAll('1/2', '<sup>1</sup>⁄<sub>2</sub>');
+            let valueHtml = sliderValue.replace('-', ' ⁠– ').replaceAll('1/2', '<sup>1</sup>⁄<sub>2</sub>');
+            const transform = (sliderValue === '1/2-1/2') ? 'translate(-7px, -2px)' : 'translate(0px, 0px)';
+            valueHtml = `<span style="position: absolute; transform: ${transform};">${valueHtml}</span>`;
+            return valueHtml;
         },
         commonOpenings(result) {
             if (!this.hasGames) return [];
@@ -202,8 +205,9 @@ export default {
     border-color: $accent1;
     transition: none;
 }
-#Openings span {
+#Openings #SliderOuter {
     position: absolute;
-    transform: translate(110px, 0px);
+    transform: translate(120px, 0px);
+    width: 200px;
 }
 </style>

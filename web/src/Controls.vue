@@ -1,11 +1,11 @@
 <template>
 <div>
     <button @click="flipClicked">
-        FLIP
+        &#128472; FLIP
     </button>
     <br>
     <button @click="resetClicked">
-        RESET
+        &#128465; RESET
     </button>
 </div>
 </template>
@@ -25,5 +25,11 @@ export default {
     text-align: right;
     color: $text-tertiary;
     border: 0px;
+    width: 80px;
+    line-height: 22px;
+    transition: ease 0.3s;
+}
+#Controls button:hover {
+    background-color: scale-color($primary, $lightness: 5%);
 }
 </style>
