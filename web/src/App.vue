@@ -173,9 +173,6 @@ export default {
             selectedPiece: -1,
         };
     },
-    mounted() {
-        this.boardChange();
-    },
 };
 </script>
 
