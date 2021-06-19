@@ -223,7 +223,7 @@ body {
 }
 #Openings {
     position: absolute;
-    transform: translate(340px, -50px);
+    transform: translate(340px, -53px);
     text-align: left;
 }
 </style>

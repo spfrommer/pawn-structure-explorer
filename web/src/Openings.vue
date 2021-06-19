@@ -11,7 +11,8 @@
             :structure="games._id"
             :pgn="selectedPgnsResult[index]"
             :flipped="flipped"
-            class="snapshot" />
+            class="snapshot"
+            @click.native="openGameLichess(selectedPgnsResult[index])" />
     </div>
 </div>
 </template>
@@ -114,6 +115,14 @@ export default {
             }
 
             return gameIds;
+        },
+        openGameLichess(pgn) {
+            console.log(pgn);
+            const importEndpoint = 'https://lichess.org/api/import';
+            this.$http.post(importEndpoint, { pgn: pgn }).then(response => {
+                console.log(response);
+                window.open(response.body.url);
+            }, err => { console.error(err); });
         },
     },
     computed: {
