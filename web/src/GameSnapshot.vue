@@ -39,9 +39,7 @@ export default {
 
             return pawnChess.fen().split(' ')[0];
         },
-    },
-    watch: {
-        chess: function (newChess) {
+        updateBoard: function (newChess) {
             this.board.set({
                 fen: newChess.fen(),
             });
@@ -51,6 +49,11 @@ export default {
             if (lastMove != null) {
                 this.board.state.lastMove = [lastMove.from, lastMove.to];
             }
+        },
+    },
+    watch: {
+        chess: function (newChess) {
+            this.updateBoard(newChess);
         },
         flipped: {
             handler: function () {
@@ -68,9 +71,7 @@ export default {
         });
 
         if (this.chess.history().length > 0) {
-            this.board.set({
-                fen: this.chess.fen(),
-            });
+            this.updateBoard(this.chess);
         }
 
         if (this.flipped) {

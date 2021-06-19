@@ -1,6 +1,5 @@
 <template>
     <div id="App">
-        <Openings id="Openings" :games="games" :flipped="boardFlipped"/>
         <SpareBank ref="UpperBank" :id="'UpperBank'"
             :vertical="false"
             :selectable="true"
@@ -14,6 +13,8 @@
             <Controls id="Controls" @flip="flipBoard" @reset="resetBoard"/>
             <GameStats id="GameStats" :games="games"/>
             <Editor :id="'Editor'" :flipped="boardFlipped" :pieces="piecesEditor"/>
+            <!-- TODO: openings can't be first otherwise highlights get messed up on flip... -->
+            <Openings id="Openings" :games="games" :flipped="boardFlipped"/>
         </div>
         <SpareBank ref="LowerBank" :id="'LowerBank'"
             :vertical="false"
@@ -192,7 +193,7 @@ body {
     font-family: Arial;
 
     color: $text-primary;
-    transform: translate(-50px, 30px);
+    transform: translate(-70px, 60px);
 }
 #UpperBank {
     margin-bottom: 10px;
@@ -222,7 +223,7 @@ body {
 }
 #Openings {
     position: absolute;
-    transform: translate(340px, 5px);
+    transform: translate(340px, -50px);
     text-align: left;
 }
 </style>
