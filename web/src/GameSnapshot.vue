@@ -7,19 +7,6 @@ export default {
     name: 'CustomBoard',
     extends: chessboard,
     props: ['pgn', 'structure', 'flipped'],
-    methods: {
-        getStructure: function (chess) {
-            const pawnChess = new Chess(chess.fen());
-            for (const square of pawnChess.SQUARES) {
-                const piece = pawnChess.get(square);
-                if (piece !== null && piece.type !== 'p') {
-                    pawnChess.remove(square);
-                }
-            }
-
-            return pawnChess.fen().split(' ')[0];
-        },
-    },
     computed: {
         chess: function () {
             if (this.pgn == null) return new Chess();
@@ -38,6 +25,19 @@ export default {
             }
 
             return new Chess();
+        },
+    },
+    methods: {
+        getStructure: function (chess) {
+            const pawnChess = new Chess(chess.fen());
+            for (const square of pawnChess.SQUARES) {
+                const piece = pawnChess.get(square);
+                if (piece !== null && piece.type !== 'p') {
+                    pawnChess.remove(square);
+                }
+            }
+
+            return pawnChess.fen().split(' ')[0];
         },
     },
     watch: {
@@ -66,6 +66,12 @@ export default {
             },
             viewOnly: true,
         });
+
+        if (this.chess.history().length > 0) {
+            this.board.set({
+                fen: this.chess.fen(),
+            });
+        }
     },
 };
 </script>

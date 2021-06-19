@@ -47,9 +47,9 @@ export default {
                         transform: 'translate(-4px, -4px)',
                     };
                     const color = {
-                        white: variables.textPrimary,
-                        draw: variables.textSecondary,
-                        black: '#333',
+                        '1-0': variables.textPrimary,
+                        '1/2-1/2': variables.textSecondary,
+                        '0-1': '#333',
                     };
                     style.backgroundColor = color[val];
                     return { style: style };
@@ -73,7 +73,7 @@ export default {
             }
             return variation;
         },
-        commonOpenings(result, n) {
+        commonOpenings(result) {
             if (!this.hasGames) return [];
 
             const openings = this.games[result].openings;
@@ -86,14 +86,14 @@ export default {
 
             sortable.sort((a, b) => b[2] - a[2]);
 
-            return sortable.slice(0, n).map(l => l.slice(0, 2));
+            return sortable.slice(0, nSel).map(l => l.slice(0, 2));
         },
-        selectGames(result, openings, n) {
+        selectGames(result, openings) {
             // openings is a list of ['main', 'variation'] tuples
             // Returns list of { 'gameId': str, 'main': str, 'variation': str }
             const gameIds = [];
             let counter = 0;
-            while (gameIds.length < n) {
+            while (gameIds.length < nSel) {
                 const newIds = [];
                 for (const opening of openings) {
                     const [main, variation] = opening;
@@ -109,7 +109,7 @@ export default {
 
                 if (newIds.length === 0) return gameIds;
 
-                gameIds.push(...newIds.slice(0, n - gameIds.length));
+                gameIds.push(...newIds.slice(0, nSel - gameIds.length));
                 counter++;
             }
 
@@ -121,13 +121,12 @@ export default {
             return Object.keys(this.games).length !== 0;
         },
         selectedGames: function () {
-            const select = res => this.selectGames(res, this.commonOpenings(res, nSel), nSel);
+            const select = res => this.selectGames(res, this.commonOpenings(res));
             return { '1-0': select('1-0'), '1/2-1/2': select('1/2-1/2'), '0-1': select('0-1') };
         },
         selectedPgnsResult: function () {
             const pgns = this.selectedPgns;
             if (pgns == null) return Array(nSel).fill('');
-            console.log(this.selectedPgns[this.sliderValue]);
             return this.selectedPgns[this.sliderValue];
         },
     },
@@ -148,7 +147,7 @@ export default {
 
                 let i = 0;
                 for (const result of ['1-0', '1/2-1/2', '0-1']) {
-                    resultPgns[result] = pgns.splice(i, i + this.selectedGames[result].length);
+                    resultPgns[result] = pgns.slice(i, i + this.selectedGames[result].length);
                     i += this.selectedGames[result].length;
                 }
 
