@@ -29,7 +29,15 @@ export default {
     },
     methods: {
         count: function (result) {
-            return this.games[result].gameCount;
+            const openings = this.games[result].openings;
+            let games = 0;
+            for (const main of Object.keys(openings)) {
+                for (const variation of Object.keys(openings[main])) {
+                    games += openings[main][variation].length;
+                }
+            }
+            return games;
+            // return this.games[result].gameCount;
         },
     },
 };

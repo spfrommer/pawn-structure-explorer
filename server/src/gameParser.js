@@ -29,7 +29,8 @@ class GameParser {
 
         const openingParts = tags.Opening.split(/:|,/).map(t => t.trim());
         [tags.OpeningMain, ...tags.OpeningVariations] = openingParts;
-        tags.OpeningVariations = tags.OpeningVariations.join(',');
+        // Remove all periods and dollar signs
+        tags.OpeningVariations = tags.OpeningVariations.join(' | ').replace(/\./g, '').replace(/\$/g, '');
 
         return tags;
     }

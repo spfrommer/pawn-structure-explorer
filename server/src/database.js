@@ -180,7 +180,6 @@ class Database {
 
         if (newStructure || newGame) {
             const countUpdateKey = `${tags.Result}.gameCount`;
-
             indexingState.bulkUpdates.find({ _id: structure }).update({
                 $inc: { [countUpdateKey]: 1 },
             });

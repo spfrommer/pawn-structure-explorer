@@ -70,7 +70,7 @@ export default {
         },
         processVariation(variation) {
             if (variation != null) {
-                return this.$utils.truncate(variation.split(',')[0], 30);
+                return this.$utils.truncate(variation.split(' | ')[0], 30);
             }
             return variation;
         },
