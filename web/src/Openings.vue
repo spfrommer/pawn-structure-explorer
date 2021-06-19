@@ -1,31 +1,18 @@
 <template>
 <div>
-    <vue-slider v-model="value" v-bind="sliderOptions"/>
-
-    <div v-for="(game, index) in selectedGames['1-0']" :key = "game.gameId">
-    <p class="main"> {{ processMain(game.main) }} </p>
-    <p class="variation"> {{ processVariation(game.variation) }} </p>
-    <GameSnapshot
-        :structure="games._id"
-        :pgn="selectedPgns['1-0'][index]"
-        :flipped="flipped"
-        class="snapshot" />
+    <div id="SliderDiv">
+        <vue-slider v-model="sliderValue" v-bind="sliderOptions"/>
+        {{ sliderValue }}
     </div>
-    <!--
-    <GameSnapshot v-for="(game, index) in selectedGames['1/2-1/2']"
-        :key = "game.gameId"
-        :structure="games._id"
-        :pgn="selectedPgns['1/2-1/2'][index]"
-        :flipped="flipped"
-        class="snapshot" />
-
-    <GameSnapshot v-for="(game, index) in selectedGames['0-1']"
-        :key = "game.gameId"
-        :structure="games._id"
-        :pgn="selectedPgns['0-1'][index]"
-        :flipped="flipped"
-        class="snapshot" />
-        -->
+    <div v-for="(game, index) in selectedGames[sliderValue]" :key = "game.gameId">
+        <p class="main"> {{ processMain(game.main) }} </p>
+        <p class="variation"> {{ processVariation(game.variation) }} </p>
+        <GameSnapshot
+            :structure="games._id"
+            :pgn="selectedPgnsResult[index]"
+            :flipped="flipped"
+            class="snapshot" />
+    </div>
 </div>
 </template>
 
@@ -36,24 +23,25 @@ import GameSnapshot from './GameSnapshot.vue';
 
 import variables from './styles/_variables.scss';
 
+const nSel = 3;
+
 export default {
     props: ['games', 'flipped'],
     components: { GameSnapshot, VueSlider },
     data: function () {
         return {
-            value: 'white',
+            sliderValue: '1-0',
             sliderOptions: {
                 width: 90,
                 dotSize: 14,
-                data: ['white', 'draw', 'black'],
+                data: ['1-0', '1/2-1/2', '0-1'],
                 dotOptions: {
                     tooltip: 'none',
                     focusStyle: 'none',
                 },
                 marks: val => {
                     const style = {
-                        'box-shadow': '0 0 0 0px ' + variables.textSecondary,
-                        // 'box-shadow': 'none',
+                        'box-shadow': 'none',
                         width: '12px',
                         height: '12px',
                         transform: 'translate(-4px, -4px)',
@@ -132,17 +120,15 @@ export default {
         hasGames: function () {
             return Object.keys(this.games).length !== 0;
         },
-        whiteOpenings: function () {
-            if (!this.hasGames) return 0;
-            return Object.keys(this.games['1-0'].openings);
-        },
-        whiteWinOpenings: function () {
-            return this.getCommonOpenings('1-0', 3);
-        },
         selectedGames: function () {
-            const nSel = 3;
             const select = res => this.selectGames(res, this.commonOpenings(res, nSel), nSel);
             return { '1-0': select('1-0'), '1/2-1/2': select('1/2-1/2'), '0-1': select('0-1') };
+        },
+        selectedPgnsResult: function () {
+            const pgns = this.selectedPgns;
+            if (pgns == null) return Array(nSel).fill('');
+            console.log(this.selectedPgns[this.sliderValue]);
+            return this.selectedPgns[this.sliderValue];
         },
     },
     asyncComputed: {
@@ -189,12 +175,15 @@ export default {
     color: $text-secondary;
     margin: 0px 0px 5px 0px;
 }
-
-#Openings .vue-slider {
+#Openings #SliderDiv {
     position: relative;
     margin-top: -30px;
     margin-bottom: 15px;
     margin-left: 13px;
+    display: flex;
+}
+#Openings #SliderDiv .vue-slider {
+    margin-right: 20px;
 }
 #Openings .vue-slider-process {
     background-color: #656565;
