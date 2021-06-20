@@ -1,34 +1,41 @@
 <template>
-    <div id="App">
-        <SpareBank ref="UpperBank" :id="'UpperBank'"
-            :vertical="false"
-            :selectable="true"
-            :pieces="piecesUpper"
-            @spareClick="upperBankClick"/>
-        <div id="BoardEditor">
-            <Board ref="board" id="Board"
-                :highlights="highlights"
-                :flipped="boardFlipped"
-                @boardChange="boardChange" data-v-step="0"/>
-            <Controls id="Controls" @flip="flipBoard" @reset="resetBoard" @tour="doTour"/>
-            <GameStats id="GameStats" :games="games"/>
-            <Editor :id="'Editor'" :flipped="boardFlipped" :pieces="piecesEditor" data-v-step="1"/>
-            <!-- TODO: openings can't be first otherwise highlights get messed up on flip... -->
-            <Openings id="Openings" :games="games" :flipped="boardFlipped" data-v-step="3"/>
+    <div>
+        <MenuBar id="MenuBar"/>
+        <div id="App">
+            <SpareBank ref="UpperBank" :id="'UpperBank'"
+                :vertical="false"
+                :selectable="true"
+                :pieces="piecesUpper"
+                @spareClick="upperBankClick"/>
+            <div id="BoardEditor">
+                <Board ref="board" id="Board"
+                    :highlights="highlights"
+                    :flipped="boardFlipped"
+                    @boardChange="boardChange" data-v-step="0"/>
+                <Controls id="Controls" @flip="flipBoard" @reset="resetBoard" @tour="doTour"/>
+                <GameStats id="GameStats" :games="games"/>
+                <Editor :id="'Editor'"
+                    :flipped="boardFlipped"
+                    :pieces="piecesEditor"
+                    data-v-step="1"/>
+                <!-- TODO: openings can't be first otherwise highlights get messed up on flip... -->
+                <Openings id="Openings" :games="games" :flipped="boardFlipped" data-v-step="3"/>
+            </div>
+            <SpareBank ref="LowerBank" :id="'LowerBank'"
+                :vertical="false"
+                :selectable="true"
+                :pieces="piecesLower"
+                @spareClick="lowerBankClick"
+                data-v-step="2"/>
+            <v-tour name="appTour" :steps="tourSteps">
+            </v-tour>
         </div>
-        <SpareBank ref="LowerBank" :id="'LowerBank'"
-            :vertical="false"
-            :selectable="true"
-            :pieces="piecesLower"
-            @spareClick="lowerBankClick"
-            data-v-step="2"/>
-        <v-tour name="appTour" :steps="tourSteps">
-        </v-tour>
     </div>
 </template>
 
 <script>
 import Board from './Board.vue';
+import MenuBar from './MenuBar.vue';
 import Editor from './Editor.vue';
 import SpareBank from './SpareBank.vue';
 import GameStats from './GameStats.vue';
@@ -44,6 +51,7 @@ export default {
     name: 'App',
     components: {
         Board,
+        MenuBar,
         Editor,
         SpareBank,
         GameStats,
@@ -179,9 +187,9 @@ export default {
             tourSteps: [
                 {
                     target: '[data-v-step="0"]',
-                    content: 'Move around pawns to adjust the pawn structure. No pieces allowed!',
+                    content: 'Move around pawns to adjust the pawn structure. Only pawns allowed!',
                     params: {
-                        placement: 'bottom',
+                        placement: 'top',
                     },
                 },
                 {
@@ -206,7 +214,7 @@ export default {
                 {
                     target: '[data-v-step="3"]',
                     content: `See games with this pawn structure, grouped by result.
-                    The last previous game move is highlighted. Click to open game.`,
+                    The previous game move is highlighted. Click to open game.`,
                     params: {
                         placement: 'left',
                     },
@@ -228,12 +236,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-#App {
+
     font-size: 13.33px;
     font-family: Arial;
 
     color: $text-primary;
+}
+#App {
     transform: translate(-40px, 60px);
 }
 #App .v-step .blue-text {
@@ -263,6 +272,11 @@ body {
     background: scale-color($primary, $lightness: 60%);
 }
 
+#MenuBar {
+    position: absolute;
+    left: 30px;
+    top: 30px;
+}
 #UpperBank {
     margin-bottom: 10px;
 }
