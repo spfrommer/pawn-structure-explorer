@@ -64,8 +64,6 @@ export default {
         },
         flipBoard() {
             this.boardFlipped = !this.boardFlipped;
-            this.selectedColor = '';
-            this.selectedPiece = -1;
         },
         resetBoard() {
             this.$refs.board.board.set({ fen: '8/pppppppp/8/8/8/8/PPPPPPPP/8 w KQkq - 0 1' });

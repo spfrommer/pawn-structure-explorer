@@ -17,30 +17,14 @@ export default {
     watch: {
         highlights: {
             handler: function (highlights) {
-                const { intensities, hues } = highlights;
-
-                let maxIntensity = this.$utils.maxArray(intensities);
-                if (maxIntensity === 0) maxIntensity = 1;
-
-                for (let i = 0; i < 8; i++) {
-                    for (let j = 0; j < 8; j++) {
-                        let intensity = (intensities[7 - j][i] / maxIntensity);
-                        intensity = INTENSITY_SCALE * Math.log(1 + intensity);
-                        // const intensity = INTENSITY_CAP * (intensities[7 - j][i] / maxIntensity);
-                        const hue = HUE_SCALE * (hues[7 - j][i] / maxIntensity) + 0.5;
-
-                        const color = Color(highlights.colormap(hue)).alpha(intensity).string();
-                        $(`#highlight-board square:nth-child(${i * 8 + j + 1}`).css('background-color', color);
-                    }
-                }
+                this.updateHighlights(highlights);
             },
             deep: true,
         },
-        flipped: {
-            handler: function (boardFlipped) {
-                this.board.toggleOrientation();
-                this.addHighlightOverlays(boardFlipped);
-            },
+        flipped: function (boardFlipped) {
+            this.board.toggleOrientation();
+            this.addHighlightOverlays(boardFlipped);
+            this.updateHighlights(this.highlights);
         },
     },
     methods: {
@@ -65,6 +49,24 @@ export default {
                     square = square.css('transform', `translate(${iFlip * squareSize}px, ${jFlip * squareSize}px)`);
                     square = square.css('background-color', 'rgba(0, 0, 0, 0.0)');
                     $('#highlight-board').append(square);
+                }
+            }
+        },
+        updateHighlights: function (highlights) {
+            const { intensities, hues } = highlights;
+
+            let maxIntensity = this.$utils.maxArray(intensities);
+            if (maxIntensity === 0) maxIntensity = 1;
+
+            for (let i = 0; i < 8; i++) {
+                for (let j = 0; j < 8; j++) {
+                    let intensity = (intensities[7 - j][i] / maxIntensity);
+                    intensity = INTENSITY_SCALE * Math.log(1 + intensity);
+                    // const intensity = INTENSITY_CAP * (intensities[7 - j][i] / maxIntensity);
+                    const hue = HUE_SCALE * (hues[7 - j][i] / maxIntensity) + 0.5;
+
+                    const color = Color(highlights.colormap(hue)).alpha(intensity).string();
+                    $(`#highlight-board square:nth-child(${i * 8 + j + 1}`).css('background-color', color);
                 }
             }
         },
