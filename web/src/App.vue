@@ -9,18 +9,35 @@
             <Board ref="board" id="Board"
                 :highlights="highlights"
                 :flipped="boardFlipped"
-                @boardChange="boardChange"/>
-            <Controls id="Controls" @flip="flipBoard" @reset="resetBoard"/>
+                @boardChange="boardChange" data-v-step="0"/>
+            <Controls id="Controls" @flip="flipBoard" @reset="resetBoard" @tour="doTour"/>
             <GameStats id="GameStats" :games="games"/>
-            <Editor :id="'Editor'" :flipped="boardFlipped" :pieces="piecesEditor"/>
+            <Editor :id="'Editor'" :flipped="boardFlipped" :pieces="piecesEditor" data-v-step="1"/>
             <!-- TODO: openings can't be first otherwise highlights get messed up on flip... -->
-            <Openings id="Openings" :games="games" :flipped="boardFlipped"/>
+            <Openings id="Openings" :games="games" :flipped="boardFlipped" data-v-step="3"/>
         </div>
         <SpareBank ref="LowerBank" :id="'LowerBank'"
             :vertical="false"
             :selectable="true"
             :pieces="piecesLower"
-            @spareClick="lowerBankClick"/>
+            @spareClick="lowerBankClick"
+            data-v-step="2"/>
+        <v-tour name="appTour" :steps="tourSteps">
+            <template slot-scope="tour">
+                <transition name="fade">
+                    <!-- eslint-disable -->
+                    <v-step
+                        v-for="(step, index) of tour.steps"
+                        :key="index" v-if="tour.currentStep === index"
+                        :step="step" :previous-step="tour.previousStep" :next-step="tour.nextStep"
+                        :stop="tour.stop" :skip="tour.skip"
+                        :is-first="tour.isFirst" :is-last="tour.isLast" :labels="tour.labels"
+                        style="background-color: #292929; color: #000 !important;"
+                        />
+                    <!-- eslint-enable -->
+                </transition>
+            </template>
+        </v-tour>
     </div>
 </template>
 
@@ -68,6 +85,9 @@ export default {
         resetBoard() {
             this.$refs.board.board.set({ fen: '8/pppppppp/8/8/8/8/PPPPPPPP/8 w KQkq - 0 1' });
             this.boardChange();
+        },
+        doTour() {
+            this.$tours.appTour.start();
         },
         boardChange() {
             const pieceLocsEndpoint = `/api/pieceLocs?structure=${this.$refs.board.structure()}`;
@@ -169,6 +189,40 @@ export default {
             highlightColormap: interpolate([startColor, midColor, endColor]),
             selectedColor: '',
             selectedPiece: -1,
+
+            tourSteps: [
+                {
+                    target: '[data-v-step="0"]',
+                    content: 'Move around pawns to adjust the pawn structure. No pieces allowed!',
+                    params: {
+                        placement: 'bottom',
+                    },
+                },
+                {
+                    target: '[data-v-step="1"]',
+                    params: {
+                        placement: 'right',
+                    },
+                    content: 'Drag new pawns to the board from here.',
+                },
+                {
+                    target: '[data-v-step="2"]',
+                    content: `Click on a piece too see placement likelihoods (transparency)
+                    and outcome likelihoods (red=loss, blue=draw, green=win)
+                    from positions with this pawn structure.`,
+                    params: {
+                        placement: 'top',
+                    },
+                },
+                {
+                    target: '[data-v-step="3"]',
+                    content: `See games with this pawn structure, grouped by result.
+                    The last played move is highlighted.`,
+                    params: {
+                        placement: 'left',
+                    },
+                },
+            ],
         };
     },
     mounted: function () {
@@ -191,7 +245,12 @@ body {
     font-family: Arial;
 
     color: $text-primary;
-    transform: translate(-70px, 60px);
+    transform: translate(-40px, 60px);
+}
+#App .v-step__content {
+    color: $text-primary;
+    border-radius: 6px;
+    background: $secondary;
 }
 #UpperBank {
     margin-bottom: 10px;
@@ -208,7 +267,6 @@ body {
 #GameStats {
     position: absolute;
     text-align: right;
-    // transform: translate(-370px, 0px);
     right: 330px;
     width: 200px;
 }
@@ -216,7 +274,7 @@ body {
     position: absolute;
     text-align: right;
     right: 324px;
-    top: 278px;
+    top: 252px;
     width: 200px;
 }
 #Openings {

@@ -30,7 +30,8 @@
     "vue-resource": "^1.5.2",
     "vue-router": "^3.5.1",
     "vue-slider-component": "^3.2.13",
-    "vue-template-compiler": "^2.6.12"
+    "vue-template-compiler": "^2.6.12",
+    "vue-tour": "^2.0.0"
   },
   "devDependencies": {
     "eslint": "^7.28.0",

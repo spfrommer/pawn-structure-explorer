@@ -48,6 +48,8 @@ export default {
             const lastMove = history[history.length - 1];
             if (lastMove != null) {
                 this.board.state.lastMove = [lastMove.from, lastMove.to];
+            } else {
+                this.board.state.lastMove = null;
             }
         },
     },

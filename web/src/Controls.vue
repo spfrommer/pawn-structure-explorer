@@ -1,5 +1,9 @@
 <template>
 <div>
+    <button @click="tourClicked">
+        &#x1C04; TOUR
+    </button>
+    <br>
     <button @click="flipClicked">
         &#128472; FLIP
     </button>
@@ -15,6 +19,7 @@ export default {
     methods: {
         flipClicked() { this.$emit('flip'); },
         resetClicked() { this.$emit('reset'); },
+        tourClicked() { this.$emit('tour'); },
     },
 };
 </script>
