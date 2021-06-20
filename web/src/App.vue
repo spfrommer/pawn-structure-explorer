@@ -194,7 +194,10 @@ export default {
                 {
                     target: '[data-v-step="2"]',
                     content: `Click on a piece too see placement likelihoods (transparency)
-                    and outcome likelihoods (red=loss, blue=draw, green=win)
+                    and outcome likelihoods <br>
+                    (<span class="red-text">red → loss</span>,
+                    <span class="blue-text">blue → draw</span>, 
+                    <span class="green-text">green → win</span>)<br> 
                     from positions with this pawn structure.`,
                     params: {
                         placement: 'top',
@@ -203,7 +206,7 @@ export default {
                 {
                     target: '[data-v-step="3"]',
                     content: `See games with this pawn structure, grouped by result.
-                    The last previous game move is highlighted.`,
+                    The last previous game move is highlighted. Click to open game.`,
                     params: {
                         placement: 'left',
                     },
@@ -233,8 +236,17 @@ body {
     color: $text-primary;
     transform: translate(-40px, 60px);
 }
+#App .v-step .blue-text {
+    color: $accent1;
+}
+#App .v-step .green-text {
+    color: $accent2;
+}
+#App .v-step .red-text {
+    color: $accent3;
+}
 #App .v-step {
-    background: scale-color($primary, $lightness: 5%);
+    background: scale-color($primary, $alpha: -25%);
     border-radius: 3px;
 }
 #App .v-step__content {
@@ -246,6 +258,9 @@ body {
 }
 #App .v-step__button:hover {
     background: $secondary;
+}
+#App .v-step__arrow {
+    background: scale-color($primary, $lightness: 60%);
 }
 
 #UpperBank {
