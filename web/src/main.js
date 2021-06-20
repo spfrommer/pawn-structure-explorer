@@ -3,12 +3,14 @@ import VueRouter from 'vue-router';
 import VueResource from 'vue-resource';
 import AsyncComputed from 'vue-async-computed';
 import VueTour from 'vue-tour';
-import App from './App.vue';
+import VModal from 'vue-js-modal';
 
+import App from './App.vue';
 import utils from './utils';
 
 require('vue-tour/dist/vue-tour.css');
 
+Vue.use(VModal, { dialog: true });
 Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.use(VueTour);
