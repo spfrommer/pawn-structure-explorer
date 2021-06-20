@@ -1,15 +1,15 @@
 <template>
 <div>
-    <button @click="tourClicked">
-        &#x1C04; TOUR
-    </button>
-    <br>
     <button @click="flipClicked">
         &#128472; FLIP
     </button>
     <br>
     <button @click="resetClicked">
         &#128465; RESET
+    </button>
+    <br>
+    <button @click="tourClicked">
+        &#x1C04; TOUR
     </button>
 </div>
 </template>

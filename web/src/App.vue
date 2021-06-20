@@ -23,20 +23,6 @@
             @spareClick="lowerBankClick"
             data-v-step="2"/>
         <v-tour name="appTour" :steps="tourSteps">
-            <template slot-scope="tour">
-                <transition name="fade">
-                    <!-- eslint-disable -->
-                    <v-step
-                        v-for="(step, index) of tour.steps"
-                        :key="index" v-if="tour.currentStep === index"
-                        :step="step" :previous-step="tour.previousStep" :next-step="tour.nextStep"
-                        :stop="tour.stop" :skip="tour.skip"
-                        :is-first="tour.isFirst" :is-last="tour.isLast" :labels="tour.labels"
-                        style="background-color: #292929; color: #000 !important;"
-                        />
-                    <!-- eslint-enable -->
-                </transition>
-            </template>
         </v-tour>
     </div>
 </template>
@@ -217,7 +203,7 @@ export default {
                 {
                     target: '[data-v-step="3"]',
                     content: `See games with this pawn structure, grouped by result.
-                    The last played move is highlighted.`,
+                    The last previous game move is highlighted.`,
                     params: {
                         placement: 'left',
                     },
@@ -247,11 +233,21 @@ body {
     color: $text-primary;
     transform: translate(-40px, 60px);
 }
+#App .v-step {
+    background: scale-color($primary, $lightness: 5%);
+    border-radius: 3px;
+}
 #App .v-step__content {
     color: $text-primary;
-    border-radius: 6px;
+}
+#App .v-step__button {
+    color: $text-primary;
+    border-radius: 3px;
+}
+#App .v-step__button:hover {
     background: $secondary;
 }
+
 #UpperBank {
     margin-bottom: 10px;
 }
