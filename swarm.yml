@@ -28,7 +28,7 @@ services:
       - nwmain
 
   server:
-    image: gcr.io/pawnse/server:latest
+    image: pse_server
     environment:
       - NODE_ENV=development
     volumes:
@@ -40,7 +40,7 @@ services:
     networks:
       - nwmain
   web:
-    image: gcr.io/pawnse/web:latest
+    image: pse_web
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true 
@@ -53,7 +53,7 @@ services:
     networks:
       - nwmain
   proxy:
-    image: gcr.io/pawnse/proxy:latest
+    image: pse_proxy
     ports:
       - 80:80
     deploy:

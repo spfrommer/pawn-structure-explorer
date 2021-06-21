@@ -14,10 +14,11 @@ if [ "$MODE" == "INIT" ]; then
     echo ">>>>> CREATING SWARM <<<<<"
     MGR=$(gcloud compute instances describe main --format='get(networkInterfaces[0].networkIP)')
     gcloud compute ssh main --command="sudo docker swarm init --advertise-addr $MGR"
-
-    echo ">>>>> JOINING SWARM <<<<<"
-    JOIN=$(gcloud compute ssh main --command="sudo docker swarm join-token worker | sed -n 3p")
-    gcloud compute ssh main --command="sudo $JOIN"
+    
+    #Not necessary since we only have one instance
+    #echo ">>>>> JOINING SWARM <<<<<"
+    #JOIN=$(gcloud compute ssh main --command="sudo docker swarm join-token worker | sed -n 3p")
+    #gcloud compute ssh main --command="sudo $JOIN"
 
     echo ">>>>> CREATING NETWORK <<<<<"
     gcloud compute ssh main --command="sudo docker network create nwmain --driver overlay --attachable"
@@ -28,30 +29,7 @@ gcloud compute ssh main --command="sudo rm -rf ~/pawn-structure-explorer"
 gcloud compute ssh main --command="git clone https://github.com/spfrommer/pawn-structure-explorer.git"
 gcloud compute ssh main --command="cd pawn-structure-explorer && sudo docker-compose build"
 gcloud compute ssh main --command="sudo usermod -a -G docker ${USER}"
-gcloud compute ssh main --command="cd pawn-structure-explorer && cat verdant-future-312705-c80a06677b03.json | sudo docker login -u _json_key --password-stdin https://gcr.io"
-
-
-echo ">>>>> REMOVING OLD IMAGES <<<<<"
-IMAGES="server web proxy"
-if [ "$MODE" == "REDEPLOY" ]; then
-    for image in $IMAGES
-    do
-        gcloud compute ssh main --command="sudo docker rmi gcr.io/verdant-future-312705/${image}:latest"
-    done
-fi
-
-echo ">>>>> PUSHING IMAGES TO REPO <<<<<"
-for image in $IMAGES
-do
-    gcloud compute ssh main --command="sudo docker tag pawnse_${image} gcr.io/verdant-future-312705/${image}:latest"
-    gcloud compute ssh main --command="sudo docker push gcr.io/verdant-future-312705/${image}:latest"
-done
-
-# Pulling images onto machine
 gcloud compute ssh main --command="mkdir ~/pawn-structure-explorer/data/lichess-elite-database && mkdir ~/pawn-structure-explorer/data/mongodb"
-gcloud compute ssh main --command="sudo docker pull gcr.io/verdant-future-312705/server:latest"
-gcloud compute ssh main --command="sudo docker pull gcr.io/verdant-future-312705/web:latest"
-gcloud compute ssh main --command="sudo docker pull gcr.io/verdant-future-312705/proxy:latest"
 
 echo ">>>>> DEPLOYING <<<<<"
 gcloud compute ssh main --command="cd webtrace && sudo docker stack deploy --compose-file swarm.yml pawnse"
