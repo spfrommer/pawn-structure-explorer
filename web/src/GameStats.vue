@@ -23,17 +23,8 @@ export default {
         },
         percents: function () {
             if (!this.hasGames) return '- / - / -';
-            try {
-                const percents = percentRound([this.count('1-0'), this.count('1/2-1/2'), this.count('0-1')]);
-                return percents.map(p => p + '%').join(' / ');
-            } catch (err) {
-                console.log('got percents error');
-                console.log(this.count('1-0'));
-                console.log(this.count('1/2-1/2'));
-                console.log(this.count('0-1'));
-                console.log(this.games);
-                return 'foo';
-            }
+            const percents = percentRound([this.count('1-0'), this.count('1/2-1/2'), this.count('0-1')]);
+            return percents.map(p => p + '%').join(' / ');
         },
     },
     methods: {
@@ -42,16 +33,11 @@ export default {
             let games = 0;
             for (const main of Object.keys(openings)) {
                 for (const variation of Object.keys(openings[main])) {
-                    if (Number.isNaN(openings[main][variation].length)) {
-                        console.log(`Got nan: ${main}, ${variation}`);
-                    } else {
-                        games += openings[main][variation].length;
-                    }
+                    const length = openings[main][variation].length;
+                    console.assert(length !== 0);
+                    console.assert(!Number.isNaN(length));
+                    games += length;
                 }
-            }
-            if (games === 0) {
-                console.log('-----------------');
-                console.log(this.games);
             }
             return games;
             // return this.games[result].gameCount;
