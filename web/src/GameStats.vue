@@ -50,8 +50,8 @@ export default {
                 console.log('-----------------');
                 console.log(this.games);
             }
-            // return games;
-            return this.games[result].gameCount;
+            return games;
+            // return this.games[result].gameCount;
         },
     },
 };
