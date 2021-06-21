@@ -28,6 +28,9 @@ export default {
                 return percents.map(p => p + '%').join(' / ');
             } catch (err) {
                 console.log('got percents error');
+                console.log(this.count('1-0'));
+                console.log(this.count('1/2-1/2'));
+                console.log(this.count('0-1'));
                 console.log(this.games);
                 return 'foo';
             }
