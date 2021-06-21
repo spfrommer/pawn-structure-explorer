@@ -1,7 +1,4 @@
-MODE="INIT" # INIT, REDEPLOY
-# TODO: replace verdant-future-... with pawnse
-# Add json auth whatever
-
+MODE="REDEPLOY" # INIT, REDEPLOY
 
 if [ "$MODE" == "INIT" ]; then
     echo ">>>>> CREATING MACHINES <<<<<"
@@ -41,6 +38,9 @@ gcloud compute ssh main --command="cd pawn-structure-explorer && sudo docker-com
 gcloud compute ssh main --command="sudo usermod -a -G docker ${USER}"
 
 echo ">>>>> DEPLOYING <<<<<"
+if [ "$MODE" == "REDEPLOY" ]; then
+    gcloud compute ssh main --command="cd pawn-structure-explorer && sudo docker stack rm pawnse"
+fi
 gcloud compute ssh main --command="cd pawn-structure-explorer && sudo docker stack deploy --compose-file swarm.yml pawnse"
 # gcloud compute ssh main --command="cd webtrace && sudo docker service scale webtrace_queueworker=0 webtrace_fetchworker=0 webtrace_indexer=0"
 # docker run --network nw1 -it gcr.io/verdant-future-312705/cli:latest 

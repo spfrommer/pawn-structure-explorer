@@ -18,13 +18,19 @@ export default {
             return Object.keys(this.games).length !== 0;
         },
         gameCount: function () {
-            if (!this.hasGames) return 0;
+            if (!this.hasGames) { console.log('*****'); console.log(this.games); return 0; }
             return this.count('1-0') + this.count('1/2-1/2') + this.count('0-1');
         },
         percents: function () {
             if (!this.hasGames) return '- / - / -';
-            const percents = percentRound([this.count('1-0'), this.count('1/2-1/2'), this.count('0-1')]);
-            return percents.map(p => p + '%').join(' / ');
+            try {
+                const percents = percentRound([this.count('1-0'), this.count('1/2-1/2'), this.count('0-1')]);
+                return percents.map(p => p + '%').join(' / ');
+            } catch (err) {
+                console.log('got percents error');
+                console.log(this.games);
+                return 'foo';
+            }
         },
     },
     methods: {
@@ -35,6 +41,10 @@ export default {
                 for (const variation of Object.keys(openings[main])) {
                     games += openings[main][variation].length;
                 }
+            }
+            if (games === 0) {
+                console.log('-----------------');
+                console.log(this.games);
             }
             return games;
             // return this.games[result].gameCount;
