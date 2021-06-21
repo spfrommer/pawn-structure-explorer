@@ -1,6 +1,6 @@
 <template>
 <div>
-    <span>Pawn Structure Explorer 1.0.1</span>
+    <span>Pawn Structure Explorer 1.0.2</span>
     <button @click="aboutClicked">
         ABOUT
     </button>

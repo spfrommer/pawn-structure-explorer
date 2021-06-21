@@ -39,15 +39,19 @@ export default {
             let games = 0;
             for (const main of Object.keys(openings)) {
                 for (const variation of Object.keys(openings[main])) {
-                    games += openings[main][variation].length;
+                    if (!Number.isNan(openings[main][variation].length)) {
+                        console.log(`Got nan: ${main}, ${variation}`);
+                    } else {
+                        games += openings[main][variation].length;
+                    }
                 }
             }
             if (games === 0) {
                 console.log('-----------------');
                 console.log(this.games);
             }
-            return games;
-            // return this.games[result].gameCount;
+            // return games;
+            return this.games[result].gameCount;
         },
     },
 };
