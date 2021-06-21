@@ -31,7 +31,7 @@ if [ "$MODE" == "INIT" ]; then
     gcloud compute ssh main --command="cd pawn-structure-explorer/data/lichess-elite-database && unzip lichess_elite_2020-06.zip && rm lichess_elite_2020-06.zip"
 fi
 if [ "$MODE" == "REDEPLOY" ]; then
-    gcloud compute ssh main --command="cd pawn-structure-explorer && get pull"
+    gcloud compute ssh main --command="cd pawn-structure-explorer && git pull"
 fi
 echo ">>>>> BUILDING IMAGES <<<<<"
 gcloud compute ssh main --command="cd pawn-structure-explorer && sudo docker-compose build"

@@ -7,12 +7,12 @@ RUN apk add --no-cache --virtual .gyp \
         python \
         make \
         g++
-RUN apk del .gyp
 
 COPY ./package*.json ./
 
 RUN npm install --legacy-peer-deps
 
+RUN apk del .gyp
 
 COPY ./assets ./assets
 COPY ./public ./public
