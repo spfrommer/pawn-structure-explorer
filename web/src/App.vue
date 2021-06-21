@@ -2,6 +2,7 @@
     <div>
         <MenuBar id="MenuBar"/>
         <div id="App">
+            <WinBar id="upperBar" :whiteWinFirst="!boardFlipped" :visible="upperWinBarVisible" />
             <SpareBank ref="UpperBank" :id="'UpperBank'"
                 :vertical="false"
                 :selectable="true"
@@ -27,8 +28,8 @@
                 :pieces="piecesLower"
                 @spareClick="lowerBankClick"
                 data-v-step="2"/>
-            <v-tour name="appTour" :steps="tourSteps">
-            </v-tour>
+            <WinBar id="lowerBar" :whiteWinFirst="boardFlipped" :visible="lowerWinBarVisible" />
+            <v-tour name="appTour" :steps="tourSteps" />
         </div>
     </div>
 </template>
@@ -38,6 +39,7 @@ import Board from './Board.vue';
 import MenuBar from './MenuBar.vue';
 import Editor from './Editor.vue';
 import SpareBank from './SpareBank.vue';
+import WinBar from './WinBar.vue';
 import GameStats from './GameStats.vue';
 import Openings from './Openings.vue';
 import Controls from './Controls.vue';
@@ -54,6 +56,7 @@ export default {
         MenuBar,
         Editor,
         SpareBank,
+        WinBar,
         GameStats,
         Openings,
         Controls,
@@ -167,6 +170,12 @@ export default {
             const pieces = ['pawn-black', 'pawn-white'];
             if (this.boardFlipped) pieces.reverse();
             return pieces;
+        },
+        upperWinBarVisible: function () {
+            return this.selectedColor === (this.boardFlipped ? 'white' : 'black');
+        },
+        lowerWinBarVisible: function () {
+            return this.selectedColor === (this.boardFlipped ? 'black' : 'white');
         },
     },
     data: function () {

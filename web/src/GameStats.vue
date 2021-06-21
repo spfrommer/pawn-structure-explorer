@@ -40,7 +40,6 @@ export default {
                 }
             }
             return games;
-            // return this.games[result].gameCount;
         },
     },
 };
