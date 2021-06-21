@@ -39,7 +39,7 @@ export default {
             let games = 0;
             for (const main of Object.keys(openings)) {
                 for (const variation of Object.keys(openings[main])) {
-                    if (!Number.isNaN(openings[main][variation].length)) {
+                    if (Number.isNaN(openings[main][variation].length)) {
                         console.log(`Got nan: ${main}, ${variation}`);
                     } else {
                         games += openings[main][variation].length;
