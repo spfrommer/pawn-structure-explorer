@@ -1,0 +1,67 @@
+version: "3"
+services:
+  # Core processes
+  # Ports not required for pd0/tikv/nats because they can be resolved via the dns proxy
+  dns:
+    image: defreitas/dns-proxy-server
+    hostname: dns.mageddo
+    ports:
+      - 5380:5380
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/resolv.conf:/etc/resolv.conf
+    deploy:
+      replicas: 0
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ./data/mongodb:/data/db
+    ports:
+      - 27017:27017
+    deploy:
+      replicas: 1
+    networks:
+      - nwmain
+
+  server:
+    image: gcr.io/pawnse/server:latest
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./data/lichess-elite-database:/pgns
+    ports:
+      - 8081:8081
+    deploy:
+      replicas: 1
+    networks:
+      - nwmain
+  web:
+    image: gcr.io/pawnse/web:latest
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true 
+    ports:
+      - 8080:8080
+    volumes:
+      - ./web/src:/home/pse/web/src
+    deploy:
+      replicas: 1
+    networks:
+      - nwmain
+  proxy:
+    image: gcr.io/pawnse/proxy:latest
+    ports:
+      - 80:80
+    deploy:
+      replicas: 1
+    networks:
+      - nwmain
+
+networks:
+  nwmain:
+    external:
+      name: nwmain
