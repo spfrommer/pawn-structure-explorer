@@ -12,14 +12,24 @@ function errorHandle(res, err) {
     res.send('ERROR');
 }
 
+function time() {
+    return new Date().getTime();
+}
+
 app.get('/api/pieceLocs', (req, res) => {
     db.getPieceLocs(req.query.structure)
         .then(doc => { res.send(doc); })
         .catch(errorHandle.bind(res));
 });
 app.get('/api/games', (req, res) => {
+    const startTime = time();
+    console.log('Got games request');
     db.getGames(req.query.structure)
-        .then(doc => { res.send(doc); })
+        .then(doc => {
+            console.log(`Sending games response: ${time() - startTime}`);
+            res.send(doc);
+            console.log(`Finished sending: ${time() - startTime}`);
+        })
         .catch(errorHandle.bind(res));
 });
 app.get('/api/gamePgn', (req, res) => {
