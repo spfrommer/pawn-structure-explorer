@@ -87,6 +87,10 @@ export default {
             this.$tours.appTour.start();
         },
         boardChange() {
+            function time() {
+                return new Date().getTime();
+            }
+
             const pieceLocsEndpoint = `/api/pieceLocs?structure=${this.$refs.board.structure()}`;
             this.$http.get(pieceLocsEndpoint).then(response => {
                 let responseJson = null;
@@ -96,8 +100,10 @@ export default {
                 this.pieceLocs = (responseJson === null) ? {} : responseJson;
             }, err => { console.error(err); });
 
+            const startTime = time();
             const gamesEndpoint = `/api/games?structure=${this.$refs.board.structure()}`;
             this.$http.get(gamesEndpoint).then(response => {
+                console.log(`Receiving games lag: ${time() - startTime}`);
                 let responseJson = null;
                 try {
                     responseJson = JSON.parse(response.bodyText);
