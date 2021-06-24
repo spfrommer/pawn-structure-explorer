@@ -87,7 +87,7 @@ export default {
             const sortable = [];
             for (const main of Object.keys(openings)) {
                 for (const variation of Object.keys(openings[main])) {
-                    sortable.push([main, variation, openings[main][variation].length]);
+                    sortable.push([main, variation, openings[main][variation].count]);
                 }
             }
             sortable.sort((a, b) => b[2] - a[2]);
@@ -103,7 +103,7 @@ export default {
                 const newGames = [];
                 for (const opening of openings) {
                     const [main, variation] = opening;
-                    const openingIds = this.games[result].openings[main][variation];
+                    const openingIds = this.games[result].openings[main][variation].games;
                     if (openingIds.length > counter) {
                         newGames.push({
                             gameId: openingIds[counter],

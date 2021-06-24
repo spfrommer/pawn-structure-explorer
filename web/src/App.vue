@@ -108,6 +108,7 @@ export default {
                 try {
                     responseJson = JSON.parse(response.bodyText);
                 } catch { }
+                console.log(responseJson);
                 this.games = (responseJson === null) ? {} : responseJson;
             }, err => { console.error(err); });
         },

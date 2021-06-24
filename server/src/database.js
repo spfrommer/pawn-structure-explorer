@@ -5,6 +5,8 @@ const mongojs = require('mongojs');
 const GameParser = require('./gameParser');
 const utils = require('./utils');
 
+const GAME_LIST_LEN = 3;
+
 class Database {
     constructor(mongoUri, pgnsDir) {
         this.db = mongojs(`${mongoUri}/db`, ['structurePieceLocs', 'structureGames', 'gamePgn']);
@@ -40,7 +42,20 @@ class Database {
     }
 
     getGames(structure) {
-        return utils.promiseBind(this.db.structureGames, 'findOne')({ _id: structure });
+        return utils.promiseBind(this.db.structureGames, 'findOne')({ _id: structure })
+            .then(doc => {
+                for (const result of ['1-0', '1/2-1/2', '0-1']) {
+                    for (const main of Object.keys(doc[result].openings)) {
+                        const variations = doc[result].openings[main];
+                        for (const variation of Object.keys(variations)) {
+                            const games = variations[variation].games;
+                            variations[variation].count = games.length;
+                            variations[variation].games = games.slice(0, GAME_LIST_LEN);
+                        }
+                    }
+                }
+                return doc;
+            });
     }
 
     getPgn(gameId) {
@@ -179,12 +194,7 @@ class Database {
         if (newGame) indexingState.seenGames.add(tags.GameId);
 
         if (newStructure || newGame) {
-            const countUpdateKey = `${tags.Result}.gameCount`;
-            indexingState.bulkUpdates.find({ _id: structure }).update({
-                $inc: { [countUpdateKey]: 1 },
-            });
-
-            const openingUpdateKey = `${tags.Result}.openings.${tags.OpeningMain}.${tags.OpeningVariations}`;
+            const openingUpdateKey = `${tags.Result}.openings.${tags.OpeningMain}.${tags.OpeningVariations}.games`;
             indexingState.bulkUpdates.find({ _id: structure }).update({
                 $addToSet: { [openingUpdateKey]: tags.GameId },
             });
@@ -218,7 +228,7 @@ class Database {
 
     static defaultGames() {
         function createGames() {
-            return { gameCount: 0, openings: {} };
+            return { openings: {} };
         }
         return { '1-0': createGames(), '1/2-1/2': createGames(), '0-1': createGames() };
     }

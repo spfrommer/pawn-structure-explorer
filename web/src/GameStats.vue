@@ -33,10 +33,10 @@ export default {
             let games = 0;
             for (const main of Object.keys(openings)) {
                 for (const variation of Object.keys(openings[main])) {
-                    const length = openings[main][variation].length;
-                    console.assert(length !== 0);
-                    console.assert(!Number.isNaN(length));
-                    games += length;
+                    const count = openings[main][variation].count;
+                    console.assert(count !== 0);
+                    console.assert(!Number.isNaN(count));
+                    games += count;
                 }
             }
             return games;
