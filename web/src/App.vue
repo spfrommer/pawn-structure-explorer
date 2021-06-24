@@ -78,6 +78,13 @@ export default {
         },
         flipBoard() {
             this.boardFlipped = !this.boardFlipped;
+            if (this.selectedPiece !== -1) {
+                const oldSelectedTop = (this.selectedColor === 'white') !== this.boardFlipped;
+                const oldBank = oldSelectedTop ? this.$refs.UpperBank : this.$refs.LowerBank;
+                const newBank = oldSelectedTop ? this.$refs.LowerBank : this.$refs.UpperBank;
+                newBank.selected = 7 - oldBank.selected;
+                oldBank.selected = -1;
+            }
         },
         resetBoard() {
             this.$refs.board.board.set({ fen: '8/pppppppp/8/8/8/8/PPPPPPPP/8 w KQkq - 0 1' });

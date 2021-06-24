@@ -1,8 +1,8 @@
-MODE="REDEPLOY" # INIT, REDEPLOY
+MODE="INIT" # INIT, REDEPLOY
 
 if [ "$MODE" == "INIT" ]; then
     echo ">>>>> CREATING MACHINES <<<<<"
-    docker-machine create main -d google --google-machine-type n1-standard-2 --google-tags pawnse-swarm --google-project pawnse --google-disk-size 200 
+    docker-machine create main -d google --google-machine-type n1-standard-2 --google-tags pawnse-swarm --google-project pawnse --google-disk-size 200 --google-disk-type pd-ssd
 
     echo ">>>>> INSTALLING DOCKER COMPOSE ON MANAGER <<<<<"
     gcloud compute ssh main --command="sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose"
