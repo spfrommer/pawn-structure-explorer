@@ -90,12 +90,7 @@ export default {
                     sortable.push([main, variation, openings[main][variation].length]);
                 }
             }
-            function time() {
-                return new Date().getTime();
-            }
-            const startTime = time();
             sortable.sort((a, b) => b[2] - a[2]);
-            console.log(`Sorting time: ${time() - startTime}`);
 
             return sortable.slice(0, nSel).map(l => l.slice(0, 2));
         },

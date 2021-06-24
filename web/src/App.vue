@@ -258,7 +258,7 @@ body {
     color: $text-primary;
 }
 #App {
-    transform: translate(-40px, 60px);
+    transform: translate(-40px, 45px);
 }
 #App .v-step .blue-text {
     color: $accent1;
