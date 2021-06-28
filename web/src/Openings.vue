@@ -81,6 +81,7 @@ export default {
             return valueHtml;
         },
         commonOpenings(result) {
+            // Returns list of tuples like ['main', 'variation'], ordered by occurrence frequency
             if (!this.hasGames) return [];
 
             const openings = this.games[result].openings;

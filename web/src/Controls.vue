@@ -8,9 +8,6 @@
         &#128465; RESET
     </button>
     <br>
-    <button @click="tourClicked">
-        &#x1C04; TOUR
-    </button>
 </div>
 </template>
 
@@ -19,7 +16,6 @@ export default {
     methods: {
         flipClicked() { this.$emit('flip'); },
         resetClicked() { this.$emit('reset'); },
-        tourClicked() { this.$emit('tour'); },
     },
 };
 </script>

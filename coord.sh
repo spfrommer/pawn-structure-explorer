@@ -22,6 +22,13 @@ if [ "$MODE" == "INIT" ]; then
     gcloud compute ssh main --command="sudo docker network create nwmain --driver overlay --attachable"
 fi
 
+if [ "$MODE" == "REDEPLOY" ]; then
+    echo ">>>>> FETCHING LOGS <<<<<"
+    LOGDIR=./remote/$(date +%Y-%m-%d_%H-%M-%S)
+    mkdir $LOGDIR
+    gcloud compute scp main:~/pawn-structure-explorer/proxy/log/* $LOGDIR
+fi
+
 echo ">>>>> FETCHING SOURCE <<<<<"
 if [ "$MODE" == "INIT" ]; then
     gcloud compute ssh main --command="git clone https://github.com/spfrommer/pawn-structure-explorer.git"

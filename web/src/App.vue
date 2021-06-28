@@ -1,6 +1,6 @@
 <template>
     <div>
-        <MenuBar id="MenuBar"/>
+        <MenuBar id="MenuBar" @tour="doTour"/>
         <div id="App">
             <WinBar id="upperBar" :whiteWinFirst="!boardFlipped" :visible="upperWinBarVisible" />
             <SpareBank ref="UpperBank" :id="'UpperBank'"
@@ -13,7 +13,7 @@
                     :highlights="highlights"
                     :flipped="boardFlipped"
                     @boardChange="boardChange" data-v-step="0"/>
-                <Controls id="Controls" @flip="flipBoard" @reset="resetBoard" @tour="doTour"/>
+                <Controls id="Controls" @flip="flipBoard" @reset="resetBoard"/>
                 <GameStats id="GameStats" :games="games"/>
                 <Editor :id="'Editor'"
                     :flipped="boardFlipped"
@@ -322,7 +322,7 @@ body {
     position: absolute;
     text-align: right;
     right: 324px;
-    top: 252px;
+    top: 276px;
     width: 200px;
 }
 #Openings {

@@ -1,6 +1,9 @@
 <template>
 <div>
-    <span>Pawn Structure Explorer 1.0.2</span>
+    <span>Pawn Structure Explorer</span>
+    <button @click="tourClicked">
+        TOUR
+    </button>
     <button @click="aboutClicked">
         ABOUT
     </button>
@@ -11,6 +14,7 @@
 <script>
 export default {
     methods: {
+        tourClicked() { this.$emit('tour'); },
         aboutClicked() {
             this.$modal.show('dialog', {
                 text:
@@ -20,15 +24,14 @@ export default {
 
 <h4> Description </h4>
 <p> This is a small curiosity project that I made to help improve
-my understanding of pawn structures. I'm not sure I succeeded, but feel free to see if you get anything out of it.
-This was also my first serious foray into web development.
+my understanding of pawn structures. I'm not sure I succeeded, but feel free to see if you find it interesting.
+This was also my first serious web development attempt.
 If you would like to report any bugs, changes, or features suggestions, please submit a
 <a href="https://github.com/spfrommer/pawn-structure-explorer/issues/new" target="_blank">GitHub issue</a>.</p>
 
 <h4> Details </h4>
-<p> The piece highlight for a particular square considers all the board positions
-in the database with the provided pawn structure where the selected piece was located at that square.
-The highlight transparency corresponds to the likelihood of that piece being found there; if 
+<p> For the piece highlights, the games database is first filtered for all positions which match the
+current pawn structure. The highlight transparency for a particular square then corresponds to the likelihood of the selected piece being found there; if 
 there is no highlight, the piece was never found at that location in the structure. The hue ranges from red to blue to green,
 indicating the average points result of games with that pawn structure and piece location.
 So roughly speaking, a green square is "good" for that piece and a red square is "bad." </p>
