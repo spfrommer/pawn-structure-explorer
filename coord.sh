@@ -1,4 +1,4 @@
-MODE="INIT" # INIT, REDEPLOY
+MODE="REDEPLOY" # INIT, REDEPLOY
 
 if [ "$MODE" == "INIT" ]; then
     echo ">>>>> CREATING MACHINES <<<<<"
