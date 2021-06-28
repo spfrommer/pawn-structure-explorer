@@ -39,6 +39,7 @@ app.get('/api/gamePgn', (req, res) => {
 });
 
 // TODO: make post, disable automatically in production
+/*
 app.get('/api/index', (req, res) => {
     db.buildIndex()
         .then(() => { res.send('INDEXED'); })
@@ -56,6 +57,7 @@ app.get('/api/stats', (req, res) => {
         })
         .catch(err => errorHandle(res, err));
 });
+*/
 
 app.listen(8081, '0.0.0.0');
 console.log('Server running');
