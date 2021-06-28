@@ -47,3 +47,5 @@ services:
     depends_on:
       - server
       - web
+    volumes:
+      - ./proxy/log:/var/log/nginx

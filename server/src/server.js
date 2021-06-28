@@ -37,28 +37,8 @@ app.get('/api/gamePgn', (req, res) => {
         .then(doc => { res.send(doc); })
         .catch(err => errorHandle(res, err));
 });
-app.get('/api/pieceLocs/first', (req, res) => {
-    db.findAllPieceLocs()
-        .then(docs => {
-            res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
-        })
-        .catch(err => errorHandle(res, err));
-});
-app.get('/api/games/first', (req, res) => {
-    db.findAllGames()
-        .then(docs => {
-            res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
-        })
-        .catch(err => errorHandle(res, err));
-});
-app.get('/api/gamePgn/first', (req, res) => {
-    db.findAllGamePgn()
-        .then(docs => {
-            res.send(`<pre> ${JSON.stringify(docs[0], null, 4)} </pre>`);
-        })
-        .catch(err => errorHandle(res, err));
-});
 
+// TODO: make post, disable automatically in production
 app.get('/api/index', (req, res) => {
     db.buildIndex()
         .then(() => { res.send('INDEXED'); })
