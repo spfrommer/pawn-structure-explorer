@@ -1,5 +1,8 @@
 module.exports = {
     runtimeCompiler: true,
+    devServer: {
+        disableHostCheck: true,
+    },
     css: {
         loaderOptions: {
             scss: {

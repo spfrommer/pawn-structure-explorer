@@ -49,3 +49,4 @@ services:
       - web
     volumes:
       - ./proxy/log:/var/log/nginx
+      - /etc/letsencrypt/:/etc/letsencrypt/

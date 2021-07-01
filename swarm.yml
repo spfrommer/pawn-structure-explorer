@@ -62,6 +62,7 @@ services:
       - nwmain
     volumes:
       - ./proxy/log:/var/log/nginx
+      - /etc/letsencrypt:/etc/letsencrypt
 
 networks:
   nwmain:
