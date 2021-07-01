@@ -31,14 +31,14 @@ def mongo():
 
 @main.command()
 def webapp():
-    subprocess.run(['docker-compose', 'build'] + WEBAPP)
+    subprocess.run(['docker-compose', 'build'] + WEBAPP + ['--build-arg', 'MODE=dev'])
     subprocess.run(['docker-compose', 'up', 'proxy'])
     subprocess.run(['docker-compose', 'stop'] + WEBAPP)
 
 
 @main.command()
 def server():
-    subprocess.run(['docker-compose', 'build', 'server'])
+    subprocess.run(['docker-compose', 'build', 'server', '--build-arg', 'MODE=dev'])
     subprocess.run(['docker-compose', 'up', '--force-recreate', 'server'])
     subprocess.run(['docker-compose', 'stop', 'server'])
 

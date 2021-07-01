@@ -41,7 +41,7 @@ if [ "$MODE" == "REDEPLOY" ]; then
     gcloud compute ssh main --command="cd pawn-structure-explorer && git pull"
 fi
 echo ">>>>> BUILDING IMAGES <<<<<"
-gcloud compute ssh main --command="cd pawn-structure-explorer && sudo docker-compose build"
+gcloud compute ssh main --command="cd pawn-structure-explorer && sudo docker-compose build --build-arg MODE=prod"
 gcloud compute ssh main --command="sudo usermod -a -G docker ${USER}"
 
 echo ">>>>> DEPLOYING <<<<<"
