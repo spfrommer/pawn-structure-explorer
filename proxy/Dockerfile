@@ -2,7 +2,7 @@
 FROM nginx:alpine
 ARG MODE
 RUN test -n "$MODE" || (echo "MODE not set (prod or dev)" && false)
-RUN echo "Got mode: $CONF"
+RUN echo "Got mode: $MODE"
 
 # Remove any existing config files
 RUN rm /etc/nginx/conf.d/*
