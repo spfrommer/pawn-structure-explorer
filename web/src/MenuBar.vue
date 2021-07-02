@@ -7,6 +7,11 @@
     <button @click="aboutClicked">
         ABOUT
     </button>
+    <script type="application/javascript" defer src="https://donorbox.org/install-popup-button.js"></script>
+    <script type="application/javascript" defer>
+        window.DonorBox = { widgetLinkClassName: 'custom-dbox-popup' }
+    </script>
+    <a class="custom-dbox-popup" href="https://donorbox.org/pawn-structure-explorer-donations">DONATE</a>
     <v-dialog />
 </div>
 </template>
@@ -64,36 +69,36 @@ for their compilation of high-elo games from Lichess. </li>
 #MenuBar .vue-dialog-buttons {
     border-top: none;
 }
-#MenuBar p {
+#MenuBar .vue-dialog p {
     margin: 3px;
     padding: 3px;
 }
-#MenuBar h3 {
+#MenuBar .vue-dialog h3 {
     margin: 3px;
     padding: 3px;
 }
-#MenuBar h4 {
+#MenuBar .vue-dialog h4 {
     margin: 3px;
     padding: 3px;
 }
-#MenuBar a {
+#MenuBar .vue-dialog a {
     color: $accent1;
     text-decoration: none;
 }
-#MenuBar ul {
+#MenuBar .vue-dialog ul {
     margin-top: 3px;
     padding-top: 3px;
     margin-left: 0px;
     padding-left: 15px;
 }
-#MenuBar li {
+#MenuBar .vue-dialog li {
     padding-bottom: 7px;
 }
 #MenuBar span {
     padding-right: 13px;
     // border-right: 1px solid $secondary;
 }
-#MenuBar button {
+#MenuBar > button {
     background-color: rgba(0, 0, 0, 0);
     text-align: right;
     font-size: 14px;
@@ -103,8 +108,25 @@ for their compilation of high-elo games from Lichess. </li>
     transition: ease 0.3s;
 
     margin-left: 6px;
+    padding: 3px 6px 3px 6px;
 }
-#MenuBar button:hover {
+#MenuBar > button:hover {
+    background-color: scale-color($primary, $lightness: 5%);
+}
+#MenuBar > a {
+    background-color: rgba(0, 0, 0, 0);
+    text-align: right;
+    font-size: 14px;
+    color: $text-tertiary;
+    border: 0px;
+    line-height: 22px;
+    transition: ease 0.3s;
+
+    margin-left: 6px;
+    padding: 5px 6px 5px 6px;
+    text-decoration: none;
+}
+#MenuBar > a:hover {
     background-color: scale-color($primary, $lightness: 5%);
 }
 </style>
