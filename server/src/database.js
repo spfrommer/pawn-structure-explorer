@@ -195,6 +195,9 @@ class Database {
 
         if (newStructure || newGame) {
             const openingUpdateKey = `${tags.Result}.openings.${tags.OpeningMain}.${tags.OpeningVariations}.games`;
+            if (structure === '8/pppppppp/8/8/8/8/PPPPPPPP/8') {
+                console.log(`Adding to initial struct: ${openingUpdateKey}, ${tags.GameId}`);
+            }
             indexingState.bulkUpdates.find({ _id: structure }).update({
                 $addToSet: { [openingUpdateKey]: tags.GameId },
             });
