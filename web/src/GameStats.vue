@@ -39,6 +39,11 @@ export default {
                     games += count;
                 }
             }
+            // eslint-disable-next-line no-underscore-dangle
+            if (games > 326502 && this.games._id === '8/pppppppp/8/8/8/8/PPPPPPPP/8') {
+                // Hack to fix a problem where the initial structure doesn't index past one file
+                games = 581502;
+            }
             return games;
         },
     },
