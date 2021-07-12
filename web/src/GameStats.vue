@@ -19,7 +19,13 @@ export default {
         },
         gameCount: function () {
             if (!this.hasGames) { console.log('*****'); console.log(this.games); return 0; }
-            return this.count('1-0') + this.count('1/2-1/2') + this.count('0-1');
+            let count = this.count('1-0') + this.count('1/2-1/2') + this.count('0-1');
+            // eslint-disable-next-line no-underscore-dangle
+            if (count === 326502 && this.games._id === '8/pppppppp/8/8/8/8/PPPPPPPP/8') {
+                // Hack to fix a problem where the initial structure doesn't index past one file
+                count = 581502;
+            }
+            return count;
         },
         percents: function () {
             if (!this.hasGames) return '- / - / -';
@@ -38,14 +44,6 @@ export default {
                     console.assert(!Number.isNaN(count));
                     games += count;
                 }
-            }
-            console.log(games);
-            // eslint-disable-next-line no-underscore-dangle
-            console.log(this.games._id);
-            // eslint-disable-next-line no-underscore-dangle
-            if (games === 326502 && this.games._id === '8/pppppppp/8/8/8/8/PPPPPPPP/8') {
-                // Hack to fix a problem where the initial structure doesn't index past one file
-                games = 581502;
             }
             return games;
         },
