@@ -39,11 +39,13 @@ app.get('/api/gamePgn', (req, res) => {
 });
 
 // TODO: make post, disable automatically in production
+/*
 app.get('/api/index', (req, res) => {
     db.buildIndex()
         .then(() => { res.send('INDEXED'); })
         .catch(err => errorHandle(res, err));
 });
+*/
 /*
 app.get('/api/drop', (req, res) => {
     db.drop()
